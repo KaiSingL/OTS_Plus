@@ -289,31 +289,33 @@ console.log("Custom script running!");
     projectLabel.style.display = 'inline-block';
 
     const projectContainer = document.createElement('div');
-    projectContainer.style.display = 'inline-block'
-    const vrmsRadio = document.createElement('input');
-    vrmsRadio.type = 'radio';
-    vrmsRadio.id = 'project-vrms';
-    vrmsRadio.name = 'project';
-    vrmsRadio.value = 'VRMS';
-    vrmsRadio.checked = true; // Default selection
-    const vrmsLabel = document.createElement('label');
-    vrmsLabel.htmlFor = 'project-vrms';
-    vrmsLabel.innerText = 'VRMS';
-    vrmsLabel.style.marginRight = '10px';
+    projectContainer.style.display = 'inline-block';
 
-    const rtpcsRadio = document.createElement('input');
-    rtpcsRadio.type = 'radio';
-    rtpcsRadio.id = 'project-rtpcs';
-    rtpcsRadio.name = 'project';
-    rtpcsRadio.value = 'RTPCS';
-    const rtpcsLabel = document.createElement('label');
-    rtpcsLabel.htmlFor = 'project-rtpcs';
-    rtpcsLabel.innerText = 'RTPCS';
+    // Configurable projects array
+    const projects = [
+        { id: 'vrms', name: 'VRMS', checked: true },
+        { id: 'rtpcs', name: 'RTPCS', checked: false }
+    ];
 
-    projectContainer.appendChild(vrmsRadio);
-    projectContainer.appendChild(vrmsLabel);
-    projectContainer.appendChild(rtpcsRadio);
-    projectContainer.appendChild(rtpcsLabel);
+    // Dynamically create radio buttons based on projects array
+    projects.forEach(project => {
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.id = `project-${project.id}`;
+        radio.name = 'project';
+        radio.value = project.name;
+        if (project.checked) {
+            radio.checked = true;
+        }
+
+        const label = document.createElement('label');
+        label.htmlFor = `project-${project.id}`;
+        label.innerText = project.name;
+        label.style.marginRight = '10px';
+
+        projectContainer.appendChild(radio);
+        projectContainer.appendChild(label);
+    });
 
     // Buttons
     const amTravelButton = document.createElement('button');
