@@ -282,6 +282,39 @@ console.log("Custom script running!");
     lunchInput.min = '0';
     lunchInput.style.marginRight = '10px';
 
+    // Project radio buttons
+    const projectLabel = document.createElement('label');
+    projectLabel.innerText = 'Project: ';
+    projectLabel.style.marginRight = '10px';
+    projectLabel.style.display = 'inline-block';
+
+    const projectContainer = document.createElement('div');
+    projectContainer.style.display = 'inline-block'
+    const vrmsRadio = document.createElement('input');
+    vrmsRadio.type = 'radio';
+    vrmsRadio.id = 'project-vrms';
+    vrmsRadio.name = 'project';
+    vrmsRadio.value = 'VRMS';
+    vrmsRadio.checked = true; // Default selection
+    const vrmsLabel = document.createElement('label');
+    vrmsLabel.htmlFor = 'project-vrms';
+    vrmsLabel.innerText = 'VRMS';
+    vrmsLabel.style.marginRight = '10px';
+
+    const rtpcsRadio = document.createElement('input');
+    rtpcsRadio.type = 'radio';
+    rtpcsRadio.id = 'project-rtpcs';
+    rtpcsRadio.name = 'project';
+    rtpcsRadio.value = 'RTPCS';
+    const rtpcsLabel = document.createElement('label');
+    rtpcsLabel.htmlFor = 'project-rtpcs';
+    rtpcsLabel.innerText = 'RTPCS';
+
+    projectContainer.appendChild(vrmsRadio);
+    projectContainer.appendChild(vrmsLabel);
+    projectContainer.appendChild(rtpcsRadio);
+    projectContainer.appendChild(rtpcsLabel);
+
     // Buttons
     const amTravelButton = document.createElement('button');
     amTravelButton.innerText = 'Claim AM Travel';
@@ -295,7 +328,6 @@ console.log("Custom script running!");
     OfficeTravelButton.innerText = 'Claim Office Travel';
     OfficeTravelButton.style.marginRight = '5px';
 
-
     const lunchButton = document.createElement('button');
     lunchButton.innerText = 'Claim Lunch';
 
@@ -303,8 +335,12 @@ console.log("Custom script running!");
     container.appendChild(dateLabel);
     container.appendChild(dateInput);
     container.appendChild(document.createElement('br'));
+    container.appendChild(projectLabel);
+    container.appendChild(projectContainer);
+    container.appendChild(document.createElement('br'));
     container.appendChild(travelLabel);
     container.appendChild(travelInput);
+   
     container.appendChild(amTravelButton);
     container.appendChild(pmTravelButton);
     container.appendChild(OfficeTravelButton);
@@ -320,8 +356,9 @@ console.log("Custom script running!");
     amTravelButton.addEventListener('click', () => {
         const date = dateInput.value;
         const travelFee = travelInput.value;
+        const project = document.querySelector('input[name="project"]:checked').value;
         if (date && travelFee) {
-            window.updateClaimForm(date, 'am-travel', travelFee);
+            window.updateClaimForm(date, 'am-travel', travelFee, project);
         } else {
             alert('Please enter a date and travel fee.');
         }
@@ -330,8 +367,9 @@ console.log("Custom script running!");
     pmTravelButton.addEventListener('click', () => {
         const date = dateInput.value;
         const travelFee = travelInput.value;
+        const project = document.querySelector('input[name="project"]:checked').value;
         if (date && travelFee) {
-            window.updateClaimForm(date, 'pm-travel', travelFee);
+            window.updateClaimForm(date, 'pm-travel', travelFee, project);
         } else {
             alert('Please enter a date and travel fee.');
         }
@@ -340,8 +378,9 @@ console.log("Custom script running!");
     OfficeTravelButton.addEventListener('click', () => {
         const date = dateInput.value;
         const travelFee = travelInput.value;
+        const project = document.querySelector('input[name="project"]:checked').value;
         if (date && travelFee) {
-            window.updateClaimForm(date, 'office-travel', travelFee);
+            window.updateClaimForm(date, 'office-travel', travelFee, project);
         } else {
             alert('Please enter a date and travel fee.');
         }
@@ -350,8 +389,9 @@ console.log("Custom script running!");
     lunchButton.addEventListener('click', () => {
         const date = dateInput.value;
         const lunchFee = lunchInput.value;
+        const project = document.querySelector('input[name="project"]:checked').value;
         if (date && lunchFee) {
-            window.updateClaimForm(date, 'lunch', lunchFee);
+            window.updateClaimForm(date, 'lunch', lunchFee, project);
         } else {
             alert('Please enter a date and lunch fee.');
         }
