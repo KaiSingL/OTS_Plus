@@ -266,7 +266,7 @@ console.log("Custom script running!");
     travelInput.type = 'number';
     travelInput.id = 'travel-fee';
     travelInput.value = '15.8';
-    travelInput.step = '0.01';
+    travelInput.step = '0.10';
     travelInput.min = '0';
     travelInput.style.marginRight = '10px';
 
@@ -278,7 +278,7 @@ console.log("Custom script running!");
     lunchInput.type = 'number';
     lunchInput.id = 'lunch-fee';
     lunchInput.value = '200';
-    lunchInput.step = '0.01';
+    lunchInput.step = '0.10';
     lunchInput.min = '0';
     lunchInput.style.marginRight = '10px';
 
