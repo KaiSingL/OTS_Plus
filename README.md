@@ -61,8 +61,6 @@ This browser extension automates the process of filling out a claim form on a sp
 - **Extension not loading**: Ensure the URL in `manifest.json` matches the web application's URL.
 - **Incorrect values**: Verify that the predefined values in `content.js` (e.g., locations, project ID) match the options available in the form.
 
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Disclaimer
 This extension is provided as-is. Ensure you have permission to automate form submissions on the target web application, as unauthorized automation may violate terms of service.
