@@ -187,34 +187,37 @@ function setAmt(money) {
 
 
 
-window.updateClaimForm = (dateStr, claimType, money) => {
+window.updateClaimForm = (dateStr, claimType, money, proj = 'VRMS') => {
   // type: am-travel, pm-travel, lunch
   var home = 'Wong Tai Sin';
   var work = 'HKCEC';
-  var proj = 'VRMS';
   var job = 'T9';
-  var timeAM = ' 07:15';
-  var timePM = ' 18:00';
-  var timeLunch = ' 13:00';
 
   switch (claimType) {
     case 'am-travel':
-      setClaimDate(dateStr + timeAM);
+      setClaimDate(dateStr + ' 07:15');
       setClaimType('TRAV');
       setVehicleType('MTR');
       setLocation(home, work);
       break;
     case 'pm-travel':
-      setClaimDate(dateStr + timePM);
+      setClaimDate(dateStr + ' 18:00');
       setClaimType('TRAV');
       setVehicleType('MTR');
       setLocation(work, home);
       break;
     case 'lunch':
-      setClaimDate(dateStr + timeLunch);
+      setClaimDate(dateStr + ' 13:00');
       setClaimType('MEAL');
       setVehicleType('Select Vehicle Type');
       setLocation('Select Location', 'Select Location');
+      break;
+    case 'office-travel':
+      setClaimDate(dateStr + ' 15:30');
+      setClaimType('TRAV');
+      setVehicleType('MTR');
+      setLocation('OFC', 'WKGO');
+
       break;
     default:
       console.error(`Unknown claim type: "${claimType}"`);
@@ -288,6 +291,11 @@ console.log("Custom script running!");
     pmTravelButton.innerText = 'Claim PM Travel';
     pmTravelButton.style.marginRight = '5px';
 
+    const OfficeTravelButton = document.createElement('button');
+    OfficeTravelButton.innerText = 'Claim Office Travel';
+    OfficeTravelButton.style.marginRight = '5px';
+
+
     const lunchButton = document.createElement('button');
     lunchButton.innerText = 'Claim Lunch';
 
@@ -299,6 +307,7 @@ console.log("Custom script running!");
     container.appendChild(travelInput);
     container.appendChild(amTravelButton);
     container.appendChild(pmTravelButton);
+    container.appendChild(OfficeTravelButton);
     container.appendChild(document.createElement('br'));
     container.appendChild(lunchLabel);
     container.appendChild(lunchInput);
@@ -327,6 +336,16 @@ console.log("Custom script running!");
             alert('Please enter a date and travel fee.');
         }
     });
+
+    OfficeTravelButton.addEventListener('click', () => {
+        const date = dateInput.value;
+        const travelFee = travelInput.value;
+        if (date && travelFee) {
+            window.updateClaimForm(date, 'office-travel', travelFee);
+        } else {
+            alert('Please enter a date and travel fee.');
+        }
+    });    
 
     lunchButton.addEventListener('click', () => {
         const date = dateInput.value;
