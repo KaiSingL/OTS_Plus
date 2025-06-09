@@ -21,15 +21,20 @@ function setClaimDate(inputDate) {
     }
 }
 
-function setClaimType(claimType) {
+function setClaimType(claimTypeText) {
   const select = document.querySelector('select[name="CLAIM_TYPE"]');
-  if (select) {
-    const option = select.querySelector(`option[value="${claimType}"]`);
-    if (option) {
-      select.value = claimType;
-    } else {
-      console.error(`Option with value "${claimType}" not found`);
-    }
+  if (!select) {
+    console.error('Select element with name "CLAIM_TYPE" not found');
+    return;
+  }
+  const option = Array.from(select.options).find(opt => opt.text === claimTypeText);
+
+  if (option) {
+    select.value = option.value;
+    // Trigger the onchange event to ensure any attached handlers run
+    const event = new Event('change', { bubbles: true });
+    select.dispatchEvent(event);
+
   } else {
     console.error('Select element with name "CLAIM_TYPE" not found');
   }
