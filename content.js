@@ -351,8 +351,11 @@ console.log("Custom script running!");
     container.appendChild(lunchInput);
     container.appendChild(lunchButton);
 
-    // Add container to page
-    document.body.appendChild(container);
+    // Add container to page when the path is /hkots/create_claim_record.jsp*
+    
+if (window.location.pathname === '/hkots/create_claim_record.jsp') {
+   document.body.appendChild(container);
+} 
 
     // Button event listeners
     amTravelButton.addEventListener('click', () => {
