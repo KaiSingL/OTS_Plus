@@ -4,7 +4,7 @@
   "version": "1.0",
   "content_scripts": [
     {
-      "matches": ["http://192.168.1.148:8081/hkots/create_claim_record.jsp*"], 
+      "matches": ["http://192.168.1.148:8081/hkots/*"], 
       "js": ["content.js"]
     }
   ],
