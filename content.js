@@ -404,8 +404,10 @@ if (window.location.pathname === '/hkots/create_claim_record.jsp') {
 })();
 
 
+const isPrintPage = window.location.pathname.startsWith('/hkots/print_claim_record.jsp');
+const isShowClaimPage = window.location.pathname.startsWith('/hkots/show_claim_record.jsp');
 
-if (window.location.pathname.startsWith('/hkots/print_claim_record.jsp')) {
+if (isPrintPage || isShowClaimPage) {
   // Add new date fields inline with existing ones
   document.querySelector('input[name="DATE_FROM"]').insertAdjacentHTML('afterend', 
     '<input type="date" class="txtFieldLarge newDateField" style="display:inline;margin-left:10px;" data-target="DATE_FROM">'
