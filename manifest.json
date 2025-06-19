@@ -1,12 +1,19 @@
 {
-  "manifest_version": 3,
-  "name": "Easy Claim",
-  "version": "1.0",
-  "content_scripts": [
-    {
-      "matches": ["http://192.168.1.148:8081/hkots/create_claim_record.jsp*"], 
-      "js": ["content.js"]
-    }
-  ],
-  "permissions": ["activeTab"]
+	"manifest_version": 3,
+	"name": "Claim Form Automation Extension",
+	"version": "1.0",
+	"action": {
+		"default_popup": "popup.html"
+	},
+	"content_scripts": [
+		{
+			"matches": ["http://192.168.1.148:8081/hkots/create_claim_record.jsp*"],
+			"js": ["content.js"]
+		}
+	],
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": true
+	},
+	"permissions": ["activeTab", "storage"]
 }
