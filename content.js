@@ -336,8 +336,11 @@ console.log('Custom script running!');
 			container.appendChild(lunchInput);
 			container.appendChild(lunchButton);
 
-			// Add container to page
-			document.body.appendChild(container);
+			// Add container to page when the path is /hkots/create_claim_record.jsp*
+
+			if (window.location.pathname === '/hkots/create_claim_record.jsp') {
+				document.body.appendChild(container);
+			}
 
 			// Button event listeners
 			amTravelButton.addEventListener('click', () => {
@@ -400,3 +403,41 @@ console.log('Custom script running!');
 		}
 	);
 })();
+
+if (window.location.pathname.startsWith('/hkots/print_claim_record.jsp')) {
+	// Add new date fields inline with existing ones
+	document
+		.querySelector('input[name="DATE_FROM"]')
+		.insertAdjacentHTML(
+			'afterend',
+			'<input type="date" class="txtFieldLarge newDateField" style="display:inline;margin-left:10px;" data-target="DATE_FROM">'
+		);
+	document
+		.querySelector('input[name="DATE_TO"]')
+		.insertAdjacentHTML(
+			'afterend',
+			'<input type="date" class="txtFieldLarge newDateField" style="display:inline;margin-left:10px;" data-target="DATE_TO">'
+		);
+
+	// Add event listeners to new date fields
+	document.querySelectorAll('.newDateField').forEach((field) => {
+		field.addEventListener('change', (e) => {
+			const targetFieldName = e.target.dataset.target;
+			const targetField = document.querySelector(
+				`input[name="${targetFieldName}"]`
+			);
+
+			if (e.target.value) {
+				// Convert date to MM/dd/yyyy format
+				const date = new Date(e.target.value);
+				const formattedDate =
+					`${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
+					`${date.getDate().toString().padStart(2, '0')}/` +
+					`${date.getFullYear()}`;
+				targetField.value = formattedDate;
+			} else {
+				targetField.value = '';
+			}
+		});
+	});
+}
