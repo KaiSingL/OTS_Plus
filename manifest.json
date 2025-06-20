@@ -8,5 +8,8 @@
 			"js": ["content.js"]
 		}
 	],
-	"permissions": ["activeTab"]
+	"permissions": ["activeTab"],
+	"icons": {
+		"500": "icons/icon_500x500.png"
+	}
 }
