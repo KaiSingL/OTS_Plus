@@ -1,19 +1,27 @@
 {
-	"manifest_version": 3,
-	"name": "OTS Plus",
-	"version": "1.0",
-	"content_scripts": [
-		{
-			"matches": ["http://192.168.1.148:8081/hkots/*"],
-			"js": ["content.js"]
-		}
-	],
-	"permissions": ["activeTab","storage","contextMenus"],
-	"icons": {
-		"500": "icons/icon_500x500.png"
-	},
-  "options_page": "options.html",
+  "manifest_version": 3,
+  "name": "AzOTS Plus",
+  "version": "1.0",
+  "description": "Enhances the AzOTS timesheet and claim form system with custom UI elements and automation.",
+  "permissions": [
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "http://192.168.1.148:8081/hkots/*"
+  ],
   "background": {
     "service_worker": "background.js"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://192.168.1.148:8081/hkots/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "500": "icons/icon_500x500.png"
+    }
+  },
+  "options_page": "options.html"
 }

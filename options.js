@@ -5,19 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const homeInput = document.getElementById('home');
   const workInput = document.getElementById('work');
   const jobInput = document.getElementById('job');
-
-  // Load saved settings
-  chrome.storage.sync.get({
-    home: 'Wong Tai Sin',
-    work: 'HKCEC',
-    job: 'T9',
-    projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }]
-  }, (items) => {
-    homeInput.value = items.home;
-    workInput.value = items.work;
-    jobInput.value = items.job;
-    items.projects.forEach(project => addProjectField(project.name, project.checked));
-  });
+  const presetList = document.getElementById('preset-list');
+  const addPresetButton = document.getElementById('add-preset');
+  const presetPopup = document.getElementById('preset-popup');
+  const presetLocationInput = document.getElementById('preset-location');
+  const presetProjectInput = document.getElementById('preset-project');
+  const presetPurposeInput = document.getElementById('preset-purpose');
+  const presetSaveButton = document.getElementById('preset-save');
+  const presetCancelButton = document.getElementById('preset-cancel');
 
   // Debounce function to limit save frequency
   function debounce(func, wait) {
@@ -39,13 +34,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Save settings
+  // Save settings to localStorage
   function saveSettings() {
     const projects = Array.from(projectList.getElementsByClassName('project-entry')).map(entry => {
       const input = entry.querySelector('input[type="text"]');
       const radio = entry.querySelector('input[type="radio"]');
       return { name: input.value.trim(), checked: radio.checked };
     }).filter(project => project.name !== '');
+
+    const presets = Array.from(presetList.getElementsByClassName('preset-row')).map(row => {
+      const cells = row.querySelectorAll('span');
+      return {
+        location: cells[0].textContent,
+        project: cells[1].textContent,
+        purpose: cells[2].textContent
+      };
+    });
 
     if (projects.length === 0) {
       showStatus('Please add at least one project.', 'error');
@@ -58,17 +62,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     showStatus('Saving...', 'saving');
-    chrome.storage.sync.set({
+    const newSettings = {
       home: homeInput.value.trim(),
       work: workInput.value.trim(),
       job: jobInput.value.trim(),
-      projects
-    }, () => {
-      showStatus('Saved', 'saved');
-    });
+      projects,
+      presets
+    };
+    localStorage.setItem('azotsSettings', JSON.stringify(newSettings));
+    showStatus('Saved', 'saved');
   }
 
   const debouncedSave = debounce(saveSettings, 500);
+
+  // Load saved settings from localStorage
+  const defaultSettings = {
+    home: 'Wong Tai Sin',
+    work: 'HKCEC',
+    job: 'T9',
+    projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
+    presets: []
+  };
+  const settings = JSON.parse(localStorage.getItem('azotsSettings')) || defaultSettings;
+  homeInput.value = settings.home;
+  workInput.value = settings.work;
+  jobInput.value = settings.job;
+  settings.projects.forEach(project => addProjectField(project.name, project.checked));
+  settings.presets.forEach(preset => addPresetRow(preset.location, preset.project, preset.purpose));
 
   // Add a new project input field
   function addProjectField(name = '', checked = false) {
@@ -110,4 +130,66 @@ document.addEventListener('DOMContentLoaded', () => {
   homeInput.addEventListener('input', debouncedSave);
   workInput.addEventListener('input', debouncedSave);
   jobInput.addEventListener('input', debouncedSave);
+
+  // Add a new preset row
+  function addPresetRow(location, project, purpose) {
+    const row = document.createElement('div');
+    row.className = 'preset-row';
+
+    const locationCell = document.createElement('span');
+    locationCell.textContent = location;
+    const projectCell = document.createElement('span');
+    projectCell.textContent = project;
+    const purposeCell = document.createElement('span');
+    purposeCell.textContent = purpose;
+
+    const removeButton = document.createElement('button');
+    removeButton.textContent = '⨉';
+    removeButton.onclick = () => {
+      row.remove();
+      debouncedSave();
+    };
+
+    row.appendChild(locationCell);
+    row.appendChild(projectCell);
+    row.appendChild(purposeCell);
+    row.appendChild(removeButton);
+    presetList.appendChild(row);
+  }
+
+  // Handle preset popup
+  addPresetButton.onclick = () => {
+    presetPopup.classList.add('show');
+    presetLocationInput.value = '';
+    presetProjectInput.value = '';
+    presetPurposeInput.value = '';
+    presetSaveButton.disabled = true;
+  };
+
+  presetCancelButton.onclick = () => {
+    presetPopup.classList.remove('show');
+  };
+
+  function checkPresetInputs() {
+    const isValid = presetLocationInput.value.trim() !== '' &&
+                    presetProjectInput.value.trim() !== '' &&
+                    presetPurposeInput.value.trim() !== '';
+    presetSaveButton.disabled = !isValid;
+  }
+
+  presetLocationInput.addEventListener('input', checkPresetInputs);
+  presetProjectInput.addEventListener('input', checkPresetInputs);
+  presetPurposeInput.addEventListener('input', checkPresetInputs);
+
+  presetSaveButton.onclick = () => {
+    if (!presetSaveButton.disabled) {
+      addPresetRow(
+        presetLocationInput.value.trim(),
+        presetProjectInput.value.trim(),
+        presetPurposeInput.value.trim()
+      );
+      presetPopup.classList.remove('show');
+      debouncedSave();
+    }
+  };
 });

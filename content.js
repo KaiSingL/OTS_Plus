@@ -224,184 +224,173 @@ console.log('Custom script running!');
 		],
 	};
 
-	// Load configuration from storage
-	chrome.storage.sync.get(
-		{
-			home: config.home,
-			work: config.work,
-			job: config.job,
-			projects: config.projects,
-		},
-		(items) => {
-			config = items;
+	// Load configuration from localStorage
+	config = JSON.parse(localStorage.getItem('azotsSettings')) || config;
 
-			// Create container for form elements
-			const container = document.createElement('div');
-			container.style.padding = '10px';
-			container.style.backgroundColor = '#f0f0f0';
-			container.style.border = '1px solid #ccc';
-			container.style.margin = '10px';
-			container.style.display = 'inline-block';
+	// Create container for form elements
+	const container = document.createElement('div');
+	container.style.padding = '10px';
+	container.style.backgroundColor = '#f0f0f0';
+	container.style.border = '1px solid #ccc';
+	container.style.margin = '10px';
+	container.style.display = 'inline-block';
 
-			// Date picker
-			const dateLabel = document.createElement('label');
-			dateLabel.innerText = 'Date: ';
-			dateLabel.htmlFor = 'claim-date';
-			const dateInput = document.createElement('input');
-			dateInput.type = 'date';
-			dateInput.id = 'claim-date';
-			dateInput.style.marginRight = '10px';
+	// Date picker
+	const dateLabel = document.createElement('label');
+	dateLabel.innerText = 'Date: ';
+	dateLabel.htmlFor = 'claim-date';
+	const dateInput = document.createElement('input');
+	dateInput.type = 'date';
+	dateInput.id = 'claim-date';
+	dateInput.style.marginRight = '10px';
 
-			// Travel fee input
-			const travelLabel = document.createElement('label');
-			travelLabel.innerText = 'Travel Fee: $';
-			travelLabel.htmlFor = 'travel-fee';
-			const travelInput = document.createElement('input');
-			travelInput.type = 'number';
-			travelInput.id = 'travel-fee';
-			travelInput.value = '15.8';
-			travelInput.step = '0.01';
-			travelInput.min = '0';
-			travelInput.style.marginRight = '10px';
+	// Travel fee input
+	const travelLabel = document.createElement('label');
+	travelLabel.innerText = 'Travel Fee: $';
+	travelLabel.htmlFor = 'travel-fee';
+	const travelInput = document.createElement('input');
+	travelInput.type = 'number';
+	travelInput.id = 'travel-fee';
+	travelInput.value = '15.8';
+	travelInput.step = '0.01';
+	travelInput.min = '0';
+	travelInput.style.marginRight = '10px';
 
-			// Lunch fee input
-			const lunchLabel = document.createElement('label');
-			lunchLabel.innerText = 'Lunch Fee: $';
-			lunchLabel.htmlFor = 'lunch-fee';
-			const lunchInput = document.createElement('input');
-			lunchInput.type = 'number';
-			lunchInput.id = 'lunch-fee';
-			lunchInput.value = '200';
-			lunchInput.step = '0.01';
-			lunchInput.min = '0';
-			lunchInput.style.marginRight = '10px';
+	// Lunch fee input
+	const lunchLabel = document.createElement('label');
+	lunchLabel.innerText = 'Lunch Fee: $';
+	lunchLabel.htmlFor = 'lunch-fee';
+	const lunchInput = document.createElement('input');
+	lunchInput.type = 'number';
+	lunchInput.id = 'lunch-fee';
+	lunchInput.value = '200';
+	lunchInput.step = '0.01';
+	lunchInput.min = '0';
+	lunchInput.style.marginRight = '10px';
 
-			// Project radio buttons
-			const projectLabel = document.createElement('label');
-			projectLabel.innerText = 'Project: ';
-			projectLabel.style.marginRight = '10px';
-			projectLabel.style.display = 'inline-block';
+	// Project radio buttons
+	const projectLabel = document.createElement('label');
+	projectLabel.innerText = 'Project: ';
+	projectLabel.style.marginRight = '10px';
+	projectLabel.style.display = 'inline-block';
 
-			const projectContainer = document.createElement('div');
-			projectContainer.style.display = 'inline-block';
+	const projectContainer = document.createElement('div');
+	projectContainer.style.display = 'inline-block';
 
-			config.projects.forEach((project) => {
-				const radio = document.createElement('input');
-				radio.type = 'radio';
-				radio.id = `project-${project.name}`;
-				radio.name = 'project';
-				radio.value = project.name;
-				radio.checked = project.checked;
+	config.projects.forEach((project) => {
+		const radio = document.createElement('input');
+		radio.type = 'radio';
+		radio.id = `project-${project.name}`;
+		radio.name = 'project';
+		radio.value = project.name;
+		radio.checked = project.checked;
 
-				const label = document.createElement('label');
-				label.htmlFor = radio.id;
-				label.innerText = project.name;
-				label.style.marginRight = '10px';
+		const label = document.createElement('label');
+		label.htmlFor = radio.id;
+		label.innerText = project.name;
+		label.style.marginRight = '10px';
 
-				projectContainer.appendChild(radio);
-				projectContainer.appendChild(label);
-			});
+		projectContainer.appendChild(radio);
+		projectContainer.appendChild(label);
+	});
 
-			// Buttons
-			const amTravelButton = document.createElement('button');
-			amTravelButton.innerText = 'Claim AM Travel';
-			amTravelButton.style.marginRight = '5px';
+	// Buttons
+	const amTravelButton = document.createElement('button');
+	amTravelButton.innerText = 'Claim AM Travel';
+	amTravelButton.style.marginRight = '5px';
 
-			const pmTravelButton = document.createElement('button');
-			pmTravelButton.innerText = 'Claim PM Travel';
-			pmTravelButton.style.marginRight = '5px';
+	const pmTravelButton = document.createElement('button');
+	pmTravelButton.innerText = 'Claim PM Travel';
+	pmTravelButton.style.marginRight = '5px';
 
-			const OfficeTravelButton = document.createElement('button');
-			OfficeTravelButton.innerText = 'Claim Office Travel';
-			OfficeTravelButton.style.marginRight = '5px';
+	const OfficeTravelButton = document.createElement('button');
+	OfficeTravelButton.innerText = 'Claim Office Travel';
+	OfficeTravelButton.style.marginRight = '5px';
 
-			const lunchButton = document.createElement('button');
-			lunchButton.innerText = 'Claim Lunch';
+	const lunchButton = document.createElement('button');
+	lunchButton.innerText = 'Claim Lunch';
 
-			// Append elements to container
-			container.appendChild(dateLabel);
-			container.appendChild(dateInput);
-			container.appendChild(document.createElement('br'));
-			container.appendChild(travelLabel);
-			container.appendChild(travelInput);
-			container.appendChild(document.createElement('br'));
-			container.appendChild(projectLabel);
-			container.appendChild(projectContainer);
-			container.appendChild(document.createElement('br'));
-			container.appendChild(amTravelButton);
-			container.appendChild(pmTravelButton);
-			container.appendChild(OfficeTravelButton);
-			container.appendChild(document.createElement('br'));
-			container.appendChild(lunchLabel);
-			container.appendChild(lunchInput);
-			container.appendChild(lunchButton);
+	// Append elements to container
+	container.appendChild(dateLabel);
+	container.appendChild(dateInput);
+	container.appendChild(document.createElement('br'));
+	container.appendChild(travelLabel);
+	container.appendChild(travelInput);
+	container.appendChild(document.createElement('br'));
+	container.appendChild(projectLabel);
+	container.appendChild(projectContainer);
+	container.appendChild(document.createElement('br'));
+	container.appendChild(amTravelButton);
+	container.appendChild(pmTravelButton);
+	container.appendChild(OfficeTravelButton);
+	container.appendChild(document.createElement('br'));
+	container.appendChild(lunchLabel);
+	container.appendChild(lunchInput);
+	container.appendChild(lunchButton);
 
-			// Add container to page when the path is /hkots/create_claim_record.jsp*
+	// Add container to page when the path is /hkots/create_claim_record.jsp*
+	if (window.location.pathname === '/hkots/create_claim_record.jsp') {
+		document.body.appendChild(container);
+	}
 
-			if (window.location.pathname === '/hkots/create_claim_record.jsp') {
-				document.body.appendChild(container);
-			}
-
-			// Button event listeners
-			amTravelButton.addEventListener('click', () => {
-				const date = dateInput.value;
-				const travelFee = travelInput.value;
-				const project = document.querySelector(
-					'input[name="project"]:checked'
-				).value;
-				if (date && travelFee) {
-					window.updateClaimForm(date, 'am-travel', travelFee, project, config);
-				} else {
-					alert('Please enter a date and travel fee.');
-				}
-			});
-
-			pmTravelButton.addEventListener('click', () => {
-				const date = dateInput.value;
-				const travelFee = travelInput.value;
-				const project = document.querySelector(
-					'input[name="project"]:checked'
-				).value;
-				if (date && travelFee) {
-					window.updateClaimForm(date, 'pm-travel', travelFee, project, config);
-				} else {
-					alert('Please enter a date and travel fee.');
-				}
-			});
-
-			OfficeTravelButton.addEventListener('click', () => {
-				const date = dateInput.value;
-				const travelFee = travelInput.value;
-				const project = document.querySelector(
-					'input[name="project"]:checked'
-				).value;
-				if (date && travelFee) {
-					window.updateClaimForm(
-						date,
-						'office-travel',
-						travelFee,
-						project,
-						config
-					);
-				} else {
-					alert('Please enter a date and travel fee.');
-				}
-			});
-
-			lunchButton.addEventListener('click', () => {
-				const date = dateInput.value;
-				const lunchFee = lunchInput.value;
-				const project = document.querySelector(
-					'input[name="project"]:checked'
-				).value;
-				if (date && lunchFee) {
-					window.updateClaimForm(date, 'lunch', lunchFee, project, config);
-				} else {
-					alert('Please enter a date and lunch fee.');
-				}
-			});
+	// Button event listeners
+	amTravelButton.addEventListener('click', () => {
+		const date = dateInput.value;
+		const travelFee = travelInput.value;
+		const project = document.querySelector(
+			'input[name="project"]:checked'
+		).value;
+		if (date && travelFee) {
+			window.updateClaimForm(date, 'am-travel', travelFee, project, config);
+		} else {
+			alert('Please enter a date and travel fee.');
 		}
-	);
+	});
+
+	pmTravelButton.addEventListener('click', () => {
+		const date = dateInput.value;
+		const travelFee = travelInput.value;
+		const project = document.querySelector(
+			'input[name="project"]:checked'
+		).value;
+		if (date && travelFee) {
+			window.updateClaimForm(date, 'pm-travel', travelFee, project, config);
+		} else {
+			alert('Please enter a date and travel fee.');
+		}
+	});
+
+	OfficeTravelButton.addEventListener('click', () => {
+		const date = dateInput.value;
+		const travelFee = travelInput.value;
+		const project = document.querySelector(
+			'input[name="project"]:checked'
+		).value;
+		if (date && travelFee) {
+			window.updateClaimForm(
+				date,
+				'office-travel',
+				travelFee,
+				project,
+				config
+			);
+		} else {
+			alert('Please enter a date and travel fee.');
+		}
+	});
+
+	lunchButton.addEventListener('click', () => {
+		const date = dateInput.value;
+		const lunchFee = lunchInput.value;
+		const project = document.querySelector(
+			'input[name="project"]:checked'
+		).value;
+		if (date && lunchFee) {
+			window.updateClaimForm(date, 'lunch', lunchFee, project, config);
+		} else {
+			alert('Please enter a date and lunch fee.');
+		}
+	});
 })();
 
 if (window.location.pathname.startsWith('/hkots/print_claim_record.jsp')) {
