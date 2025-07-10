@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     purposeCell.textContent = purpose;
 
     const removeButton = document.createElement('button');
-    removeButton.textContent = '⨉';
+    removeButton.innerHTML = '&times;'; // Use × symbol
     removeButton.onclick = () => {
       row.remove();
       debouncedSave();

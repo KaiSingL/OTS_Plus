@@ -4,44 +4,92 @@
   <title>Claim Form Automation Settings</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0;
+      padding: 40px;
+      min-height: 100vh;
+      color: #333;
     }
     .section {
+      background: #fff;
+      padding: 25px;
       margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .section:hover {
+      transform: translateY(-5px);
+    }
+    h1, h2 {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    h2 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     label {
-      display: block;
-      margin-bottom: 5px;
+      font-size: 1em;
+      color: #34495e;
+      margin-bottom: 8px;
+      font-weight: 500;
     }
     input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
+      width: 100%; /* Constrained by parent .section's max-width */
+      max-width: 100%; /* Ensure it doesn't exceed section width */
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 2px solid #ecf0f1;
+      border-radius: 8px;
+      font-size: 1em;
+      box-sizing: border-box; /* Include padding in width calculation */
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
     }
     .project-entry {
       display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
+      gap: 15px;
+      margin-bottom: 15px;
+      align-items: center;
     }
     .project-entry input {
       flex: 1;
+      padding: 10px;
+      box-sizing: border-box; /* Include padding in width calculation */
     }
     button {
-      padding: 8px 16px;
+      padding: 10px 20px;
       cursor: pointer;
-      background-color: #4CAF50;
+      background-color: #3498db;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
     button:hover {
-      background-color: #45a049;
+      background-color: #2980b9;
+      transform: scale(1.05);
     }
     button:disabled {
-      background-color: #cccccc;
+      background-color: #bdc3c7;
       cursor: not-allowed;
     }
     #status {
@@ -49,12 +97,13 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(52, 152, 219, 0.9);
       color: white;
-      padding: 8px 16px;
-      border-radius: 4px;
+      padding: 10px 20px;
+      border-radius: 8px;
       display: none;
       z-index: 1000;
+      font-weight: 500;
     }
     #status.saving, #status.saved {
       display: block;
@@ -71,33 +120,46 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
     .preset-list {
       max-height: 200px;
       overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
+      border: 2px solid #ecf0f1;
+      padding: 15px;
+      border-radius: 8px;
+      background: #fafafa;
     }
     .preset-row {
       display: grid;
       grid-template-columns: 2fr 2fr 2fr 1fr;
-      gap: 10px;
+      gap: 15px;
       align-items: center;
-      padding: 5px 0;
+      padding: 10px 0;
+      border-bottom: 1px solid #ecf0f1;
+    }
+    .preset-row:last-child {
+      border-bottom: none;
     }
     .preset-row button {
       background-color: white;
       color: black;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 2px 8px;
+      border: 2px solid #bdc3c7;
+      border-radius: 8px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: bold;
+      font-size: 1.2em;
+      line-height: 1;
+      transition: border-color 0.3s ease, color 0.3s ease;
     }
     .preset-row button:hover {
       background-color: white;
-      color: red;
-      border-color: red;
+      color: #e74c3c;
+      border-color: #e74c3c;
     }
     .popup {
       display: none;
@@ -105,34 +167,48 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: white;
+      background-color: #fff;
       padding: 30px;
-      border: 2px solid #ccc;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      border: 2px solid #3498db;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.2);
       z-index: 1000;
-      width: 400px;
+      width: 450px;
       max-width: 90%;
-      border-radius: 8px;
+      border-radius: 12px;
+      animation: slideIn 0.3s ease;
     }
     .popup.show {
       display: block;
     }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translate(-50%, -45%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
     .popup h3 {
       margin-top: 0;
       margin-bottom: 20px;
-      font-size: 1.5em;
+      font-size: 1.7em;
       text-align: center;
+      color: #2c3e50;
     }
     .popup label {
       font-size: 1.1em;
-      margin-bottom: 8px;
+      color: #34495e;
+      margin-bottom: 10px;
+      font-weight: 500;
     }
     .popup input[type="text"] {
-      padding: 10px;
-      font-size: 1em;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 12px;
+      font-size: 1.1em;
+      margin-bottom: 20px;
+      border: 2px solid #ecf0f1;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+    }
+    .popup input[type="text"]:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
     }
     .popup-buttons {
       display: flex;
@@ -141,14 +217,16 @@
       margin-top: 25px;
     }
     .popup-buttons button.cancel {
-      background-color: #cccccc;
+      background-color: #ecf0f1;
+      color: #7f8c8d;
     }
     .popup-buttons button.cancel:hover {
-      background-color: #b3b3b3;
+      background-color: #dcdde1;
+      color: #7f8c8d;
     }
     .popup-buttons button {
-      padding: 10px 20px;
-      font-size: 1em;
+      padding: 12px 25px;
+      font-size: 1.1em;
     }
   </style>
 </head>
