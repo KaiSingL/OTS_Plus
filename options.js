@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Save settings to localStorage
+  // Save settings to chrome.storage.sync
   function saveSettings() {
     console.log('Saving settings...');
     const projects = Array.from(projectList.getElementsByClassName('project-entry')).map(entry => {
@@ -80,13 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
       presets
     };
     console.log(`Settings to save: ${JSON.stringify(newSettings)}`);
-    localStorage.setItem('azotsSettings', JSON.stringify(newSettings));
-    showStatus('Saved', 'saved');
+    chrome.storage.sync.set({ azotsSettings: newSettings })
+      .then(() => {
+        console.log('Settings saved to chrome.storage.sync:', newSettings);
+        showStatus('Saved', 'saved');
+      })
+      .catch(error => {
+        console.error('Error saving settings to chrome.storage.sync:', error);
+        showStatus('Error saving settings.', 'error');
+      });
   }
 
   const debouncedSave = debounce(saveSettings, 500);
 
-  // Load saved settings from localStorage
+  // Load saved settings from chrome.storage.sync
   const defaultSettings = {
     home: 'Wong Tai Sin',
     work: 'HKCEC',
@@ -94,13 +101,20 @@ document.addEventListener('DOMContentLoaded', () => {
     projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
     presets: []
   };
-  const settings = JSON.parse(localStorage.getItem('azotsSettings')) || defaultSettings;
-  console.log(`Loaded settings: ${JSON.stringify(settings)}`);
-  homeInput.value = settings.home;
-  workInput.value = settings.work;
-  jobInput.value = settings.job;
-  settings.projects.forEach(project => addProjectField(project.name, project.checked));
-  settings.presets.forEach(preset => addPresetRow(preset.location, preset.project, preset.purpose));
+
+  chrome.storage.sync.get('azotsSettings')
+    .then(data => {
+      const settings = data.azotsSettings || defaultSettings;
+      console.log(`Loaded settings: ${JSON.stringify(settings)}`);
+      homeInput.value = settings.home;
+      workInput.value = settings.work;
+      jobInput.value = settings.job;
+      settings.projects.forEach(project => addProjectField(project.name, project.checked));
+      settings.presets.forEach(preset => addPresetRow(preset.location, preset.project, preset.purpose));
+    })
+    .catch(error => {
+      console.error('Error loading settings from chrome.storage.sync:', error);
+    });
 
   // Add a new project input field
   function addProjectField(name = '', checked = false) {
