@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8"> <!-- Ensure UTF-8 encoding -->
   <title>Claim Form Automation Settings</title>
   <style>
     body {
@@ -43,19 +44,19 @@
     }
     label {
       font-size: 1em;
-      color: #34495e;
+      color: #2018;
       margin-bottom: 8px;
       font-weight: 500;
     }
     input[type="text"] {
-      width: 100%; /* Constrained by parent .section's max-width */
-      max-width: 100%; /* Ensure it doesn't exceed section width */
+      width: 100%;
+      max-width: 100%;
       padding: 12px;
       margin-bottom: 15px;
       border: 2px solid #ecf0f1;
       border-radius: 8px;
       font-size: 1em;
-      box-sizing: border-box; /* Include padding in width calculation */
+      box-sizing: border-box;
       transition: border-color 0.3s ease;
     }
     input[type="text"]:focus {
@@ -72,7 +73,7 @@
     .project-entry input {
       flex: 1;
       padding: 10px;
-      box-sizing: border-box; /* Include padding in width calculation */
+      box-sizing: border-box;
     }
     button {
       padding: 10px 20px;
@@ -155,6 +156,7 @@
       font-size: 1.2em;
       line-height: 1;
       transition: border-color 0.3s ease, color 0.3s ease;
+      font-family: Arial, sans-serif; /* Fallback font for symbol support */
     }
     .preset-row button:hover {
       background-color: white;

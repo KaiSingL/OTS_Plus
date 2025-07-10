@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM content loaded, initializing settings page');
+
   const projectList = document.getElementById('project-list');
   const addProjectButton = document.getElementById('add-project');
   const status = document.getElementById('status');
@@ -25,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Show status message
   function showStatus(message, className) {
+    console.log(`Status updated: ${message}, class: ${className}`);
     status.textContent = message;
     status.className = className;
     if (className === 'saved') {
@@ -36,27 +39,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Save settings to localStorage
   function saveSettings() {
+    console.log('Saving settings...');
     const projects = Array.from(projectList.getElementsByClassName('project-entry')).map(entry => {
       const input = entry.querySelector('input[type="text"]');
       const radio = entry.querySelector('input[type="radio"]');
-      return { name: input.value.trim(), checked: radio.checked };
+      const project = { name: input.value.trim(), checked: radio.checked };
+      console.log(`Project saved: ${JSON.stringify(project)}`);
+      return project;
     }).filter(project => project.name !== '');
 
     const presets = Array.from(presetList.getElementsByClassName('preset-row')).map(row => {
       const cells = row.querySelectorAll('span');
-      return {
+      const preset = {
         location: cells[0].textContent,
         project: cells[1].textContent,
         purpose: cells[2].textContent
       };
+      console.log(`Preset saved: ${JSON.stringify(preset)}`);
+      return preset;
     });
 
     if (projects.length === 0) {
+      console.log('Validation error: No projects added');
       showStatus('Please add at least one project.', 'error');
       return;
     }
 
     if (!projects.some(project => project.checked)) {
+      console.log('Validation error: No default project selected');
       showStatus('Please select a default project.', 'error');
       return;
     }
@@ -69,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       projects,
       presets
     };
+    console.log(`Settings to save: ${JSON.stringify(newSettings)}`);
     localStorage.setItem('azotsSettings', JSON.stringify(newSettings));
     showStatus('Saved', 'saved');
   }
@@ -84,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     presets: []
   };
   const settings = JSON.parse(localStorage.getItem('azotsSettings')) || defaultSettings;
+  console.log(`Loaded settings: ${JSON.stringify(settings)}`);
   homeInput.value = settings.home;
   workInput.value = settings.work;
   jobInput.value = settings.job;
@@ -92,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add a new project input field
   function addProjectField(name = '', checked = false) {
+    console.log(`Adding project field: name=${name}, checked=${checked}`);
     const entry = document.createElement('div');
     entry.className = 'project-entry';
 
@@ -110,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
     removeButton.onclick = () => {
+      console.log(`Removing project: ${name}`);
       entry.remove();
       debouncedSave();
     };
@@ -122,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add project button click
   addProjectButton.onclick = () => {
+    console.log('Add project button clicked');
     addProjectField();
     debouncedSave();
   };
@@ -133,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add a new preset row
   function addPresetRow(location, project, purpose) {
+    console.log(`Adding preset row: location=${location}, project=${project}, purpose=${purpose}`);
     const row = document.createElement('div');
     row.className = 'preset-row';
 
@@ -144,8 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
     purposeCell.textContent = purpose;
 
     const removeButton = document.createElement('button');
-    removeButton.innerHTML = '&times;'; // Use × symbol
+    removeButton.innerHTML = '✕'; // Changed to ✕ (U+2715)
     removeButton.onclick = () => {
+      console.log(`Removing preset: ${location}, ${project}, ${purpose}`);
       row.remove();
       debouncedSave();
     };
@@ -159,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle preset popup
   addPresetButton.onclick = () => {
+    console.log('Add preset button clicked, showing popup');
     presetPopup.classList.add('show');
     presetLocationInput.value = '';
     presetProjectInput.value = '';
@@ -167,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   presetCancelButton.onclick = () => {
+    console.log('Cancel button clicked, hiding popup');
     presetPopup.classList.remove('show');
   };
 
@@ -174,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isValid = presetLocationInput.value.trim() !== '' &&
                     presetProjectInput.value.trim() !== '' &&
                     presetPurposeInput.value.trim() !== '';
+    console.log(`Checking preset inputs, valid: ${isValid}`);
     presetSaveButton.disabled = !isValid;
   }
 
@@ -182,12 +202,14 @@ document.addEventListener('DOMContentLoaded', () => {
   presetPurposeInput.addEventListener('input', checkPresetInputs);
 
   presetSaveButton.onclick = () => {
+    console.log('Save button clicked');
     if (!presetSaveButton.disabled) {
       addPresetRow(
         presetLocationInput.value.trim(),
         presetProjectInput.value.trim(),
         presetPurposeInput.value.trim()
       );
+      console.log('Preset saved, hiding popup');
       presetPopup.classList.remove('show');
       debouncedSave();
     }
