@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "Enhances the AzOTS timesheet and claim form system with custom UI elements and automation.",
   "permissions": [
-    "contextMenus"
+    "contextMenus", "storage"
   ],
   "host_permissions": [
     "http://192.168.1.148:8081/hkots/*"
