@@ -1,5 +1,5 @@
 function setClaimDate(inputDate) {
-    // Parse input date (yyyy-MM-dd HH:mm)
+    // Parse input date (yyyy-mm-dd HH:mm)
     const dateObj = new Date(inputDate.replace(/-/g, '/'));
     
     // Format to MM/dd/yyyy HH:mm
@@ -120,7 +120,7 @@ function setLocationTo(locationText) {
             select.dispatchEvent(event);
             console.log('Set location to OTH');
         } else {
-            console.error('Option "OTH" not found in LOC_TO dropdown');
+            console.error('Option marked "OTH" not found in LOC_TO dropdown');
         }
         
         const input = document.querySelector('input[name="LOC_DESC_TO"]');
@@ -281,13 +281,17 @@ console.log('Custom script running!');
         presets: []
     };
 
-    // Load settings asynchronously
+    // Load settings asynchronously and update UI
     retrieveSettingsFromChromeStorage().then(settings => {
         config = settings;
         console.log('Settings loaded:', config);
-        // Update project radio buttons if already rendered
+        // Update project radios for create_claim_record.jsp
         if (window.location.pathname.startsWith('/hkots/create_claim_record.jsp')) {
             updateProjectRadios(config.projects);
+        }
+        // Update preset buttons for ots002_log_user.jsp
+        if (window.location.pathname.startsWith('/hkots/ots002_log_user.jsp')) {
+            updatePresetButtons(config.presets);
         }
     }).catch(error => {
         console.error('Failed to load settings:', error);
@@ -317,6 +321,43 @@ console.log('Custom script running!');
             projectContainer.appendChild(label);
         });
         console.log('Updated project radio buttons:', projects);
+    }
+
+    function updatePresetButtons(presets) {
+        const container = document.querySelector('#preset-container');
+        if (!container) {
+            console.warn('Preset container not found for update');
+            return;
+        }
+        container.innerHTML = '';
+        if (Array.isArray(presets) && presets.length > 0) {
+            presets.forEach((preset, index) => {
+                console.log('Creating button for preset:', preset);
+                const button = document.createElement('button');
+                button.type = 'button'; // Explicitly set to prevent form submission
+                button.innerText = `${preset.project} ${preset.location} ${preset.purpose}`;
+                button.style.marginRight = '5px';
+                button.style.marginBottom = '5px';
+                button.style.display = 'inline-block';
+
+                button.addEventListener('click', (event) => {
+                    event.preventDefault(); // Prevent form submission
+                    setLocationFrom(preset.location);
+                    setProjId(preset.project);
+                    setJobId(preset.purpose);
+                    console.log('Preset applied:', preset);
+                });
+
+                container.appendChild(button);
+            });
+            console.log('Preset buttons updated:', presets);
+        } else {
+            console.log('No presets to display');
+            const placeholder = document.createElement('span');
+            placeholder.innerText = 'No presets available';
+            placeholder.style.color = '#666';
+            container.appendChild(placeholder);
+        }
     }
 
     // Handle create_claim_record.jsp
@@ -499,7 +540,7 @@ console.log('Custom script running!');
     // Handle ots002_log_user.jsp
     if (window.location.pathname.startsWith('/hkots/ots002_log_user.jsp')) {
         console.log('Detected ots002_log_user.jsp, initializing UI');
-        console.log('Config.presets on load:', config.presets);
+        console.log('Config.presets on initial load:', config.presets);
 
         // Add time pickers for START_TIME and END_TIME
         const startTimeField = document.querySelector('input[name="START_TIME"]');
@@ -553,44 +594,38 @@ console.log('Custom script running!');
 
         // Create container for preset buttons
         const container = document.createElement('div');
+        container.id = 'preset-container';
         container.style.padding = '10px';
         container.style.backgroundColor = '#f0f0f0';
         container.style.border = '1px solid #ccc';
         container.style.margin = '10px';
         container.style.display = 'block';
 
-        // Add preset buttons
-        if (Array.isArray(config.presets) && config.presets.length > 0) {
-            config.presets.forEach((preset, index) => {
-                console.log('Creating button for preset:', preset);
-                const button = document.createElement('button');
-                button.innerText = `${preset.project} ${preset.location} ${preset.purpose}`;
-                button.style.marginRight = '5px';
-                button.style.marginBottom = '5px';
-                button.style.display = 'inline-block';
+        // Initially populate with placeholder or empty presets
+        updatePresetButtons(config.presets);
 
-                button.addEventListener('click', () => {
-                    setLocationFrom(preset.location);
-                    setProjId(preset.project);
-                    setJobId(preset.purpose);
-                    console.log('Preset applied:', preset);
-                });
-
-                container.appendChild(button);
-            });
-        } else {
-            console.log('No presets found in config');
+        // Add container to page with retry mechanism
+        function insertContainer() {
+            const formTable = document.querySelector('table[width="550"]');
+            if (formTable) {
+                formTable.parentElement.insertBefore(container, formTable);
+                console.log('Container inserted before form table');
+            } else {
+                document.body.appendChild(container);
+                console.log('Container appended to body');
+                // Retry if table not found yet
+                setTimeout(() => {
+                    const retryTable = document.querySelector('table[width="550"]');
+                    if (retryTable && container.parentElement === document.body) {
+                        container.remove();
+                        retryTable.parentElement.insertBefore(container, retryTable);
+                        console.log('Container moved before form table after retry');
+                    }
+                }, 1000);
+            }
         }
 
-        // Add container to page
-        const formTable = document.querySelector('table[width="550"]');
-        if (formTable) {
-            formTable.parentElement.insertBefore(container, formTable);
-            console.log('Container inserted before form table');
-        } else {
-            document.body.appendChild(container);
-            console.log('Container appended to body');
-        }
+        insertContainer();
     }
 
     // Handle print_claim_record.jsp
