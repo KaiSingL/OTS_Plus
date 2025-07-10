@@ -330,18 +330,38 @@ console.log('Custom script running!');
             return;
         }
         container.innerHTML = '';
+        
+        // Add default "OFC" button
+        const defaultPreset = { location: 'OFC', project: 'NA', purpose: 'NA' };
+        console.log('Creating default OFC button:', defaultPreset);
+        const defaultButton = document.createElement('button');
+        defaultButton.type = 'button';
+        defaultButton.innerText = 'OFC';
+        defaultButton.style.marginRight = '5px';
+        defaultButton.style.marginBottom = '5px';
+        defaultButton.style.display = 'inline-block';
+        defaultButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            setLocationFrom(defaultPreset.location);
+            setProjId(defaultPreset.project);
+            setJobId(defaultPreset.purpose);
+            console.log('Default OFC preset applied:', defaultPreset);
+        });
+        container.appendChild(defaultButton);
+
+        // Add user-defined presets
         if (Array.isArray(presets) && presets.length > 0) {
             presets.forEach((preset, index) => {
                 console.log('Creating button for preset:', preset);
                 const button = document.createElement('button');
-                button.type = 'button'; // Explicitly set to prevent form submission
+                button.type = 'button';
                 button.innerText = `${preset.project} ${preset.location} ${preset.purpose}`;
                 button.style.marginRight = '5px';
                 button.style.marginBottom = '5px';
                 button.style.display = 'inline-block';
 
                 button.addEventListener('click', (event) => {
-                    event.preventDefault(); // Prevent form submission
+                    event.preventDefault();
                     setLocationFrom(preset.location);
                     setProjId(preset.project);
                     setJobId(preset.purpose);
@@ -352,11 +372,7 @@ console.log('Custom script running!');
             });
             console.log('Preset buttons updated:', presets);
         } else {
-            console.log('No presets to display');
-            const placeholder = document.createElement('span');
-            placeholder.innerText = 'No presets available';
-            placeholder.style.color = '#666';
-            container.appendChild(placeholder);
+            console.log('No user-defined presets to display');
         }
     }
 
@@ -601,7 +617,7 @@ console.log('Custom script running!');
         container.style.margin = '10px';
         container.style.display = 'block';
 
-        // Initially populate with placeholder or empty presets
+        // Initially populate with default OFC button
         updatePresetButtons(config.presets);
 
         // Add container to page with retry mechanism
@@ -656,8 +672,8 @@ console.log('Custom script running!');
 
         // Add event listeners to new date fields
         document.querySelectorAll('.newDateField').forEach((field) => {
+            const targetFieldName = field.dataset.target;
             field.addEventListener('change', (e) => {
-                const targetFieldName = e.target.dataset.target;
                 const targetField = document.querySelector(
                     `input[name="${targetFieldName}"]`
                 );
