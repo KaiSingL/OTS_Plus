@@ -1,17 +1,55 @@
+// content.js for AzOTS Plus Chrome Extension
+
+// Constants
+const DEFAULT_SETTINGS = {
+    home: 'OFC',
+    work: 'OFC',
+    job: 'T9',
+    projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
+    presets: []
+};
+
+const PAGE_PATHS = {
+    CREATE_CLAIM: '/hkots/create_claim_record.jsp',
+    LOG_USER: '/hkots/ots002_log_user.jsp',
+    PRINT_CLAIM: '/hkots/print_claim_record.jsp'
+};
+
+const CLAIM_TYPES = {
+    AM_TRAVEL: 'am-travel',
+    PM_TRAVEL: 'pm-travel',
+    LUNCH: 'lunch',
+    OFFICE_TRAVEL: 'office-travel'
+};
+
+const FIELD_SELECTORS = {
+    CLAIM_DATE: 'input[name="CLAIM_DATE"]',
+    CLAIM_TYPE: 'select[name="CLAIM_TYPE"]',
+    TRAVEL_TYPE: 'select[name="TRAVEL_TYPE"]',
+    LOC_FR: 'select[name="LOC_FR"], select[name="LOC_ID"]',
+    LOC_TO: 'select[name="LOC_TO"]',
+    LOC_DESC_FR: 'input[name="LOC_DESC_FR"], input[name="LOC_DESC"]',
+    LOC_DESC_TO: 'input[name="LOC_DESC_TO"]',
+    PROJ_ID: 'select[name="PROJ_ID"]',
+    JOB_ID: 'select[name="JOB_ID"]',
+    AMT: 'input[name="AMT"]',
+    START_TIME: 'input[name="START_TIME"]',
+    END_TIME: 'input[name="END_TIME"]',
+    DATE_FROM: 'input[name="DATE_FROM"]',
+    DATE_TO: 'input[name="DATE_TO"]'
+};
+
+// Helper Functions for Setting Form Fields
 function setClaimDate(inputDate) {
-    // Parse input date (yyyy-mm-dd HH:mm)
     const dateObj = new Date(inputDate.replace(/-/g, '/'));
-    
-    // Format to MM/dd/yyyy HH:mm
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
     const day = String(dateObj.getDate()).padStart(2, '0');
     const year = dateObj.getFullYear();
     const hours = String(dateObj.getHours()).padStart(2, '0');
     const minutes = String(dateObj.getMinutes()).padStart(2, '0');
     const formattedDate = `${month}/${day}/${year} ${hours}:${minutes}`;
-    
-    // Update input field
-    const inputField = document.querySelector('input[name="CLAIM_DATE"]');
+
+    const inputField = document.querySelector(FIELD_SELECTORS.CLAIM_DATE);
     if (inputField) {
         inputField.value = formattedDate;
         console.log(`Set CLAIM_DATE to: ${formattedDate}`);
@@ -21,7 +59,7 @@ function setClaimDate(inputDate) {
 }
 
 function setClaimType(claimType) {
-    const select = document.querySelector('select[name="CLAIM_TYPE"]');
+    const select = document.querySelector(FIELD_SELECTORS.CLAIM_TYPE);
     if (select) {
         const option = select.querySelector(`option[value="${claimType}"]`);
         if (option) {
@@ -36,56 +74,45 @@ function setClaimType(claimType) {
 }
 
 function setVehicleType(travelTypeText) {
-    const select = document.querySelector('select[name="TRAVEL_TYPE"]');
+    const select = document.querySelector(FIELD_SELECTORS.TRAVEL_TYPE);
     if (!select) {
         console.error('Select element with name "TRAVEL_TYPE" not found');
         return;
     }
-    
-    const option = Array.from(select.options).find(
-        (opt) => opt.text === travelTypeText
-    );
+
+    const option = Array.from(select.options).find(opt => opt.text === travelTypeText);
     if (option) {
         select.value = option.value;
-        const event = new Event('change', { bubbles: true });
-        select.dispatchEvent(event);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
         console.log(`Set TRAVEL_TYPE to: ${travelTypeText}`);
     } else {
-        console.error(
-            `Option with text "${travelTypeText}" not found in TRAVEL_TYPE dropdown`
-        );
+        console.error(`Option with text "${travelTypeText}" not found in TRAVEL_TYPE dropdown`);
     }
 }
 
 function setLocationFrom(locationCode) {
-    const select = document.querySelector('select[name="LOC_FR"], select[name="LOC_ID"]');
+    const select = document.querySelector(FIELD_SELECTORS.LOC_FR);
     if (!select) {
         console.error('Select element with name "LOC_FR" or "LOC_ID" not found');
         return;
     }
-    
-    const option = Array.from(select.options).find(
-        (opt) => opt.text === locationCode
-    );
+
+    let option = Array.from(select.options).find(opt => opt.text === locationCode);
     if (option) {
         select.value = option.value;
-        const event = new Event('change', { bubbles: true });
-        select.dispatchEvent(event);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
         console.log(`Set location from to: ${locationCode}`);
     } else {
-        const othOption = Array.from(select.options).find(
-            (opt) => opt.text === 'OTH'
-        );
-        if (othOption) {
-            select.value = othOption.value;
-            const event = new Event('change', { bubbles: true });
-            select.dispatchEvent(event);
+        option = Array.from(select.options).find(opt => opt.text === 'OTH');
+        if (option) {
+            select.value = option.value;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
             console.log('Set location from to OTH');
         } else {
             console.error('Option "OTH" not found in location dropdown');
         }
-        
-        const input = document.querySelector('input[name="LOC_DESC_FR"], input[name="LOC_DESC"]');
+
+        const input = document.querySelector(FIELD_SELECTORS.LOC_DESC_FR);
         if (input) {
             input.value = locationCode;
             console.log(`Set LOC_DESC_FR/LOC_DESC to: ${locationCode}`);
@@ -96,34 +123,28 @@ function setLocationFrom(locationCode) {
 }
 
 function setLocationTo(locationText) {
-    const select = document.querySelector('select[name="LOC_TO"]');
+    const select = document.querySelector(FIELD_SELECTORS.LOC_TO);
     if (!select) {
         console.error('Select element with name "LOC_TO" not found');
         return;
     }
-    
-    const option = Array.from(select.options).find(
-        (opt) => opt.text === locationText
-    );
+
+    let option = Array.from(select.options).find(opt => opt.text === locationText);
     if (option) {
         select.value = option.value;
-        const event = new Event('change', { bubbles: true });
-        select.dispatchEvent(event);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
         console.log(`Set location to: ${locationText}`);
     } else {
-        const othOption = Array.from(select.options).find(
-            (opt) => opt.text === 'OTH'
-        );
-        if (othOption) {
-            select.value = othOption.value;
-            const event = new Event('change', { bubbles: true });
-            select.dispatchEvent(event);
+        option = Array.from(select.options).find(opt => opt.text === 'OTH');
+        if (option) {
+            select.value = option.value;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
             console.log('Set location to OTH');
         } else {
             console.error('Option marked "OTH" not found in LOC_TO dropdown');
         }
-        
-        const input = document.querySelector('input[name="LOC_DESC_TO"]');
+
+        const input = document.querySelector(FIELD_SELECTORS.LOC_DESC_TO);
         if (input) {
             input.value = locationText;
             console.log(`Set LOC_DESC_TO to: ${locationText}`);
@@ -139,39 +160,33 @@ function setLocation(locFrom, locTo) {
 }
 
 function setProjId(projectName) {
-    const select = document.querySelector('select[name="PROJ_ID"]');
+    const select = document.querySelector(FIELD_SELECTORS.PROJ_ID);
     if (!select) {
         console.error('Select element with name "PROJ_ID" not found');
         return;
     }
-    
-    const option = Array.from(select.options).find(
-        (opt) => opt.text === projectName
-    );
+
+    const option = Array.from(select.options).find(opt => opt.text === projectName);
     if (option) {
         select.value = option.value;
-        const event = new Event('change', { bubbles: true });
-        select.dispatchEvent(event);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
         console.log(`Set PROJ_ID to: ${projectName}`);
     } else {
-        console.error(
-            `Option with text "${projectName}" not found in PROJ_ID select`
-        );
+        console.error(`Option with text "${projectName}" not found in PROJ_ID select`);
     }
 }
 
 function setJobId(jobType) {
-    const select = document.querySelector('select[name="JOB_ID"]');
+    const select = document.querySelector(FIELD_SELECTORS.JOB_ID);
     if (!select) {
         console.error('Select element with name "JOB_ID" not found');
         return;
     }
-    
-    const option = Array.from(select.options).find((opt) => opt.text === jobType);
+
+    const option = Array.from(select.options).find(opt => opt.text === jobType);
     if (option) {
         select.value = option.value;
-        const event = new Event('change', { bubbles: true });
-        select.dispatchEvent(event);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
         console.log(`Set JOB_ID to: ${jobType}`);
     } else {
         console.error(`Option with text "${jobType}" not found in JOB_ID select`);
@@ -179,7 +194,7 @@ function setJobId(jobType) {
 }
 
 function setAmt(money) {
-    const input = document.querySelector('input[name="AMT"]');
+    const input = document.querySelector(FIELD_SELECTORS.AMT);
     if (input) {
         input.value = money;
         console.log(`Set AMT to: ${money}`);
@@ -188,27 +203,28 @@ function setAmt(money) {
     }
 }
 
+// Exposed Window Function
 window.updateClaimForm = (dateStr, claimType, money, proj, config) => {
     switch (claimType) {
-        case 'am-travel':
+        case CLAIM_TYPES.AM_TRAVEL:
             setClaimDate(dateStr + ' 07:15');
             setClaimType('TRAV');
             setVehicleType('MTR');
             setLocation(config.home, config.work);
             break;
-        case 'pm-travel':
+        case CLAIM_TYPES.PM_TRAVEL:
             setClaimDate(dateStr + ' 18:00');
             setClaimType('TRAV');
             setVehicleType('MTR');
             setLocation(config.work, config.home);
             break;
-        case 'lunch':
+        case CLAIM_TYPES.LUNCH:
             setClaimDate(dateStr + ' 13:00');
             setClaimType('MEAL');
             setVehicleType('Select Vehicle Type');
             setLocation('Select Location', 'Select Location');
             break;
-        case 'office-travel':
+        case CLAIM_TYPES.OFFICE_TRAVEL:
             setClaimDate(dateStr + ' 15:30');
             setClaimType('TRAV');
             setVehicleType('MTR');
@@ -223,475 +239,350 @@ window.updateClaimForm = (dateStr, claimType, money, proj, config) => {
     setAmt(money);
 };
 
+// Settings Retrieval
 async function retrieveSettingsFromChromeStorage() {
     try {
         const data = await chrome.storage.sync.get('azotsSettings');
         console.log('Raw data from chrome.storage.sync:', data);
-        
+
         if (!data || !data.azotsSettings) {
             console.log('No settings found in chrome.storage.sync, using default values');
-            return {
-                home: 'OFC',
-                work: 'OFC',
-                job: 'T9',
-                projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
-                presets: []
-            };
+            return { ...DEFAULT_SETTINGS };
         }
-        
+
         const settings = data.azotsSettings;
         console.log('Parsed settings object:', settings);
-        
-        // Relaxed validation
+
         if (typeof settings !== 'object' || settings === null) {
             console.warn('Invalid settings object, returning default values');
-            return {
-                home: 'OFC',
-                work: 'OFC',
-                job: 'T9',
-                projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
-                presets: []
-            };
+            return { ...DEFAULT_SETTINGS };
         }
-        
+
         // Ensure presets is an array
         settings.presets = Array.isArray(settings.presets) ? settings.presets : [];
         return settings;
     } catch (error) {
         console.error('Error retrieving settings from chrome.storage.sync:', error);
-        return {
-            home: 'OFC',
-            work: 'OFC',
-            job: 'T9',
-            projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
-            presets: []
-        };
+        return { ...DEFAULT_SETTINGS };
     }
 }
 
-console.log('Custom script running!');
+// UI Update Functions
+function updateProjectRadios(projects, containerId = 'project-container') {
+    const projectContainer = document.querySelector(`#${containerId}`);
+    if (!projectContainer) {
+        console.warn('Project container not found for update');
+        return;
+    }
+    projectContainer.innerHTML = '';
+    projects.forEach((project) => {
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.id = `project-${project.name}`;
+        radio.name = 'project';
+        radio.value = project.name;
+        radio.checked = project.checked;
 
-(function() {
-    // Default settings in case storage retrieval is delayed
-    let config = {
-        home: 'OFC',
-        work: 'OFC',
-        job: 'T9',
-        projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
-        presets: []
-    };
+        const label = document.createElement('label');
+        label.htmlFor = radio.id;
+        label.innerText = project.name;
+        label.style.marginRight = '10px';
 
-    // Load settings asynchronously and update UI
-    retrieveSettingsFromChromeStorage().then(settings => {
-        config = settings;
-        console.log('Settings loaded:', config);
-        // Update project radios for create_claim_record.jsp
-        if (window.location.pathname.startsWith('/hkots/create_claim_record.jsp')) {
-            updateProjectRadios(config.projects);
-        }
-        // Update preset buttons for ots002_log_user.jsp
-        if (window.location.pathname.startsWith('/hkots/ots002_log_user.jsp')) {
-            updatePresetButtons(config.presets);
-        }
-    }).catch(error => {
-        console.error('Failed to load settings:', error);
+        projectContainer.appendChild(radio);
+        projectContainer.appendChild(label);
+    });
+    console.log('Updated project radio buttons:', projects);
+}
+
+function updatePresetButtons(presets, containerId = 'preset-container') {
+    const container = document.querySelector(`#${containerId}`);
+    if (!container) {
+        console.warn('Preset container not found for update');
+        return;
+    }
+    container.innerHTML = '';
+
+    // Add default "OFC" button
+    const defaultPreset = { location: 'OFC', project: 'NA', purpose: 'NA' };
+    console.log('Creating default OFC button:', defaultPreset);
+    const defaultButton = createPresetButton(defaultPreset, 'OFC');
+    container.appendChild(defaultButton);
+
+    // Add user-defined presets
+    if (Array.isArray(presets) && presets.length > 0) {
+        presets.forEach((preset) => {
+            console.log('Creating button for preset:', preset);
+            const buttonText = `${preset.project} ${preset.location} ${preset.purpose}`;
+            const button = createPresetButton(preset, buttonText);
+            container.appendChild(button);
+        });
+        console.log('Preset buttons updated:', presets);
+    } else {
+        console.log('No user-defined presets to display');
+    }
+}
+
+function createPresetButton(preset, buttonText) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.innerText = buttonText;
+    button.style.marginRight = '5px';
+    button.style.marginBottom = '5px';
+    button.style.display = 'inline-block';
+
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        setLocationFrom(preset.location);
+        setProjId(preset.project);
+        setJobId(preset.purpose);
+        console.log('Preset applied:', preset);
     });
 
-    function updateProjectRadios(projects) {
-        const projectContainer = document.querySelector('#project-container');
-        if (!projectContainer) {
-            console.warn('Project container not found for update');
-            return;
-        }
-        projectContainer.innerHTML = '';
-        projects.forEach((project) => {
-            const radio = document.createElement('input');
-            radio.type = 'radio';
-            radio.id = `project-${project.name}`;
-            radio.name = 'project';
-            radio.value = project.name;
-            radio.checked = project.checked;
+    return button;
+}
 
-            const label = document.createElement('label');
-            label.htmlFor = radio.id;
-            label.innerText = project.name;
-            label.style.marginRight = '10px';
+// Page-Specific Initialization
+function initCreateClaimPage(config) {
+    console.log('Detected create_claim_record.jsp, initializing UI');
+    const container = createCustomContainer();
 
-            projectContainer.appendChild(radio);
-            projectContainer.appendChild(label);
-        });
-        console.log('Updated project radio buttons:', projects);
+    // Date picker
+    const dateInput = createLabeledInput('date', 'claim-date', 'Date: ', { marginRight: '10px' });
+
+    // Travel fee input
+    const travelInput = createLabeledInput('number', 'travel-fee', 'Travel Fee: $', {
+        value: '15.8',
+        step: '0.01',
+        min: '0',
+        marginRight: '10px'
+    });
+
+    // Lunch fee input
+    const lunchInput = createLabeledInput('number', 'lunch-fee', 'Lunch Fee: $', {
+        value: '200',
+        step: '0.01',
+        min: '0',
+        marginRight: '10px'
+    });
+
+    // Project radios
+    const projectLabel = document.createElement('label');
+    projectLabel.innerText = 'Project: ';
+    projectLabel.style.marginRight = '10px';
+    projectLabel.style.display = 'inline-block';
+
+    const projectContainer = document.createElement('div');
+    projectContainer.id = 'project-container';
+    projectContainer.style.display = 'inline-block';
+
+    // Buttons
+    const amTravelButton = createButton('Claim AM Travel', { marginRight: '5px' });
+    const pmTravelButton = createButton('Claim PM Travel', { marginRight: '5px' });
+    const officeTravelButton = createButton('Claim Office Travel', { marginRight: '5px' });
+    const lunchButton = createButton('Claim Lunch');
+
+    // Append to container
+    container.appendChild(dateInput.label);
+    container.appendChild(dateInput.input);
+    container.appendChild(document.createElement('br'));
+    container.appendChild(travelInput.label);
+    container.appendChild(travelInput.input);
+    container.appendChild(document.createElement('br'));
+    container.appendChild(projectLabel);
+    container.appendChild(projectContainer);
+    container.appendChild(document.createElement('br'));
+    container.appendChild(amTravelButton);
+    container.appendChild(pmTravelButton);
+    container.appendChild(officeTravelButton);
+    container.appendChild(document.createElement('br'));
+    container.appendChild(lunchInput.label);
+    container.appendChild(lunchInput.input);
+    container.appendChild(lunchButton);
+
+    document.body.appendChild(container);
+    console.log('Custom UI container added to create_claim_record.jsp');
+
+    // Update project radios after appending to DOM
+    updateProjectRadios(config.projects);
+
+    // Event listeners
+    amTravelButton.addEventListener('click', () => handleClaimClick(CLAIM_TYPES.AM_TRAVEL, dateInput.input, travelInput.input, projectContainer, config));
+    pmTravelButton.addEventListener('click', () => handleClaimClick(CLAIM_TYPES.PM_TRAVEL, dateInput.input, travelInput.input, projectContainer, config));
+    officeTravelButton.addEventListener('click', () => handleClaimClick(CLAIM_TYPES.OFFICE_TRAVEL, dateInput.input, travelInput.input, projectContainer, config));
+    lunchButton.addEventListener('click', () => handleClaimClick(CLAIM_TYPES.LUNCH, dateInput.input, lunchInput.input, projectContainer, config, true));
+}
+
+function handleClaimClick(claimType, dateInput, feeInput, projectContainer, config, isLunch = false) {
+    const date = dateInput.value;
+    const fee = feeInput.value;
+    const project = projectContainer.querySelector('input[name="project"]:checked')?.value;
+    if (date && fee && project) {
+        window.updateClaimForm(date, claimType, fee, project, config);
+        console.log(`${claimType} claim submitted:`, { date, fee, project });
+    } else {
+        alert(`Please enter a date and ${isLunch ? 'lunch' : 'travel'} fee.`);
+        console.warn(`${claimType} claim failed: Missing date, fee, or project`);
     }
+}
 
-    function updatePresetButtons(presets) {
-        const container = document.querySelector('#preset-container');
-        if (!container) {
-            console.warn('Preset container not found for update');
-            return;
-        }
-        container.innerHTML = '';
-        
-        // Add default "OFC" button
-        const defaultPreset = { location: 'OFC', project: 'NA', purpose: 'NA' };
-        console.log('Creating default OFC button:', defaultPreset);
-        const defaultButton = document.createElement('button');
-        defaultButton.type = 'button';
-        defaultButton.innerText = 'OFC';
-        defaultButton.style.marginRight = '5px';
-        defaultButton.style.marginBottom = '5px';
-        defaultButton.style.display = 'inline-block';
-        defaultButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            setLocationFrom(defaultPreset.location);
-            setProjId(defaultPreset.project);
-            setJobId(defaultPreset.purpose);
-            console.log('Default OFC preset applied:', defaultPreset);
-        });
-        container.appendChild(defaultButton);
+function initLogUserPage(config) {
+    console.log('Detected ots002_log_user.jsp, initializing UI');
+    console.log('Config.presets on initial load:', config.presets);
 
-        // Add user-defined presets
-        if (Array.isArray(presets) && presets.length > 0) {
-            presets.forEach((preset, index) => {
-                console.log('Creating button for preset:', preset);
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.innerText = `${preset.project} ${preset.location} ${preset.purpose}`;
-                button.style.marginRight = '5px';
-                button.style.marginBottom = '5px';
-                button.style.display = 'inline-block';
+    addDateTimePicker(FIELD_SELECTORS.START_TIME, 'START_TIME');
+    addDateTimePicker(FIELD_SELECTORS.END_TIME, 'END_TIME');
 
-                button.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    setLocationFrom(preset.location);
-                    setProjId(preset.project);
-                    setJobId(preset.purpose);
-                    console.log('Preset applied:', preset);
-                });
+    const container = document.createElement('div');
+    container.id = 'preset-container';
+    container.style.padding = '10px';
+    container.style.backgroundColor = '#f0f0f0';
+    container.style.border = '1px solid #ccc';
+    container.style.margin = '10px';
+    container.style.display = 'block';
 
-                container.appendChild(button);
-            });
-            console.log('Preset buttons updated:', presets);
-        } else {
-            console.log('No user-defined presets to display');
-        }
+    insertContainerBeforeFormTable(container);
+    updatePresetButtons(config.presets);
+}
+
+function addDateTimePicker(selector, targetName) {
+    const field = document.querySelector(selector);
+    if (field) {
+        field.insertAdjacentHTML(
+            'afterend',
+            `<input type="datetime-local" class="txtFieldLarge newTimePicker" style="display:inline;margin-left:10px;" data-target="${targetName}">`
+        );
+        console.log(`Added datetime picker for ${targetName}`);
+    } else {
+        console.warn(`${targetName} input field not found`);
     }
+}
 
-    // Handle create_claim_record.jsp
-    if (window.location.pathname.startsWith('/hkots/create_claim_record.jsp')) {
-        console.log('Detected create_claim_record.jsp, initializing UI');
-        // Create container for form elements
-        const container = document.createElement('div');
-        container.style.padding = '10px';
-        container.style.backgroundColor = '#f0f0f0';
-        container.style.border = '1px solid #ccc';
-        container.style.margin = '10px';
-        container.style.display = 'inline-block';
-
-        // Date picker
-        const dateLabel = document.createElement('label');
-        dateLabel.innerText = 'Date: ';
-        dateLabel.htmlFor = 'claim-date';
-        const dateInput = document.createElement('input');
-        dateInput.type = 'date';
-        dateInput.id = 'claim-date';
-        dateInput.style.marginRight = '10px';
-
-        // Travel fee input
-        const travelLabel = document.createElement('label');
-        travelLabel.innerText = 'Travel Fee: $';
-        travelLabel.htmlFor = 'travel-fee';
-        const travelInput = document.createElement('input');
-        travelInput.type = 'number';
-        travelInput.id = 'travel-fee';
-        travelInput.value = '15.8';
-        travelInput.step = '0.01';
-        travelInput.min = '0';
-        travelInput.style.marginRight = '10px';
-
-        // Lunch fee input
-        const lunchLabel = document.createElement('label');
-        lunchLabel.innerText = 'Lunch Fee: $';
-        lunchLabel.htmlFor = 'lunch-fee';
-        const lunchInput = document.createElement('input');
-        lunchInput.type = 'number';
-        lunchInput.id = 'lunch-fee';
-        lunchInput.value = '200';
-        lunchInput.step = '0.01';
-        lunchInput.min = '0';
-        lunchInput.style.marginRight = '10px';
-
-        // Project radio buttons
-        const projectLabel = document.createElement('label');
-        projectLabel.innerText = 'Project: ';
-        projectLabel.style.marginRight = '10px';
-        projectLabel.style.display = 'inline-block';
-
-        const projectContainer = document.createElement('div');
-        projectContainer.id = 'project-container';
-        projectContainer.style.display = 'inline-block';
-
-        config.projects.forEach((project) => {
-            const radio = document.createElement('input');
-            radio.type = 'radio';
-            radio.id = `project-${project.name}`;
-            radio.name = 'project';
-            radio.value = project.name;
-            radio.checked = project.checked;
-
-            const label = document.createElement('label');
-            label.htmlFor = radio.id;
-            label.innerText = project.name;
-            label.style.marginRight = '10px';
-
-            projectContainer.appendChild(radio);
-            projectContainer.appendChild(label);
-        });
-
-        // Buttons
-        const amTravelButton = document.createElement('button');
-        amTravelButton.innerText = 'Claim AM Travel';
-        amTravelButton.style.marginRight = '5px';
-
-        const pmTravelButton = document.createElement('button');
-        pmTravelButton.innerText = 'Claim PM Travel';
-        pmTravelButton.style.marginRight = '5px';
-
-        const officeTravelButton = document.createElement('button');
-        officeTravelButton.innerText = 'Claim Office Travel';
-        officeTravelButton.style.marginRight = '5px';
-
-        const lunchButton = document.createElement('button');
-        lunchButton.innerText = 'Claim Lunch';
-
-        // Append elements to container
-        container.appendChild(dateLabel);
-        container.appendChild(dateInput);
-        container.appendChild(document.createElement('br'));
-        container.appendChild(travelLabel);
-        container.appendChild(travelInput);
-        container.appendChild(document.createElement('br'));
-        container.appendChild(projectLabel);
-        container.appendChild(projectContainer);
-        container.appendChild(document.createElement('br'));
-        container.appendChild(amTravelButton);
-        container.appendChild(pmTravelButton);
-        container.appendChild(officeTravelButton);
-        container.appendChild(document.createElement('br'));
-        container.appendChild(lunchLabel);
-        container.appendChild(lunchInput);
-        container.appendChild(lunchButton);
-
-        // Add container to page
+function insertContainerBeforeFormTable(container) {
+    const formTable = document.querySelector('table[width="550"]');
+    if (formTable) {
+        formTable.parentElement.insertBefore(container, formTable);
+        console.log('Container inserted before form table');
+    } else {
         document.body.appendChild(container);
-        console.log('Custom UI container added to create_claim_record.jsp');
+        console.log('Container appended to body');
+        setTimeout(() => {
+            const retryTable = document.querySelector('table[width="550"]');
+            if (retryTable && container.parentElement === document.body) {
+                container.remove();
+                retryTable.parentElement.insertBefore(container, retryTable);
+                console.log('Container moved before form table after retry');
+            }
+        }, 1000);
+    }
+}
 
-        // Button event listeners
-        amTravelButton.addEventListener('click', () => {
-            const date = dateInput.value;
-            const travelFee = travelInput.value;
-            const project = document.querySelector(
-                'input[name="project"]:checked'
-            ).value;
-            if (date && travelFee) {
-                window.updateClaimForm(date, 'am-travel', travelFee, project, config);
-                console.log('AM Travel claim submitted:', { date, travelFee, project });
+function initPrintClaimPage() {
+    console.log('Detected print_claim_record.jsp, initializing date fields');
+    addDatePicker(FIELD_SELECTORS.DATE_FROM, 'DATE_FROM');
+    addDatePicker(FIELD_SELECTORS.DATE_TO, 'DATE_TO');
+}
+
+function addDatePicker(selector, targetName) {
+    const field = document.querySelector(selector);
+    if (field) {
+        field.insertAdjacentHTML(
+            'afterend',
+            `<input type="date" class="txtFieldLarge newDateField" style="display:inline;margin-left:10px;" data-target="${targetName}">`
+        );
+        console.log(`Added date picker for ${targetName}`);
+    } else {
+        console.warn(`${targetName} input field not found`);
+    }
+}
+
+// Utility Functions for DOM Creation
+function createCustomContainer() {
+    const container = document.createElement('div');
+    container.style.padding = '10px';
+    container.style.backgroundColor = '#f0f0f0';
+    container.style.border = '1px solid #ccc';
+    container.style.margin = '10px';
+    container.style.display = 'inline-block';
+    return container;
+}
+
+function createLabeledInput(type, id, labelText, attrs = {}) {
+    const label = document.createElement('label');
+    label.innerText = labelText;
+    label.htmlFor = id;
+
+    const input = document.createElement('input');
+    input.type = type;
+    input.id = id;
+    Object.assign(input.style, attrs.style || {});
+    delete attrs.style;
+    Object.assign(input, attrs);
+
+    return { label, input };
+}
+
+function createButton(text, styles = {}) {
+    const button = document.createElement('button');
+    button.innerText = text;
+    Object.assign(button.style, styles);
+    return button;
+}
+
+// Event Listeners for Pickers
+function attachPickerListeners(className, formatFn) {
+    document.querySelectorAll(`.${className}`).forEach((picker) => {
+        picker.addEventListener('change', (e) => {
+            const targetFieldName = e.target.dataset.target;
+            const targetField = document.querySelector(`input[name="${targetFieldName}"]`);
+
+            if (e.target.value) {
+                const date = new Date(e.target.value);
+                targetField.value = formatFn(date);
+                console.log(`Updated ${targetFieldName} to: ${targetField.value}`);
             } else {
-                alert('Please enter a date and travel fee.');
-                console.warn('AM Travel claim failed: Missing date or travel fee');
+                targetField.value = '';
+                console.log(`Cleared ${targetFieldName}`);
             }
         });
+    });
+}
 
-        pmTravelButton.addEventListener('click', () => {
-            const date = dateInput.value;
-            const travelFee = travelInput.value;
-            const project = document.querySelector(
-                'input[name="project"]:checked'
-            ).value;
-            if (date && travelFee) {
-                window.updateClaimForm(date, 'pm-travel', travelFee, project, config);
-                console.log('PM Travel claim submitted:', { date, travelFee, project });
-            } else {
-                alert('Please enter a date and travel fee.');
-                console.warn('PM Travel claim failed: Missing date or travel fee');
-            }
-        });
+function formatDateTime(date) {
+    return `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
+           `${date.getDate().toString().padStart(2, '0')}/` +
+           `${date.getFullYear()} ` +
+           `${date.getHours().toString().padStart(2, '0')}:` +
+           `${date.getMinutes().toString().padStart(2, '0')}`;
+}
 
-        officeTravelButton.addEventListener('click', () => {
-            const date = dateInput.value;
-            const travelFee = travelInput.value;
-            const project = document.querySelector(
-                'input[name="project"]:checked'
-            ).value;
-            if (date && travelFee) {
-                window.updateClaimForm(
-                    date,
-                    'office-travel',
-                    travelFee,
-                    project,
-                    config
-                );
-                console.log('Office Travel claim submitted:', { date, travelFee, project });
-            } else {
-                alert('Please enter a date and travel fee.');
-                console.warn('Office Travel claim failed: Missing date or travel fee');
-            }
-        });
+function formatDate(date) {
+    return `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
+           `${date.getDate().toString().padStart(2, '0')}/` +
+           `${date.getFullYear()}`;
+}
 
-        lunchButton.addEventListener('click', () => {
-            const date = dateInput.value;
-            const lunchFee = lunchInput.value;
-            const project = document.querySelector(
-                'input[name="project"]:checked'
-            ).value;
-            if (date && lunchFee) {
-                window.updateClaimForm(date, 'lunch', lunchFee, project, config);
-                console.log('Lunch claim submitted:', { date, lunchFee, project });
-            } else {
-                alert('Please enter a date and lunch fee.');
-                console.warn('Lunch claim failed: Missing date or lunch fee');
-            }
-        });
+// Main Initialization
+console.log('Custom script running!');
+
+(async function() {
+    let config = { ...DEFAULT_SETTINGS };
+
+    try {
+        config = await retrieveSettingsFromChromeStorage();
+        console.log('Settings loaded:', config);
+    } catch (error) {
+        console.error('Failed to load settings:', error);
     }
 
-    // Handle ots002_log_user.jsp
-    if (window.location.pathname.startsWith('/hkots/ots002_log_user.jsp')) {
-        console.log('Detected ots002_log_user.jsp, initializing UI');
-        console.log('Config.presets on initial load:', config.presets);
+    const path = window.location.pathname;
 
-        // Add time pickers for START_TIME and END_TIME
-        const startTimeField = document.querySelector('input[name="START_TIME"]');
-        const endTimeField = document.querySelector('input[name="END_TIME"]');
-
-        if (startTimeField) {
-            startTimeField.insertAdjacentHTML(
-                'afterend',
-                '<input type="datetime-local" class="txtFieldLarge newTimePicker" style="display:inline;margin-left:10px;" data-target="START_TIME">'
-            );
-            console.log('Added datetime picker for START_TIME');
-        } else {
-            console.warn('START_TIME input field not found');
-        }
-
-        if (endTimeField) {
-            endTimeField.insertAdjacentHTML(
-                'afterend',
-                '<input type="datetime-local" class="txtFieldLarge newTimePicker" style="display:inline;margin-left:10px;" data-target="END_TIME">'
-            );
-            console.log('Added datetime picker for END_TIME');
-        } else {
-            console.warn('END_TIME input field not found');
-        }
-
-        // Add event listeners to time pickers
-        document.querySelectorAll('.newTimePicker').forEach((picker) => {
-            picker.addEventListener('change', (e) => {
-                const targetFieldName = e.target.dataset.target;
-                const targetField = document.querySelector(
-                    `input[name="${targetFieldName}"]`
-                );
-
-                if (e.target.value) {
-                    // Convert to MM/dd/yyyy HH:mm format
-                    const date = new Date(e.target.value);
-                    const formattedDate =
-                        `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
-                        `${date.getDate().toString().padStart(2, '0')}/` +
-                        `${date.getFullYear()} ` +
-                        `${date.getHours().toString().padStart(2, '0')}:` +
-                        `${date.getMinutes().toString().padStart(2, '0')}`;
-                    targetField.value = formattedDate;
-                    console.log(`Updated ${targetFieldName} to: ${formattedDate}`);
-                } else {
-                    targetField.value = '';
-                    console.log(`Cleared ${targetFieldName}`);
-                }
-            });
-        });
-
-        // Create container for preset buttons
-        const container = document.createElement('div');
-        container.id = 'preset-container';
-        container.style.padding = '10px';
-        container.style.backgroundColor = '#f0f0f0';
-        container.style.border = '1px solid #ccc';
-        container.style.margin = '10px';
-        container.style.display = 'block';
-
-        // Initially populate with default OFC button
-        updatePresetButtons(config.presets);
-
-        // Add container to page with retry mechanism
-        function insertContainer() {
-            const formTable = document.querySelector('table[width="550"]');
-            if (formTable) {
-                formTable.parentElement.insertBefore(container, formTable);
-                console.log('Container inserted before form table');
-            } else {
-                document.body.appendChild(container);
-                console.log('Container appended to body');
-                // Retry if table not found yet
-                setTimeout(() => {
-                    const retryTable = document.querySelector('table[width="550"]');
-                    if (retryTable && container.parentElement === document.body) {
-                        container.remove();
-                        retryTable.parentElement.insertBefore(container, retryTable);
-                        console.log('Container moved before form table after retry');
-                    }
-                }, 1000);
-            }
-        }
-
-        insertContainer();
-    }
-
-    // Handle print_claim_record.jsp
-    if (window.location.pathname.startsWith('/hkots/print_claim_record.jsp')) {
-        console.log('Detected print_claim_record.jsp, initializing date fields');
-        // Add new date fields inline with existing ones
-        const dateFromField = document.querySelector('input[name="DATE_FROM"]');
-        if (dateFromField) {
-            dateFromField.insertAdjacentHTML(
-                'afterend',
-                '<input type="date" class="txtFieldLarge newDateField" style="display:inline;margin-left:10px;" data-target="DATE_FROM">'
-            );
-            console.log('Added date picker for DATE_FROM');
-        } else {
-            console.warn('DATE_FROM input field not found');
-        }
-
-        const dateToField = document.querySelector('input[name="DATE_TO"]');
-        if (dateToField) {
-            dateToField.insertAdjacentHTML(
-                'afterend',
-                '<input type="date" class="txtFieldLarge newDateField" style="display:inline;margin-left:10px;" data-target="DATE_TO">'
-            );
-            console.log('Added date picker for DATE_TO');
-        } else {
-            console.warn('DATE_TO input field not found');
-        }
-
-        // Add event listeners to new date fields
-        document.querySelectorAll('.newDateField').forEach((field) => {
-            const targetFieldName = field.dataset.target;
-            field.addEventListener('change', (e) => {
-                const targetField = document.querySelector(
-                    `input[name="${targetFieldName}"]`
-                );
-
-                if (e.target.value) {
-                    // Convert date to MM/dd/yyyy format
-                    const date = new Date(e.target.value);
-                    const formattedDate =
-                        `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
-                        `${date.getDate().toString().padStart(2, '0')}/` +
-                        `${date.getFullYear()}`;
-                    targetField.value = formattedDate;
-                    console.log(`Updated ${targetFieldName} to: ${formattedDate}`);
-                } else {
-                    targetField.value = '';
-                    console.log(`Cleared ${targetFieldName}`);
-                }
-            });
-        });
+    if (path.startsWith(PAGE_PATHS.CREATE_CLAIM)) {
+        initCreateClaimPage(config);
+    } else if (path.startsWith(PAGE_PATHS.LOG_USER)) {
+        initLogUserPage(config);
+        attachPickerListeners('newTimePicker', formatDateTime);
+    } else if (path.startsWith(PAGE_PATHS.PRINT_CLAIM)) {
+        initPrintClaimPage();
+        attachPickerListeners('newDateField', formatDate);
     }
 })();
