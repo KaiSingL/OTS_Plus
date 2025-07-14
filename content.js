@@ -231,8 +231,8 @@ async function retrieveSettingsFromChromeStorage() {
         if (!data || !data.azotsSettings) {
             console.log('No settings found in chrome.storage.sync, using default values');
             return {
-                home: 'Wong Tai Sin',
-                work: 'HKCEC',
+                home: 'OFC',
+                work: 'OFC',
                 job: 'T9',
                 projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
                 presets: []
@@ -246,8 +246,8 @@ async function retrieveSettingsFromChromeStorage() {
         if (typeof settings !== 'object' || settings === null) {
             console.warn('Invalid settings object, returning default values');
             return {
-                home: 'Wong Tai Sin',
-                work: 'HKCEC',
+                home: 'OFC',
+                work: 'OFC',
                 job: 'T9',
                 projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
                 presets: []
@@ -260,8 +260,8 @@ async function retrieveSettingsFromChromeStorage() {
     } catch (error) {
         console.error('Error retrieving settings from chrome.storage.sync:', error);
         return {
-            home: 'Wong Tai Sin',
-            work: 'HKCEC',
+            home: 'OFC',
+            work: 'OFC',
             job: 'T9',
             projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
             presets: []
@@ -274,8 +274,8 @@ console.log('Custom script running!');
 (function() {
     // Default settings in case storage retrieval is delayed
     let config = {
-        home: 'Wong Tai Sin',
-        work: 'HKCEC',
+        home: 'OFC',
+        work: 'OFC',
         job: 'T9',
         projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
         presets: []
