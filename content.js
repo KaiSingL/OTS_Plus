@@ -442,6 +442,14 @@ function initLogUserPage(config) {
 
     insertContainerBeforeFormTable(container);
     updatePresetButtons(config.presets);
+
+    // Set table width to 100%
+    const formTable = document.querySelector('table[width="550"]');
+    if (formTable) {
+        formTable.setAttribute('width', '100%');
+        formTable.style.width = '100%';
+        console.log('Set form table width to 100%');
+    }
 }
 
 function addDateTimePicker(selector, targetName) {
