@@ -278,10 +278,7 @@ function createPresetButton(preset, buttonText) {
     const button = document.createElement('button');
     button.type = 'button';
     button.innerText = buttonText;
-    button.style.marginRight = '5px';
-    button.style.marginBottom = '5px';
-    button.style.display = 'inline-block';
-
+    button.className = 'azots-plus-button';
     button.addEventListener('click', (event) => {
         event.preventDefault();
         setLocationFrom(preset.location);
@@ -289,7 +286,6 @@ function createPresetButton(preset, buttonText) {
         setJobId(preset.purpose);
         console.log('Preset applied:', preset);
     });
-
     return button;
 }
 
@@ -304,9 +300,7 @@ function updateTravelPresetButtons(presets, containerId) {
         const button = document.createElement('button');
         button.type = 'button';
         button.innerText = preset.name;
-        button.style.marginRight = '5px';
-        button.style.marginBottom = '5px';
-        button.style.display = 'inline-block';
+        button.className = 'azots-plus-button';
         button.addEventListener('click', (event) => {
             event.preventDefault();
             const dateInput = document.getElementById('claim-date');
@@ -334,9 +328,7 @@ function updateMealPresetButtons(presets, containerId) {
         const button = document.createElement('button');
         button.type = 'button';
         button.innerText = preset.name;
-        button.style.marginRight = '5px';
-        button.style.marginBottom = '5px';
-        button.style.display = 'inline-block';
+        button.className = 'azots-plus-button';
         button.addEventListener('click', (event) => {
             event.preventDefault();
             const dateInput = document.getElementById('claim-date');
@@ -361,30 +353,28 @@ function initCreateClaimPage(config) {
     const container = createCustomContainer();
 
     // Date picker
-    const dateInput = createLabeledInput('date', 'claim-date', 'Date: ', { marginRight: '10px' });
+    const dateInput = createLabeledInput('date', 'claim-date', 'Date: ', { marginRight: '8px' });
 
     // Claim Travel label and container
     const travelLabel = document.createElement('label');
     travelLabel.innerText = 'Claim Travel: ';
-    travelLabel.style.marginRight = '10px';
-    travelLabel.style.display = 'inline-block';
-
+    travelLabel.className = 'azots-plus-label';
     const travelContainer = document.createElement('div');
     travelContainer.id = 'travel-preset-container';
-    travelContainer.style.display = 'inline-block';
+    travelContainer.className = 'azots-plus-button-container';
 
     // Meal fee input
     const mealFeeInput = createLabeledInput('number', 'meal-fee', 'Meal Fee: $', {
         value: '200',
         step: '0.01',
         min: '0',
-        marginRight: '10px'
+        marginRight: '8px'
     });
 
     // Claim Meal container
     const mealContainer = document.createElement('div');
     mealContainer.id = 'meal-preset-container';
-    mealContainer.style.display = 'inline-block';
+    mealContainer.className = 'azots-plus-button-container';
 
     // Append to container
     container.appendChild(dateInput.label);
@@ -396,6 +386,72 @@ function initCreateClaimPage(config) {
     container.appendChild(mealFeeInput.label);
     container.appendChild(mealFeeInput.input);
     container.appendChild(mealContainer);
+
+    // Inject styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .azots-plus-container {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background: #fff;
+            padding: 12px;
+            margin: 6px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            box-sizing: border-box;
+        }
+        .azots-plus-label {
+            font-size: 0.85em;
+            line-height: 24px;
+            color: #34495e;
+            margin-bottom: 4px;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .azots-plus-container input[type="date"],
+        .azots-plus-container input[type="number"],
+        .azots-plus-container input[type="datetime-local"] {
+            width: 100%;
+            max-width: 140px;
+            padding: 6px;
+            margin-bottom: 8px;
+            border: 1px solid #ecf0f1;
+            border-radius: 4px;
+            font-size: 0.85em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .azots-plus-container input[type="date"]:focus,
+        .azots-plus-container input[type="number"]:focus,
+        .azots-plus-container input[type="datetime-local"]:focus {
+            border-color: #425ad5ff;
+            outline: none;
+            box-shadow: 0 0 3px rgba(52, 152, 219, 0.5);
+        }
+        .azots-plus-button {
+            cursor: pointer;
+            background-color: #425ad5ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85em;
+            height: 24px;
+            line-height: 24px;
+            margin-right: 4px;
+            margin-bottom: 4px;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .azots-plus-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.03);
+        }
+        .azots-plus-button-container {
+            display: inline-block;
+        }
+    `;
+    document.head.appendChild(style);
 
     document.body.appendChild(container);
     console.log('Custom UI container added to create_claim_record.jsp');
@@ -412,13 +468,8 @@ function initLogUserPage(config) {
     addDateTimePicker(FIELD_SELECTORS.START_TIME, 'START_TIME');
     addDateTimePicker(FIELD_SELECTORS.END_TIME, 'END_TIME');
 
-    const container = document.createElement('div');
+    const container = createCustomContainer();
     container.id = 'preset-container';
-    container.style.padding = '10px';
-    container.style.backgroundColor = '#f0f0f0';
-    container.style.border = '1px solid #ccc';
-    container.style.margin = '10px';
-    container.style.display = 'block';
 
     insertContainerBeforeFormTable(container);
     updatePresetButtons(config.presets);
@@ -430,6 +481,56 @@ function initLogUserPage(config) {
         formTable.style.width = '100%';
         console.log('Set form table width to 100%');
     }
+
+    // Inject styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .azots-plus-container {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background: #fff;
+            padding: 12px;
+            margin: 6px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            box-sizing: border-box;
+        }
+        .azots-plus-button {
+            cursor: pointer;
+            background-color: #425ad5ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85em;
+            height: 24px;
+            line-height: 24px;
+            margin-right: 4px;
+            margin-bottom: 4px;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .azots-plus-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.03);
+        }
+        .azots-plus-container input[type="datetime-local"] {
+            width: 100%;
+            max-width: 140px;
+            padding: 6px;
+            margin-left: 8px;
+            border: 1px solid #ecf0f1;
+            border-radius: 4px;
+            font-size: 0.85em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .azots-plus-container input[type="datetime-local"]:focus {
+            border-color: #425ad5ff;
+            outline: none;
+            box-shadow: 0 0 3px rgba(52, 152, 219, 0.5);
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 function addDateTimePicker(selector, targetName) {
@@ -437,7 +538,7 @@ function addDateTimePicker(selector, targetName) {
     if (field) {
         field.insertAdjacentHTML(
             'afterend',
-            `<input type="datetime-local" class="txtFieldLarge newTimePicker" style="display:inline;margin-left:10px;" data-target="${targetName}">`
+            `<input type="datetime-local" class="txtFieldLarge newTimePicker" data-target="${targetName}">`
         );
         console.log(`Added datetime picker for ${targetName}`);
     } else {
@@ -468,15 +569,49 @@ function initPrintClaimPage() {
     console.log('Detected print_claim_record.jsp, initializing date fields');
     addDatePicker(FIELD_SELECTORS.DATE_FROM, 'DATE_FROM');
     addDatePicker(FIELD_SELECTORS.DATE_TO, 'DATE_TO');
+
+    // Inject styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .azots-plus-container {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background: #fff;
+            padding: 12px;
+            margin: 6px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            box-sizing: border-box;
+        }
+        .azots-plus-container input[type="date"] {
+            width: 100%;
+            max-width: 140px;
+            padding: 6px;
+            margin-left: 8px;
+            border: 1px solid #ecf0f1;
+            border-radius: 4px;
+            font-size: 0.85em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .azots-plus-container input[type="date"]:focus {
+            border-color: #425ad5ff;
+            outline: none;
+            box-shadow: 0 0 3px rgba(52, 152, 219, 0.5);
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 function addDatePicker(selector, targetName) {
     const field = document.querySelector(selector);
     if (field) {
-        field.insertAdjacentHTML(
-            'afterend',
-            `<input type="date" class="txtFieldLarge newDateField" style="display:inline;margin-left:10px;" data-target="${targetName}">`
+        const container = createCustomContainer();
+        container.insertAdjacentHTML(
+            'afterbegin',
+            `<input type="date" class="txtFieldLarge newDateField" data-target="${targetName}">`
         );
+        field.parentElement.insertBefore(container, field.nextSibling);
         console.log(`Added date picker for ${targetName}`);
     } else {
         console.warn(`${targetName} input field not found`);
@@ -486,11 +621,8 @@ function addDatePicker(selector, targetName) {
 // Utility Functions for DOM Creation
 function createCustomContainer() {
     const container = document.createElement('div');
-    container.style.padding = '10px';
-    container.style.backgroundColor = '#f0f0f0';
-    container.style.border = '1px solid #ccc';
-    container.style.margin = '10px';
-    container.style.display = 'inline-block';
+    container.id = 'azots-plus-container';
+    container.className = 'azots-plus-container';
     return container;
 }
 
@@ -498,6 +630,7 @@ function createLabeledInput(type, id, labelText, attrs = {}) {
     const label = document.createElement('label');
     label.innerText = labelText;
     label.htmlFor = id;
+    label.className = 'azots-plus-label';
 
     const input = document.createElement('input');
     input.type = type;
