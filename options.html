@@ -1,7 +1,8 @@
+<!-- options.html -->
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8"> <!-- Ensure UTF-8 encoding -->
+  <meta charset="UTF-8">
   <title>AzOTS Plus Settings</title>
   <style>
     body {
@@ -19,14 +20,14 @@
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease;
-      max-width: 500px;
+      max-width: 800px;
       margin-left: auto;
       margin-right: auto;
     }
     .section:hover {
       transform: translateY(-5px);
     }
-    h1, h2 {
+    h1, h3 {
       color: #2c3e50;
       font-weight: 600;
     }
@@ -35,12 +36,9 @@
       margin-bottom: 30px;
       text-align: center;
     }
-    h2 {
+    h3 {
       font-size: 1.5em;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      margin-bottom: 0;
     }
     label {
       font-size: 1em;
@@ -48,7 +46,7 @@
       margin-bottom: 8px;
       font-weight: 500;
     }
-    input[type="text"] {
+    input[type="text"], input[type="number"] {
       width: 100%;
       max-width: 100%;
       padding: 12px;
@@ -59,21 +57,10 @@
       box-sizing: border-box;
       transition: border-color 0.3s ease;
     }
-    input[type="text"]:focus {
+    input[type="text"]:focus, input[type="number"]:focus {
       border-color: #3498db;
       outline: none;
       box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-    }
-    .project-entry {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 15px;
-      align-items: center;
-    }
-    .project-entry input {
-      flex: 1;
-      padding: 10px;
-      box-sizing: border-box;
     }
     button {
       padding: 10px 20px;
@@ -131,37 +118,47 @@
       border-radius: 8px;
       background: #fafafa;
     }
-    .preset-row {
-      display: grid;
-      grid-template-columns: 2fr 2fr 2fr 1fr;
-      gap: 15px;
-      align-items: center;
-      padding: 10px 0;
+    .preset-list table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .preset-list th, .preset-list td {
+      padding: 10px;
+      text-align: left;
       border-bottom: 1px solid #ecf0f1;
     }
-    .preset-row:last-child {
+    .preset-list th {
+      font-weight: bold;
+      border-bottom: 2px solid #ecf0f1;
+    }
+    .preset-list tr:last-child td {
       border-bottom: none;
     }
-    .preset-row button {
+    .preset-list .actions {
+      display: flex;
+      gap: 5px;
+      justify-content: flex-end;
+    }
+    .preset-list .actions button {
       background-color: white;
       color: black;
       border: 2px solid #bdc3c7;
       border-radius: 8px;
-      width: 30px;
+      width: 60px;
       height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 1.2em;
-      line-height: 1;
+      font-size: 1em;
       transition: border-color 0.3s ease, color 0.3s ease;
-      font-family: Arial, sans-serif; /* Fallback font for symbol support */
     }
-    .preset-row button:hover {
-      background-color: white;
+    .preset-list .actions button.remove:hover {
       color: #e74c3c;
       border-color: #e74c3c;
+    }
+    .preset-list .actions button.edit:hover {
+      color: #3498db;
+      border-color: #3498db;
     }
     .popup {
       display: none;
@@ -173,9 +170,11 @@
       padding: 30px;
       border: 2px solid #3498db;
       box-shadow: 0 6px 25px rgba(0,0,0,0.2);
-      z-index: 1000;
-      width: 450px;
+      z-index: 1001;
+      width: 500px;
       max-width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
       border-radius: 12px;
       animation: slideIn 0.3s ease;
     }
@@ -194,20 +193,23 @@
       color: #2c3e50;
     }
     .popup label {
+      display: block;
       font-size: 1.1em;
       color: #34495e;
       margin-bottom: 10px;
       font-weight: 500;
     }
-    .popup input[type="text"] {
+    .popup input[type="text"], .popup input[type="number"] {
       padding: 12px;
       font-size: 1.1em;
       margin-bottom: 20px;
       border: 2px solid #ecf0f1;
       border-radius: 8px;
       transition: border-color 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
     }
-    .popup input[type="text"]:focus {
+    .popup input[type="text"]:focus, .popup input[type="number"]:focus {
       border-color: #3498db;
       outline: none;
       box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
@@ -230,48 +232,101 @@
       padding: 12px 25px;
       font-size: 1.1em;
     }
+    .backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    .backdrop.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <h1>AzOTS Plus Settings</h1>
-  <div class="section">
-    <h2>Location</h2>
-    <label for="home">Home Location:</label>
-    <input type="text" id="home" placeholder="e.g., WKGO, Quarry Bay">
-    <label for="work">Work Location:</label>
-    <input type="text" id="work" placeholder="e.g., HKCEC">
-  </div>
-  <div class="section">
-    <h2>Job</h2>
-    <label for="job">Job Name:</label>
-    <input type="text" id="job" placeholder="e.g., T9">
-  </div>
-  <div class="section">
-    <h2>Projects</h2>
-    <div id="project-list"></div>
-    <button id="add-project">Add Project</button>
-  </div>
+
   <div class="section">
     <div class="preset-header">
-      <h2>Timesheet Preset</h2>
+      <h3>Timesheet Preset</h3>
       <button id="add-preset">Add</button>
     </div>
-    <div class="preset-list" id="preset-list"></div>
+    <div id="preset-list" class="preset-list"></div>
   </div>
-  <div id="status"></div>
+
   <div id="preset-popup" class="popup">
     <h3>Add Timesheet Preset</h3>
-    <label for="preset-location">Location:</label>
-    <input type="text" id="preset-location" placeholder="e.g., HKCEC">
-    <label for="preset-project">Project Name:</label>
-    <input type="text" id="preset-project" placeholder="e.g., VRMS">
-    <label for="preset-purpose">Purpose:</label>
-    <input type="text" id="preset-purpose" placeholder="e.g., On-site">
+    <label>Location:</label>
+    <input id="preset-location" type="text">
+    <label>Project Name:</label>
+    <input id="preset-project" type="text">
+    <label>Purpose:</label>
+    <input id="preset-purpose" type="text">
     <div class="popup-buttons">
       <button id="preset-cancel" class="cancel">Cancel</button>
       <button id="preset-save" disabled>Save</button>
     </div>
   </div>
+
+  <div class="section">
+    <div class="preset-header">
+      <h3>Claim Travel Preset</h3>
+      <button id="add-travel-preset">Add</button>
+    </div>
+    <div id="travel-preset-list" class="preset-list"></div>
+  </div>
+
+  <div id="travel-preset-popup" class="popup">
+    <h3>Add Claim Travel Preset</h3>
+    <label>Preset Name:</label>
+    <input id="travel-name" type="text">
+    <label>From Location:</label>
+    <input id="travel-from" type="text">
+    <label>To Location:</label>
+    <input id="travel-to" type="text">
+    <label>Job:</label>
+    <input id="travel-job" type="text">
+    <label>Project Name:</label>
+    <input id="travel-project" type="text">
+    <label>Vehicle:</label>
+    <input id="travel-vehicle" type="text">
+    <label>Fee:</label>
+    <input id="travel-fee" type="number" step="0.01">
+    <div class="popup-buttons">
+      <button id="travel-cancel" class="cancel">Cancel</button>
+      <button id="travel-save" disabled>Save</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="preset-header">
+      <h3>Claim Meal Preset</h3>
+      <button id="add-meal-preset">Add</button>
+    </div>
+    <div id="meal-preset-list" class="preset-list"></div>
+  </div>
+
+  <div id="meal-preset-popup" class="popup">
+    <h3>Add Claim Meal Preset</h3>
+    <label>Preset Name:</label>
+    <input id="meal-name" type="text">
+    <label>Project Name:</label>
+    <input id="meal-project" type="text">
+    <label>Purpose:</label>
+    <input id="meal-purpose" type="text">
+    <div class="popup-buttons">
+      <button id="meal-cancel" class="cancel">Cancel</button>
+      <button id="meal-save" disabled>Save</button>
+    </div>
+  </div>
+
+  <div id="backdrop" class="backdrop"></div>
+  <div id="status"></div>
+
   <script src="options.js"></script>
 </body>
 </html>

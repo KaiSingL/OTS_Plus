@@ -2,24 +2,15 @@
 
 // Constants
 const DEFAULT_SETTINGS = {
-    home: 'OFC',
-    work: 'OFC',
-    job: 'T9',
-    projects: [{ name: 'VRMS', checked: true }, { name: 'RTPCS', checked: false }],
-    presets: []
+    presets: [],
+    claimTravelPresets: [],
+    claimMealPresets: []
 };
 
 const PAGE_PATHS = {
     CREATE_CLAIM: '/hkots/create_claim_record.jsp',
     LOG_USER: '/hkots/ots002_log_user.jsp',
     PRINT_CLAIM: '/hkots/print_claim_record.jsp'
-};
-
-const CLAIM_TYPES = {
-    AM_TRAVEL: 'am-travel',
-    PM_TRAVEL: 'pm-travel',
-    LUNCH: 'lunch',
-    OFFICE_TRAVEL: 'office-travel'
 };
 
 const FIELD_SELECTORS = {
@@ -203,41 +194,26 @@ function setAmt(money) {
     }
 }
 
-// Exposed Window Function
-window.updateClaimForm = (dateStr, claimType, money, proj, config) => {
-    switch (claimType) {
-        case CLAIM_TYPES.AM_TRAVEL:
-            setClaimDate(dateStr + ' 07:15');
-            setClaimType('TRAV');
-            setVehicleType('MTR');
-            setLocation(config.home, config.work);
-            break;
-        case CLAIM_TYPES.PM_TRAVEL:
-            setClaimDate(dateStr + ' 18:00');
-            setClaimType('TRAV');
-            setVehicleType('MTR');
-            setLocation(config.work, config.home);
-            break;
-        case CLAIM_TYPES.LUNCH:
-            setClaimDate(dateStr + ' 13:00');
-            setClaimType('MEAL');
-            setVehicleType('Select Vehicle Type');
-            setLocation('Select Location', 'Select Location');
-            break;
-        case CLAIM_TYPES.OFFICE_TRAVEL:
-            setClaimDate(dateStr + ' 15:30');
-            setClaimType('TRAV');
-            setVehicleType('MTR');
-            setLocation('OFC', 'WKGO');
-            break;
-        default:
-            console.error(`Unknown claim type: "${claimType}"`);
-            break;
-    }
-    setProjId(proj);
-    setJobId(config.job);
-    setAmt(money);
-};
+// Update functions for claim
+function updateTravelClaim(dateStr, preset) {
+    setClaimDate(dateStr + ' 09:00');
+    setClaimType('TRAV');
+    setVehicleType(preset.vehicle);
+    setLocation(preset.fromLocation, preset.toLocation);
+    setProjId(preset.projectName);
+    setJobId(preset.job);
+    setAmt(preset.fee);
+}
+
+function updateMealClaim(dateStr, fee, preset) {
+    setClaimDate(dateStr + ' 13:00');
+    setClaimType('MEAL');
+    setVehicleType('Select Vehicle Type');
+    setLocation('Select Location', 'Select Location');
+    setProjId(preset.projectName);
+    setJobId(preset.purpose);
+    setAmt(fee);
+}
 
 // Settings Retrieval
 async function retrieveSettingsFromChromeStorage() {
@@ -258,8 +234,10 @@ async function retrieveSettingsFromChromeStorage() {
             return { ...DEFAULT_SETTINGS };
         }
 
-        // Ensure presets is an array
+        // Ensure arrays
         settings.presets = Array.isArray(settings.presets) ? settings.presets : [];
+        settings.claimTravelPresets = Array.isArray(settings.claimTravelPresets) ? settings.claimTravelPresets : [];
+        settings.claimMealPresets = Array.isArray(settings.claimMealPresets) ? settings.claimMealPresets : [];
         return settings;
     } catch (error) {
         console.error('Error retrieving settings from chrome.storage.sync:', error);
@@ -268,32 +246,6 @@ async function retrieveSettingsFromChromeStorage() {
 }
 
 // UI Update Functions
-function updateProjectRadios(projects, containerId = 'project-container') {
-    const projectContainer = document.querySelector(`#${containerId}`);
-    if (!projectContainer) {
-        console.warn('Project container not found for update');
-        return;
-    }
-    projectContainer.innerHTML = '';
-    projects.forEach((project) => {
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.id = `project-${project.name}`;
-        radio.name = 'project';
-        radio.value = project.name;
-        radio.checked = project.checked;
-
-        const label = document.createElement('label');
-        label.htmlFor = radio.id;
-        label.innerText = project.name;
-        label.style.marginRight = '10px';
-
-        projectContainer.appendChild(radio);
-        projectContainer.appendChild(label);
-    });
-    console.log('Updated project radio buttons:', projects);
-}
-
 function updatePresetButtons(presets, containerId = 'preset-container') {
     const container = document.querySelector(`#${containerId}`);
     if (!container) {
@@ -341,6 +293,68 @@ function createPresetButton(preset, buttonText) {
     return button;
 }
 
+function updateTravelPresetButtons(presets, containerId) {
+    const container = document.querySelector(`#${containerId}`);
+    if (!container) {
+        console.warn('Travel preset container not found');
+        return;
+    }
+    container.innerHTML = '';
+    presets.forEach((preset) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.innerText = preset.name;
+        button.style.marginRight = '5px';
+        button.style.marginBottom = '5px';
+        button.style.display = 'inline-block';
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const dateInput = document.getElementById('claim-date');
+            const date = dateInput.value;
+            if (date) {
+                updateTravelClaim(date, preset);
+                console.log('Travel preset applied:', preset);
+            } else {
+                alert('Please enter a date.');
+            }
+        });
+        container.appendChild(button);
+    });
+    console.log('Travel preset buttons updated:', presets);
+}
+
+function updateMealPresetButtons(presets, containerId) {
+    const container = document.querySelector(`#${containerId}`);
+    if (!container) {
+        console.warn('Meal preset container not found');
+        return;
+    }
+    container.innerHTML = '';
+    presets.forEach((preset) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.innerText = preset.name;
+        button.style.marginRight = '5px';
+        button.style.marginBottom = '5px';
+        button.style.display = 'inline-block';
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const dateInput = document.getElementById('claim-date');
+            const feeInput = document.getElementById('meal-fee');
+            const date = dateInput.value;
+            const fee = feeInput.value;
+            if (date && fee) {
+                updateMealClaim(date, fee, preset);
+                console.log('Meal preset applied:', preset);
+            } else {
+                alert('Please enter a date and meal fee.');
+            }
+        });
+        container.appendChild(button);
+    });
+    console.log('Meal preset buttons updated:', presets);
+}
+
 // Page-Specific Initialization
 function initCreateClaimPage(config) {
     console.log('Detected create_claim_record.jsp, initializing UI');
@@ -349,80 +363,46 @@ function initCreateClaimPage(config) {
     // Date picker
     const dateInput = createLabeledInput('date', 'claim-date', 'Date: ', { marginRight: '10px' });
 
-    // Travel fee input
-    const travelInput = createLabeledInput('number', 'travel-fee', 'Travel Fee: $', {
-        value: '15.8',
-        step: '0.01',
-        min: '0',
-        marginRight: '10px'
-    });
+    // Claim Travel label and container
+    const travelLabel = document.createElement('label');
+    travelLabel.innerText = 'Claim Travel: ';
+    travelLabel.style.marginRight = '10px';
+    travelLabel.style.display = 'inline-block';
 
-    // Lunch fee input
-    const lunchInput = createLabeledInput('number', 'lunch-fee', 'Lunch Fee: $', {
+    const travelContainer = document.createElement('div');
+    travelContainer.id = 'travel-preset-container';
+    travelContainer.style.display = 'inline-block';
+
+    // Meal fee input
+    const mealFeeInput = createLabeledInput('number', 'meal-fee', 'Meal Fee: $', {
         value: '200',
         step: '0.01',
         min: '0',
         marginRight: '10px'
     });
 
-    // Project radios
-    const projectLabel = document.createElement('label');
-    projectLabel.innerText = 'Project: ';
-    projectLabel.style.marginRight = '10px';
-    projectLabel.style.display = 'inline-block';
-
-    const projectContainer = document.createElement('div');
-    projectContainer.id = 'project-container';
-    projectContainer.style.display = 'inline-block';
-
-    // Buttons
-    const amTravelButton = createButton('Claim AM Travel', { marginRight: '5px' });
-    const pmTravelButton = createButton('Claim PM Travel', { marginRight: '5px' });
-    const officeTravelButton = createButton('Claim Office Travel', { marginRight: '5px' });
-    const lunchButton = createButton('Claim Lunch');
+    // Claim Meal container
+    const mealContainer = document.createElement('div');
+    mealContainer.id = 'meal-preset-container';
+    mealContainer.style.display = 'inline-block';
 
     // Append to container
     container.appendChild(dateInput.label);
     container.appendChild(dateInput.input);
     container.appendChild(document.createElement('br'));
-    container.appendChild(travelInput.label);
-    container.appendChild(travelInput.input);
+    container.appendChild(travelLabel);
+    container.appendChild(travelContainer);
     container.appendChild(document.createElement('br'));
-    container.appendChild(projectLabel);
-    container.appendChild(projectContainer);
-    container.appendChild(document.createElement('br'));
-    container.appendChild(amTravelButton);
-    container.appendChild(pmTravelButton);
-    container.appendChild(officeTravelButton);
-    container.appendChild(document.createElement('br'));
-    container.appendChild(lunchInput.label);
-    container.appendChild(lunchInput.input);
-    container.appendChild(lunchButton);
+    container.appendChild(mealFeeInput.label);
+    container.appendChild(mealFeeInput.input);
+    container.appendChild(mealContainer);
 
     document.body.appendChild(container);
     console.log('Custom UI container added to create_claim_record.jsp');
 
-    // Update project radios after appending to DOM
-    updateProjectRadios(config.projects);
-
-    // Event listeners
-    amTravelButton.addEventListener('click', () => handleClaimClick(CLAIM_TYPES.AM_TRAVEL, dateInput.input, travelInput.input, projectContainer, config));
-    pmTravelButton.addEventListener('click', () => handleClaimClick(CLAIM_TYPES.PM_TRAVEL, dateInput.input, travelInput.input, projectContainer, config));
-    officeTravelButton.addEventListener('click', () => handleClaimClick(CLAIM_TYPES.OFFICE_TRAVEL, dateInput.input, travelInput.input, projectContainer, config));
-    lunchButton.addEventListener('click', () => handleClaimClick(CLAIM_TYPES.LUNCH, dateInput.input, lunchInput.input, projectContainer, config, true));
-}
-
-function handleClaimClick(claimType, dateInput, feeInput, projectContainer, config, isLunch = false) {
-    const date = dateInput.value;
-    const fee = feeInput.value;
-    const project = projectContainer.querySelector('input[name="project"]:checked')?.value;
-    if (date && fee && project) {
-        window.updateClaimForm(date, claimType, fee, project, config);
-        console.log(`${claimType} claim submitted:`, { date, fee, project });
-    } else {
-        alert(`Please enter a date and ${isLunch ? 'lunch' : 'travel'} fee.`);
-        console.warn(`${claimType} claim failed: Missing date, fee, or project`);
-    }
+    // Update preset buttons
+    updateTravelPresetButtons(config.claimTravelPresets, 'travel-preset-container');
+    updateMealPresetButtons(config.claimMealPresets, 'meal-preset-container');
 }
 
 function initLogUserPage(config) {
@@ -527,13 +507,6 @@ function createLabeledInput(type, id, labelText, attrs = {}) {
     Object.assign(input, attrs);
 
     return { label, input };
-}
-
-function createButton(text, styles = {}) {
-    const button = document.createElement('button');
-    button.innerText = text;
-    Object.assign(button.style, styles);
-    return button;
 }
 
 // Event Listeners for Pickers
