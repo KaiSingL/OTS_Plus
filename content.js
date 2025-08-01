@@ -538,7 +538,7 @@ function addDateTimePicker(selector, targetName) {
     if (field) {
         field.insertAdjacentHTML(
             'afterend',
-            `<input type="datetime-local" class="txtFieldLarge newTimePicker" data-target="${targetName}">`
+            `<input type="datetime-local" class="txtFieldLarge newTimePicker" data-target="${targetName}" style="width:20px";>`
         );
         console.log(`Added datetime picker for ${targetName}`);
     } else {
@@ -569,49 +569,15 @@ function initPrintClaimPage() {
     console.log('Detected print_claim_record.jsp, initializing date fields');
     addDatePicker(FIELD_SELECTORS.DATE_FROM, 'DATE_FROM');
     addDatePicker(FIELD_SELECTORS.DATE_TO, 'DATE_TO');
-
-    // Inject styles
-    const style = document.createElement('style');
-    style.textContent = `
-        .azots-plus-container {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-            background: #fff;
-            padding: 12px;
-            margin: 6px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            max-width: 450px;
-            box-sizing: border-box;
-        }
-        .azots-plus-container input[type="date"] {
-            width: 100%;
-            max-width: 140px;
-            padding: 6px;
-            margin-left: 8px;
-            border: 1px solid #ecf0f1;
-            border-radius: 4px;
-            font-size: 0.85em;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        .azots-plus-container input[type="date"]:focus {
-            border-color: #425ad5ff;
-            outline: none;
-            box-shadow: 0 0 3px rgba(52, 152, 219, 0.5);
-        }
-    `;
-    document.head.appendChild(style);
 }
 
 function addDatePicker(selector, targetName) {
     const field = document.querySelector(selector);
     if (field) {
-        const container = createCustomContainer();
-        container.insertAdjacentHTML(
-            'afterbegin',
-            `<input type="date" class="txtFieldLarge newDateField" data-target="${targetName}">`
+        field.insertAdjacentHTML(
+            'afterend',
+            `<input type="date" class="txtFieldLarge newDateField" data-target="${targetName}" style="width:20px">`
         );
-        field.parentElement.insertBefore(container, field.nextSibling);
         console.log(`Added date picker for ${targetName}`);
     } else {
         console.warn(`${targetName} input field not found`);
