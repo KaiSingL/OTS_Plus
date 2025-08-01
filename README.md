@@ -1,7 +1,7 @@
 # AzOTS Plus Chrome Extension
 
 ## Overview
-AzOTS Plus is a Chrome extension designed to enhance the user experience of the time sheet and claim form system hosted at `http://192.168.1.148:8081/hkots/*`. It streamlines workflows by injecting custom UI elements, automating form filling, and providing preset buttons for quick data entry in claim submissions and time sheets. The extension includes a configurable settings page where users can manage presets for timesheets, travel claims, and meal claims. All settings are stored in `chrome.storage.sync` for cross-device synchronization.
+AzOTS Plus is a Chrome extension designed to enhance the user experience of the time sheet and claim form system. It streamlines workflows by injecting custom UI elements, automating form filling, and providing preset buttons for quick data entry in claim submissions and time sheets. The extension includes a configurable settings page where users can manage presets for timesheets, travel claims, and meal claims. All settings are stored in `chrome.storage.sync` for cross-device synchronization.
 
 ## Features
 - **Settings Page (`options.html`)**:
