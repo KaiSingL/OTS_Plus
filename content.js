@@ -492,7 +492,7 @@ function initLogUserPage(config) {
             margin: 6px;
             border-radius: 6px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            max-width: 450px;
+            max-width: 750px;
             box-sizing: border-box;
         }
         .azots-plus-button {
