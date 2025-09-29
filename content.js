@@ -593,11 +593,10 @@ function injectLogUserStyles() {
             border: 1px solid #dddddd;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px; /* Smaller for tiny emoji */
+            font-size: 12px; /* Smaller for tiny emoji */
             filter: grayscale(100%); /* Desaturate emoji to grey */
             transition: background 0.3s, box-shadow 0.3s;
             width: 24px;
-            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
