@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AzOTS Plus",
-  "version": "1.1",
+  "version": "1.2",
   "description": "Enhances the AzOTS timesheet and claim form system with custom UI elements and automation.",
   "permissions": [
     "contextMenus", "storage"
