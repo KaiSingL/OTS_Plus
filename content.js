@@ -772,7 +772,33 @@ function togglePopup(popup) {
     popup.classList.toggle('show', !isVisible);
     if (!isVisible) {
         const dateInput = popup.querySelector('input[type="date"]');
+        const timeSelect = popup.querySelector('select.azots-time-part');
         dateInput.focus(); // Accessibility: Focus on date input when opening
+        
+        // Set date to today when popup opens
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${year}-${month}-${day}`;
+        
+        // Set default time to the closest available option
+        const currentHour = today.getHours();
+        const currentMinute = today.getMinutes();
+        let defaultTime = '09:00'; // Default to 9:00 AM
+        
+        // If current time is within working hours (9:00-19:00), use the closest 30-minute interval
+        if (currentHour >= 9 && currentHour < 19) {
+            const roundedMinutes = Math.round(currentMinute / 30) * 30;
+            const adjustedHour = currentHour + (roundedMinutes >= 60 ? 1 : 0);
+            const adjustedMinutes = roundedMinutes % 60;
+            
+            if (adjustedHour < 19) {
+                defaultTime = `${String(adjustedHour).padStart(2, '0')}:${String(adjustedMinutes).padStart(2, '0')}`;
+            }
+        }
+        
+        timeSelect.value = defaultTime;
     }
     console.log(`[AzOTS Plus Debug] Popup toggled: ${!isVisible ? 'opened' : 'closed'}`);
 }
