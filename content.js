@@ -223,6 +223,7 @@ function updateTravelClaim(dateStr, preset) {
     setLocation(preset.fromLocation || 'OFC', preset.toLocation || 'OFC');
     setProjId(preset.projectName || 'NA');
     setJobId(preset.job || 'NA');
+    setAmt(preset.fee || '0.00')
 }
 
 function updateMealClaim(dateStr, fee, preset) {
