@@ -518,6 +518,51 @@ function injectCreateClaimStyles() {
     console.log('[AzOTS Plus Debug] Create claim styles injected');
 }
 
+function highlightNonTodayStartTime() {
+    const startTimeField = document.querySelector(FIELD_SELECTORS.START_TIME);
+    if (!startTimeField) {
+        console.warn('[AzOTS Plus Debug] START_TIME field not found for date highlight');
+        return;
+    }
+
+    function applyHighlight() {
+        const val = startTimeField.value;
+        if (!val) {
+            startTimeField.style.removeProperty('color');
+            startTimeField.style.removeProperty('background-color');
+            return;
+        }
+        const parts = val.split(' ');
+        const dateParts = parts[0].split('/');
+        if (dateParts.length !== 3) return;
+
+        const fieldMonth = parseInt(dateParts[0], 10);
+        const fieldDay = parseInt(dateParts[1], 10);
+        const fieldYear = parseInt(dateParts[2], 10);
+
+        const now = new Date();
+        const isToday = fieldYear === now.getFullYear() &&
+                        fieldMonth === (now.getMonth() + 1) &&
+                        fieldDay === now.getDate();
+
+        if (!isToday) {
+            startTimeField.style.color = '#b33a3a';
+            startTimeField.style.backgroundColor = '#fff0f0';
+        } else {
+            startTimeField.style.removeProperty('color');
+            startTimeField.style.removeProperty('background-color');
+        }
+    }
+
+    applyHighlight();
+    startTimeField.addEventListener('change', applyHighlight);
+
+    const observer = new MutationObserver(() => applyHighlight());
+    observer.observe(startTimeField, { attributes: true, attributeFilter: ['value'] });
+
+    console.log('[AzOTS Plus Debug] START_TIME date highlight initialized');
+}
+
 function initLogUserPage(config) {
     console.log('[AzOTS Plus Debug] Detected ots002_log_user.jsp, initializing UI');
     console.log('[AzOTS Plus Debug] Config.presets on initial load:', config.presets);
@@ -542,6 +587,9 @@ function initLogUserPage(config) {
 
     // Inject styles (consolidated for log user, including integrated picker)
     injectLogUserStyles();
+
+    // Highlight START_TIME if date is not today
+    highlightNonTodayStartTime();
 
     console.log('[AzOTS Plus Debug] Log user page initialization complete');
 }
