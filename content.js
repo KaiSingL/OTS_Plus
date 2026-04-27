@@ -391,6 +391,19 @@ function updateMealPresetButtons(presets, containerId) {
     console.log(`[AzOTS Plus Debug] Meal preset buttons updated with ${presets.length} items`);
 }
 
+function enableDisabledClaimControls() {
+    const deleteBtn = document.querySelector('input[name="DELETE"]');
+    if (deleteBtn) {
+        deleteBtn.removeAttribute('disabled');
+        console.log('[AzOTS Plus Debug] Enabled DELETE button');
+    }
+
+    document.querySelectorAll('input[name="ENTRY_CODE"]').forEach((cb, i) => {
+        cb.removeAttribute('disabled');
+        console.log(`[AzOTS Plus Debug] Enabled ENTRY_CODE checkbox #${i + 1}`);
+    });
+}
+
 // Page-Specific Initialization
 async function initCreateClaimPage(config) {
     console.log('[AzOTS Plus Debug] Detected create_claim_record.jsp, initializing UI');
@@ -466,6 +479,8 @@ async function initCreateClaimPage(config) {
     // Update preset buttons after DOM insertion
     updateTravelPresetButtons(config.claimTravelPresets || [], 'travel-preset-container');
     updateMealPresetButtons(config.claimMealPresets || [], 'meal-preset-container');
+
+    enableDisabledClaimControls();
 }
 
 function injectCreateClaimStyles() {
