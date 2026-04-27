@@ -33,6 +33,8 @@ const FIELD_SELECTORS = {
     DATE_TO: 'input[name="DATE_TO"]'
 };
 
+const STORAGE_KEY_LAST_CLAIM_DATE = 'azotsLastClaimDate';
+
 // Helper Functions for Setting Form Fields
 function setClaimDate(inputDate) {
     console.log(`[AzOTS Plus Debug] Attempting to set CLAIM_DATE with input: ${inputDate}`);
@@ -390,12 +392,31 @@ function updateMealPresetButtons(presets, containerId) {
 }
 
 // Page-Specific Initialization
-function initCreateClaimPage(config) {
+async function initCreateClaimPage(config) {
     console.log('[AzOTS Plus Debug] Detected create_claim_record.jsp, initializing UI');
     const container = createCustomContainer();
 
     // Date picker
     const dateInput = createLabeledInput('date', 'claim-date', 'Date: ', { marginRight: '8px' });
+
+    // Restore last used date if field is empty
+    try {
+        const data = await chrome.storage.sync.get(STORAGE_KEY_LAST_CLAIM_DATE);
+        if (data[STORAGE_KEY_LAST_CLAIM_DATE] && !dateInput.input.value) {
+            dateInput.input.value = data[STORAGE_KEY_LAST_CLAIM_DATE];
+            console.log(`[AzOTS Plus Debug] Restored last claim date: ${dateInput.input.value}`);
+        }
+    } catch (error) {
+        console.error('[AzOTS Plus Debug] Error restoring last claim date:', error);
+    }
+
+    // Persist date on change
+    dateInput.input.addEventListener('change', () => {
+        const val = dateInput.input.value;
+        chrome.storage.sync.set({ [STORAGE_KEY_LAST_CLAIM_DATE]: val })
+            .then(() => console.log(`[AzOTS Plus Debug] Saved last claim date: ${val}`))
+            .catch(err => console.error('[AzOTS Plus Debug] Error saving last claim date:', err));
+    });
 
     // Claim Travel label and container
     const travelLabel = document.createElement('label');
@@ -1050,7 +1071,7 @@ console.log('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.lo
     console.log(`[AzOTS Plus Debug] Current path: ${path}`);
 
     if (path.includes(PAGE_PATHS.CREATE_CLAIM)) {
-        initCreateClaimPage(config);
+        await initCreateClaimPage(config);
     } else if (path.includes(PAGE_PATHS.LOG_USER)) {
         initLogUserPage(config);
     } else if (path.includes(PAGE_PATHS.PRINT_CLAIM)) {
