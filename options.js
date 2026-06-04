@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const presetLocationInput = document.getElementById('preset-location');
   const presetProjectInput = document.getElementById('preset-project');
   const presetPurposeInput = document.getElementById('preset-purpose');
+  const presetStartTimeInput = document.getElementById('preset-start-time');
   const presetSaveButton = document.getElementById('preset-save');
   const presetCancelButton = document.getElementById('preset-cancel');
 
@@ -64,12 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Save settings to chrome.storage.sync
   function saveSettings() {
     console.log('Saving settings...');
-    const presets = Array.from(presetList.querySelectorAll('tbody tr')).map(row => {
+      const presets = Array.from(presetList.querySelectorAll('tbody tr')).map(row => {
       const cells = row.querySelectorAll('td');
       const preset = {
         location: cells[0].textContent,
         project: cells[1].textContent,
-        purpose: cells[2].textContent
+        purpose: cells[2].textContent,
+        startTime: cells[3].textContent
       };
       console.log(`Preset saved: ${JSON.stringify(preset)}`);
       return preset;
@@ -134,8 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(`Loaded settings: ${JSON.stringify(settings)}`);
 
       addTableToList(presetList);
-      addHeaderToTable(presetList.querySelector('table'), ['Location', 'Project Name', 'Purpose', '']);
-      settings.presets.forEach(preset => addPresetRow(preset.location, preset.project, preset.purpose));
+      addHeaderToTable(presetList.querySelector('table'), ['Location', 'Project Name', 'Purpose', 'Start Time', '']);
+      settings.presets.forEach(preset => addPresetRow(preset.location, preset.project, preset.purpose, preset.startTime || ''));
 
       addTableToList(travelPresetList);
       addHeaderToTable(travelPresetList.querySelector('table'), ['Preset Name', 'From Location', 'To Location', 'Job', 'Project Name', 'Vehicle', 'Fee', '']);
@@ -169,8 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Add a new preset row for timesheet
-  function addPresetRow(location, project, purpose) {
-    console.log(`Adding preset row: location=${location}, project=${project}, purpose=${purpose}`);
+  function addPresetRow(location, project, purpose, startTime) {
+    console.log(`Adding preset row: location=${location}, project=${project}, purpose=${purpose}, startTime=${startTime}`);
     const row = document.createElement('tr');
 
     const locationCell = document.createElement('td');
@@ -179,6 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
     projectCell.textContent = project;
     const purposeCell = document.createElement('td');
     purposeCell.textContent = purpose;
+    const startTimeCell = document.createElement('td');
+    startTimeCell.textContent = startTime || '';
 
     const actionsCell = document.createElement('td');
     const actions = document.createElement('div');
@@ -192,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
       presetLocationInput.value = locationCell.textContent;
       presetProjectInput.value = projectCell.textContent;
       presetPurposeInput.value = purposeCell.textContent;
+      presetStartTimeInput.value = startTimeCell.textContent;
       presetPopup.classList.add('show');
       backdrop.classList.add('show');
       checkPresetInputs();
@@ -213,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     row.appendChild(locationCell);
     row.appendChild(projectCell);
     row.appendChild(purposeCell);
+    row.appendChild(startTimeCell);
     row.appendChild(actionsCell);
     presetList.querySelector('tbody').appendChild(row);
   }
@@ -338,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
     presetLocationInput.value = '';
     presetProjectInput.value = '';
     presetPurposeInput.value = '';
+    presetStartTimeInput.value = '';
     presetSaveButton.disabled = true;
     presetPopup.classList.add('show');
     backdrop.classList.add('show');
@@ -367,14 +374,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const location = presetLocationInput.value.trim();
       const project = presetProjectInput.value.trim();
       const purpose = presetPurposeInput.value.trim();
+      const startTime = presetStartTimeInput.value;
       if (editingRowPreset) {
         const cells = editingRowPreset.querySelectorAll('td');
         cells[0].textContent = location;
         cells[1].textContent = project;
         cells[2].textContent = purpose;
+        cells[3].textContent = startTime;
         editingRowPreset = null;
       } else {
-        addPresetRow(location, project, purpose);
+        addPresetRow(location, project, purpose, startTime);
       }
       console.log('Preset saved, hiding popup');
       presetPopup.classList.remove('show');

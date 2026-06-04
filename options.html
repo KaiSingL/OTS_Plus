@@ -200,7 +200,7 @@
       margin-bottom: 10px;
       font-weight: 500;
     }
-    .popup input[type="text"], .popup input[type="number"] {
+    .popup input[type="text"], .popup input[type="number"], .popup input[type="time"] {
       padding: 12px;
       font-size: 1.1em;
       margin-bottom: 20px;
@@ -267,6 +267,9 @@
     <input id="preset-project" type="text">
     <label>Purpose:</label>
     <input id="preset-purpose" type="text">
+    <label>Start Time:</label>
+    <input id="preset-start-time" type="time">
+    <small style="display:block;margin:-10px 0 15px;color:#888;font-size:0.85em;">Leave empty to keep OTS start time unchanged.</small>
     <div class="popup-buttons">
       <button id="preset-cancel" class="cancel">Cancel</button>
       <button id="preset-save" disabled>Save</button>

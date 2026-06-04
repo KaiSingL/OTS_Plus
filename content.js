@@ -204,6 +204,25 @@ function setJobId(jobType) {
     }
 }
 
+function setStartTime(timeStr) {
+    console.log(`[AzOTS Plus Debug] Attempting to set START_TIME to: ${timeStr}`);
+    const input = document.querySelector(FIELD_SELECTORS.START_TIME);
+    if (!input) {
+        console.error('[AzOTS Plus Debug] Input field with name "START_TIME" not found');
+        return;
+    }
+    let datePart;
+    if (input.value && input.value.includes(' ')) {
+        datePart = input.value.split(' ')[0];
+    } else {
+        const now = new Date();
+        datePart = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`;
+    }
+    input.value = `${datePart} ${timeStr}`;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    console.log(`[AzOTS Plus Debug] Set START_TIME to: ${input.value}`);
+}
+
 function setAmt(money) {
     console.log(`[AzOTS Plus Debug] Attempting to set AMT to: ${money}`);
     const input = document.querySelector(FIELD_SELECTORS.AMT);
@@ -313,6 +332,7 @@ function createPresetButton(preset, buttonText) {
         setLocationFrom(preset.location || 'OFC');
         setProjId(preset.project || 'NA');
         setJobId(preset.purpose || 'NA');
+        if (preset.startTime) setStartTime(preset.startTime);
         console.log('[AzOTS Plus Debug] Preset applied via button click:', preset);
     });
     return button;
