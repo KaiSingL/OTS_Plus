@@ -21,8 +21,8 @@
   --az-shadow: 0 8px 24px rgba(30, 41, 59, 0.07), 0 2px 5px rgba(30, 41, 59, 0.04);
 }
 
-html.azots-modern-page,
-body.azots-modern-body {
+html,
+body {
   width: 100% !important;
   min-width: 0 !important;
   min-height: 100% !important;
@@ -34,32 +34,32 @@ body.azots-modern-body {
   line-height: 1.4 !important;
 }
 
-body.azots-modern-body {
+body {
   box-sizing: border-box !important;
   padding: clamp(8px, 1.3vw, 18px) !important;
 }
 
-.azots-modern-body *,
-.azots-modern-body *::before,
-.azots-modern-body *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box !important;
 }
 
-.azots-modern-body table,
-.azots-modern-body tbody,
-.azots-modern-body tr,
-.azots-modern-body td,
-.azots-modern-body input,
-.azots-modern-body select,
-.azots-modern-body textarea,
-.azots-modern-body button,
-.azots-modern-body a {
+table,
+tbody,
+tr,
+td,
+input,
+select,
+textarea,
+button,
+a {
   font-family: "Segoe UI", Arial, Helvetica, sans-serif !important;
 }
 
 /* ── Page wrapper (centering fix) ── */
 
-.azots-modern-body .azots-page-wrapper {
+.azots-page-wrapper {
   width: 100% !important;
   max-width: var(--az-content-width) !important;
   margin-right: auto !important;
@@ -68,28 +68,28 @@ body.azots-modern-body {
   float: none !important;
 }
 
-.azots-modern-body .azots-page-wrapper > tbody > tr > td {
+.azots-page-wrapper > tbody > tr > td {
   vertical-align: top !important;
 }
 
-.azots-modern-body table.azots-user-header,
-.azots-modern-body table.azots-navigation,
-.azots-modern-body table.azots-date-card,
-.azots-modern-body table.azots-editor-card,
-.azots-modern-body .azots-results-scroll {
+table.azots-user-header,
+table.azots-navigation,
+table.azots-date-card,
+table.azots-editor-card,
+.azots-results-scroll {
   width: 100% !important;
   max-width: var(--az-content-width) !important;
   margin-right: auto !important;
   margin-left: auto !important;
 }
 
-.azots-modern-body .azots-legacy-break {
+.azots-legacy-break {
   display: none !important;
 }
 
 /* ── User header ── */
 
-.azots-modern-body table.azots-user-header {
+table.azots-user-header {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   border: 0 !important;
@@ -101,7 +101,7 @@ body.azots-modern-body {
   background: linear-gradient(135deg, var(--az-primary-dark), var(--az-primary)) !important;
 }
 
-.azots-modern-body .azots-user-header td {
+.azots-user-header td {
   height: 50px !important;
   padding: 7px 14px !important;
   border: 0 !important;
@@ -110,14 +110,14 @@ body.azots-modern-body {
   vertical-align: middle !important;
 }
 
-.azots-modern-body .azots-user-header td.lblTitle {
+.azots-user-header td.lblTitle {
   color: #fff !important;
   font-size: 18px !important;
   font-weight: 700 !important;
   line-height: 1.25 !important;
 }
 
-.azots-modern-body .azots-user-header img {
+.azots-user-header img {
   display: block !important;
   max-width: 100% !important;
   max-height: 36px !important;
@@ -127,7 +127,7 @@ body.azots-modern-body {
 
 /* ── Navigation ── */
 
-.azots-modern-body table.azots-navigation {
+table.azots-navigation {
   margin-top: 0 !important;
   margin-bottom: 8px !important;
   border: 0 !important;
@@ -135,7 +135,7 @@ body.azots-modern-body {
   border-spacing: 0 !important;
 }
 
-.azots-modern-body .azots-navigation td {
+.azots-navigation td {
   width: auto !important;
   height: 36px !important;
   padding: 0 !important;
@@ -144,11 +144,11 @@ body.azots-modern-body {
   text-align: center !important;
 }
 
-.azots-modern-body .azots-navigation td:last-child {
+.azots-navigation td:last-child {
   border-right: 0 !important;
 }
 
-.azots-modern-body .azots-navigation a.lblLink {
+.azots-navigation a.lblLink {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -162,31 +162,31 @@ body.azots-modern-body {
   text-decoration: none !important;
 }
 
-.azots-modern-body .azots-navigation a.lblLink:hover,
-.azots-modern-body .azots-navigation a.lblLink:focus {
+.azots-navigation a.lblLink:hover,
+.azots-navigation a.lblLink:focus {
   color: var(--az-primary-dark) !important;
   background: var(--az-primary-soft) !important;
   outline: 0 !important;
 }
 
-.azots-modern-body td.lblSelected a.lblLink {
+td.lblSelected a.lblLink {
   color: var(--az-primary-dark) !important;
   background: var(--az-primary-soft) !important;
 }
 
 /* ── Date and clock ── */
 
-.azots-modern-body table.azots-date-card {
+table.azots-date-card {
   margin: 0 auto 10px !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
 }
 
-.azots-modern-body .azots-date-card tr {
+.azots-date-card tr {
   height: auto !important;
 }
 
-.azots-modern-body .azots-date-card td {
+.azots-date-card td {
   height: 42px !important;
   padding: 5px 10px !important;
   border: 0 !important;
@@ -195,7 +195,7 @@ body.azots-modern-body {
   vertical-align: middle !important;
 }
 
-.azots-modern-body .azots-date-card .lblDate {
+.azots-date-card .lblDate {
   width: auto !important;
   color: var(--az-muted) !important;
   font-size: 12px !important;
@@ -203,18 +203,18 @@ body.azots-modern-body {
   white-space: nowrap !important;
 }
 
-.azots-modern-body .azots-date-card .lblLongDate {
+.azots-date-card .lblLongDate {
   color: var(--az-primary-dark) !important;
   font-size: 14px !important;
   font-weight: 700 !important;
 }
 
-.azots-modern-body .azots-date-card .lblLongDate br,
-.azots-modern-body .azots-date-card .azots-clock-decoration {
+.azots-date-card .lblLongDate br,
+.azots-date-card .azots-clock-decoration {
   display: none !important;
 }
 
-.azots-modern-body .azots-date-card input[name="TIMENOW"] {
+.azots-date-card input[name="TIMENOW"] {
   width: 92px !important;
   height: 30px !important;
   padding: 4px 8px !important;
@@ -231,19 +231,19 @@ body.azots-modern-body {
 
 /* ── Editor card ── */
 
-.azots-modern-body table.azots-editor-card {
+table.azots-editor-card {
   margin: 0 auto 12px !important;
   padding: 0 !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
 }
 
-.azots-modern-body .azots-editor-card > tbody > tr > td {
+.azots-editor-card > tbody > tr > td {
   border: 0 !important;
   background: transparent !important;
 }
 
-.azots-modern-body .azots-editor-card > tbody > tr:first-child > td.trHeader {
+.azots-editor-card > tbody > tr:first-child > td.trHeader {
   height: auto !important;
   padding: 10px 16px !important;
   border: 0 !important;
@@ -255,14 +255,14 @@ body.azots-modern-body {
   text-align: left !important;
 }
 
-.azots-modern-body .azots-editor-card > tbody > tr:nth-child(2) > td {
+.azots-editor-card > tbody > tr:nth-child(2) > td {
   padding: 10px 14px 13px !important;
 }
 
 /* ── Presets ── */
 
-.azots-modern-body #preset-container.azots-plus-container,
-.azots-modern-body #azots-plus-container.azots-plus-container {
+#preset-container.azots-plus-container,
+#azots-plus-container.azots-plus-container {
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
@@ -274,8 +274,8 @@ body.azots-modern-body {
   background: #f7f9fd !important;
 }
 
-.azots-modern-body #preset-container .azots-plus-button,
-.azots-modern-body #azots-plus-container .azots-plus-button {
+#preset-container .azots-plus-button,
+#azots-plus-container .azots-plus-button {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -294,10 +294,10 @@ body.azots-modern-body {
   box-shadow: 0 1px 3px rgba(30, 41, 59, 0.04) !important;
 }
 
-.azots-modern-body #preset-container .azots-plus-button:hover,
-.azots-modern-body #preset-container .azots-plus-button:focus,
-.azots-modern-body #azots-plus-container .azots-plus-button:hover,
-.azots-modern-body #azots-plus-container .azots-plus-button:focus {
+#preset-container .azots-plus-button:hover,
+#preset-container .azots-plus-button:focus,
+#azots-plus-container .azots-plus-button:hover,
+#azots-plus-container .azots-plus-button:focus {
   color: #fff !important;
   border-color: var(--az-primary) !important;
   background: var(--az-primary) !important;
@@ -306,7 +306,7 @@ body.azots-modern-body {
 
 /* ── Entry form ── */
 
-.azots-modern-body table.azots-entry-form {
+table.azots-entry-form {
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
@@ -319,12 +319,12 @@ body.azots-modern-body {
   box-shadow: none !important;
 }
 
-.azots-modern-body .azots-entry-form tr {
+.azots-entry-form tr {
   height: auto !important;
   background: transparent !important;
 }
 
-.azots-modern-body .azots-entry-form td {
+.azots-entry-form td {
   height: auto !important;
   padding: 2px 5px !important;
   border: 0 !important;
@@ -334,7 +334,7 @@ body.azots-modern-body {
   vertical-align: top !important;
 }
 
-.azots-modern-body .azots-entry-form td.lblNormal {
+.azots-entry-form td.lblNormal {
   width: clamp(130px, 14vw, 175px) !important;
   min-width: 130px !important;
   padding-top: 7px !important;
@@ -345,12 +345,12 @@ body.azots-modern-body {
   white-space: nowrap !important;
 }
 
-.azots-modern-body .azots-entry-form select.comboBox,
-.azots-modern-body .azots-entry-form input.txtFieldLarge,
-.azots-modern-body .azots-entry-form textarea.textArea,
-.azots-modern-body .azots-entry-form input.azots-date-part,
-.azots-modern-body .azots-entry-form select.azots-time-part,
-.azots-modern-body .azots-entry-form input.newDateField[type="date"] {
+.azots-entry-form select.comboBox,
+.azots-entry-form input.txtFieldLarge,
+.azots-entry-form textarea.textArea,
+.azots-entry-form input.azots-date-part,
+.azots-entry-form select.azots-time-part,
+.azots-entry-form input.newDateField[type="date"] {
   border: 1px solid var(--az-border-strong) !important;
   border-radius: 6px !important;
   outline: 0 !important;
@@ -362,9 +362,9 @@ body.azots-modern-body {
   box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.025) !important;
 }
 
-.azots-modern-body .azots-entry-form select.comboBox,
-.azots-modern-body .azots-entry-form input.txtFieldLarge,
-.azots-modern-body .azots-entry-form input.newDateField[type="date"] {
+.azots-entry-form select.comboBox,
+.azots-entry-form input.txtFieldLarge,
+.azots-entry-form input.newDateField[type="date"] {
   display: inline-block !important;
   width: clamp(180px, 22vw, 300px) !important;
   height: var(--az-control-height) !important;
@@ -374,42 +374,42 @@ body.azots-modern-body {
   vertical-align: top !important;
 }
 
-.azots-modern-body .azots-entry-form input[name="LOC_DESC"],
-.azots-modern-body .azots-entry-form input[name="LOC_DESC_FR"],
-.azots-modern-body .azots-entry-form input[name="LOC_DESC_TO"],
-.azots-modern-body .azots-entry-form input[name="PROJ_DESC"],
-.azots-modern-body .azots-entry-form input[name="JOB_DESC"],
-.azots-modern-body .azots-entry-form input[name="TRAVEL_DESC"],
-.azots-modern-body .azots-entry-form input[name="CLAIM_DESC"] {
+.azots-entry-form input[name="LOC_DESC"],
+.azots-entry-form input[name="LOC_DESC_FR"],
+.azots-entry-form input[name="LOC_DESC_TO"],
+.azots-entry-form input[name="PROJ_DESC"],
+.azots-entry-form input[name="JOB_DESC"],
+.azots-entry-form input[name="TRAVEL_DESC"],
+.azots-entry-form input[name="CLAIM_DESC"] {
   width: clamp(200px, 38vw, 620px) !important;
   max-width: calc(100% - 320px) !important;
   color: var(--az-text-secondary) !important;
   background: var(--az-surface-soft) !important;
 }
 
-.azots-modern-body .azots-entry-form select:not(:disabled):hover,
-.azots-modern-body .azots-entry-form input:not(:disabled):not([type="button"]):not([type="submit"]):hover,
-.azots-modern-body .azots-entry-form textarea:not(:disabled):hover,
-.azots-modern-body .azots-entry-form input.newDateField[type="date"]:not(:disabled):hover {
+.azots-entry-form select:not(:disabled):hover,
+.azots-entry-form input:not(:disabled):not([type="button"]):not([type="submit"]):hover,
+.azots-entry-form textarea:not(:disabled):hover,
+.azots-entry-form input.newDateField[type="date"]:not(:disabled):hover {
   border-color: #8193c4 !important;
 }
 
-.azots-modern-body .azots-entry-form select:focus,
-.azots-modern-body .azots-entry-form input:not([type="button"]):not([type="submit"]):focus,
-.azots-modern-body .azots-entry-form textarea:focus,
-.azots-modern-body .azots-entry-form input.newDateField[type="date"]:focus {
+.azots-entry-form select:focus,
+.azots-entry-form input:not([type="button"]):not([type="submit"]):focus,
+.azots-entry-form textarea:focus,
+.azots-entry-form input.newDateField[type="date"]:focus {
   border-color: var(--az-primary) !important;
   box-shadow: var(--az-focus) !important;
 }
 
-.azots-modern-body .azots-entry-form input[readonly] {
+.azots-entry-form input[readonly] {
   color: #334155 !important;
   background: var(--az-surface-soft) !important;
 }
 
-.azots-modern-body .azots-entry-form select:disabled,
-.azots-modern-body .azots-entry-form input:not([type="button"]):not([type="submit"]):disabled,
-.azots-modern-body .azots-entry-form textarea:disabled {
+.azots-entry-form select:disabled,
+.azots-entry-form input:not([type="button"]):not([type="submit"]):disabled,
+.azots-entry-form textarea:disabled {
   color: var(--az-text-secondary) !important;
   border-color: #d4dce7 !important;
   background: var(--az-disabled) !important;
@@ -418,11 +418,11 @@ body.azots-modern-body {
   box-shadow: none !important;
 }
 
-.azots-modern-body .azots-entry-form select:disabled {
+.azots-entry-form select:disabled {
   -webkit-text-fill-color: var(--az-text-secondary) !important;
 }
 
-.azots-modern-body .azots-entry-form textarea.textArea {
+.azots-entry-form textarea.textArea {
   display: block !important;
   width: min(100%, 900px) !important;
   max-width: 100% !important;
@@ -432,8 +432,8 @@ body.azots-modern-body {
   resize: vertical !important;
 }
 
-.azots-modern-body .azots-entry-form span[style*="color:gray"],
-.azots-modern-body .azots-entry-form span[style*="color: gray"] {
+.azots-entry-form span[style*="color:gray"],
+.azots-entry-form span[style*="color: gray"] {
   display: inline-block !important;
   margin: 6px 0 0 1px !important;
   color: var(--az-muted) !important;
@@ -445,14 +445,14 @@ body.azots-modern-body {
 
 /* ── Picker ── */
 
-.azots-modern-body .azots-entry-form .azots-integrated-picker {
+.azots-entry-form .azots-integrated-picker {
   position: relative !important;
   display: inline-block !important;
   margin: 0 6px 0 0 !important;
   vertical-align: top !important;
 }
 
-.azots-modern-body .azots-entry-form .azots-picker-button {
+.azots-entry-form .azots-picker-button {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -472,12 +472,12 @@ body.azots-modern-body {
   box-shadow: none !important;
 }
 
-.azots-modern-body .azots-entry-form .azots-picker-button:hover:not(:disabled) {
+.azots-entry-form .azots-picker-button:hover:not(:disabled) {
   border-color: var(--az-primary) !important;
   background: #dfe7ff !important;
 }
 
-.azots-modern-body .azots-entry-form .azots-picker-popup {
+.azots-entry-form .azots-picker-popup {
   position: absolute !important;
   z-index: 9999 !important;
   top: calc(100% + 6px) !important;
@@ -492,14 +492,14 @@ body.azots-modern-body {
   box-shadow: 0 14px 30px rgba(30, 41, 59, 0.17) !important;
 }
 
-.azots-modern-body .azots-entry-form .azots-picker-row {
+.azots-entry-form .azots-picker-row {
   display: flex !important;
   align-items: center !important;
   gap: 6px !important;
 }
 
-.azots-modern-body .azots-entry-form .azots-date-part,
-.azots-modern-body .azots-entry-form .azots-time-part {
+.azots-entry-form .azots-date-part,
+.azots-entry-form .azots-time-part {
   flex: 1 1 0 !important;
   height: var(--az-control-height) !important;
   min-width: 135px !important;
@@ -508,13 +508,13 @@ body.azots-modern-body {
 
 /* ── Action row spacing ── */
 
-.azots-modern-body .azots-entry-form tr.azots-action-row td {
+.azots-entry-form tr.azots-action-row td {
   padding-top: 10px !important;
 }
 
 /* ── Preset labels and containers (create_claim page) ── */
 
-.azots-modern-body .azots-plus-label {
+.azots-plus-label {
   display: inline-block !important;
   margin-right: 8px !important;
   color: var(--az-primary-dark) !important;
@@ -524,13 +524,13 @@ body.azots-modern-body {
   vertical-align: middle !important;
 }
 
-.azots-modern-body .azots-plus-button-container {
+.azots-plus-button-container {
   display: inline-block !important;
   vertical-align: middle !important;
 }
 
-.azots-modern-body .azots-plus-container input[type="date"],
-.azots-modern-body .azots-plus-container input[type="number"] {
+.azots-plus-container input[type="date"],
+.azots-plus-container input[type="number"] {
   height: var(--az-control-height) !important;
   padding: 4px 8px !important;
   border: 1px solid var(--az-border-strong) !important;
@@ -543,15 +543,15 @@ body.azots-modern-body {
   vertical-align: middle !important;
 }
 
-.azots-modern-body .azots-plus-container input[type="date"]:focus,
-.azots-modern-body .azots-plus-container input[type="number"]:focus {
+.azots-plus-container input[type="date"]:focus,
+.azots-plus-container input[type="number"]:focus {
   border-color: var(--az-primary) !important;
   box-shadow: var(--az-focus) !important;
 }
 
 /* ── Buttons ── */
 
-.azots-modern-body .azots-entry-form input.btnLarge {
+.azots-entry-form input.btnLarge {
   appearance: none !important;
   width: auto !important;
   min-width: 88px !important;
@@ -571,12 +571,12 @@ body.azots-modern-body {
   box-shadow: 0 2px 6px rgba(48, 72, 153, 0.17) !important;
 }
 
-.azots-modern-body .azots-entry-form input.btnLarge:hover:not(:disabled) {
+.azots-entry-form input.btnLarge:hover:not(:disabled) {
   border-color: var(--az-primary-dark) !important;
   background: var(--az-primary-dark) !important;
 }
 
-.azots-modern-body .azots-entry-form input[name="SUBMIT_LOGOUT"] {
+.azots-entry-form input[name="SUBMIT_LOGOUT"] {
   min-width: 126px !important;
   color: var(--az-primary) !important;
   border-color: #9eadd4 !important;
@@ -584,39 +584,39 @@ body.azots-modern-body {
   box-shadow: none !important;
 }
 
-.azots-modern-body .azots-entry-form input[name="SUBMIT_LOGOUT"]:hover:not(:disabled) {
+.azots-entry-form input[name="SUBMIT_LOGOUT"]:hover:not(:disabled) {
   color: #fff !important;
   border-color: var(--az-primary-dark) !important;
   background: var(--az-primary-dark) !important;
 }
 
-.azots-modern-body .azots-entry-form input[name="DELETE"]:not(:disabled) {
+.azots-entry-form input[name="DELETE"]:not(:disabled) {
   color: var(--az-danger) !important;
   border-color: #e8aaa4 !important;
   background: #fff !important;
   box-shadow: none !important;
 }
 
-.azots-modern-body .azots-entry-form input[name="DELETE"]:hover:not(:disabled) {
+.azots-entry-form input[name="DELETE"]:hover:not(:disabled) {
   color: #fff !important;
   border-color: var(--az-danger) !important;
   background: var(--az-danger) !important;
 }
 
-.azots-modern-body .azots-entry-form input[name="CLEAR"]:not(:disabled) {
+.azots-entry-form input[name="CLEAR"]:not(:disabled) {
   color: var(--az-muted) !important;
   border-color: #d5dce6 !important;
   background: #fff !important;
   box-shadow: none !important;
 }
 
-.azots-modern-body .azots-entry-form input[name="CLEAR"]:hover:not(:disabled) {
+.azots-entry-form input[name="CLEAR"]:hover:not(:disabled) {
   color: #fff !important;
   border-color: var(--az-muted) !important;
   background: var(--az-muted) !important;
 }
 
-.azots-modern-body .azots-entry-form input.btnLarge:disabled {
+.azots-entry-form input.btnLarge:disabled {
   color: var(--az-disabled-text) !important;
   border-color: #d5dce6 !important;
   background: #edf1f5 !important;
@@ -626,7 +626,7 @@ body.azots-modern-body {
 
 /* ── Results section ── */
 
-.azots-modern-body .azots-results-scroll {
+.azots-results-scroll {
   display: block !important;
   margin: 0 auto 12px !important;
   padding: 0 !important;
@@ -635,7 +635,7 @@ body.azots-modern-body {
   -webkit-overflow-scrolling: touch !important;
 }
 
-.azots-modern-body .azots-results-scroll > table.azots-results-table {
+.azots-results-scroll > table.azots-results-table {
   display: table !important;
   width: 100% !important;
   min-width: 720px !important;
@@ -647,18 +647,18 @@ body.azots-modern-body {
   box-shadow: none !important;
 }
 
-.azots-modern-body table.azots-results-table tbody {
+table.azots-results-table tbody {
   border: 0 !important;
 }
 
-.azots-modern-body table.azots-results-table tr.azots-results-header-row,
-.azots-modern-body table.azots-results-table tr:first-child {
+table.azots-results-table tr.azots-results-header-row,
+table.azots-results-table tr:first-child {
   height: 34px !important;
   background: var(--az-primary) !important;
 }
 
-.azots-modern-body table.azots-results-table tr.azots-results-header-row > td.trHeader,
-.azots-modern-body table.azots-results-table tr:first-child > td.trHeader {
+table.azots-results-table tr.azots-results-header-row > td.trHeader,
+table.azots-results-table tr:first-child > td.trHeader {
   height: 34px !important;
   min-height: 34px !important;
   margin: 0 !important;
@@ -677,22 +677,22 @@ body.azots-modern-body {
   box-shadow: none !important;
 }
 
-.azots-modern-body table.azots-results-table tr:first-child > td.trHeader:first-child,
-.azots-modern-body table.azots-results-table tr.azots-results-header-row > td.trHeader:first-child {
+table.azots-results-table tr:first-child > td.trHeader:first-child,
+table.azots-results-table tr.azots-results-header-row > td.trHeader:first-child {
   width: 32px !important;
   min-width: 32px !important;
   max-width: 32px !important;
   padding: 0 !important;
 }
 
-.azots-modern-body table.azots-results-table tr:first-child > td.trHeader:last-child,
-.azots-modern-body table.azots-results-table tr.azots-results-header-row > td.trHeader:last-child {
+table.azots-results-table tr:first-child > td.trHeader:last-child,
+table.azots-results-table tr.azots-results-header-row > td.trHeader:last-child {
   border-right: 0 !important;
 }
 
-.azots-modern-body table.azots-results-table tr.azots-results-data-row > td,
-.azots-modern-body table.azots-results-table tr.trOdd > td,
-.azots-modern-body table.azots-results-table tr.trEven > td {
+table.azots-results-table tr.azots-results-data-row > td,
+table.azots-results-table tr.trOdd > td,
+table.azots-results-table tr.trEven > td {
   height: 34px !important;
   min-height: 34px !important;
   margin: 0 !important;
@@ -710,9 +710,9 @@ body.azots-modern-body {
   box-shadow: none !important;
 }
 
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr.azots-results-data-row > td:first-child,
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr.trOdd > td:first-child,
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr.trEven > td:first-child {
+table.azots-results-table.azots-has-checkboxes tr.azots-results-data-row > td:first-child,
+table.azots-results-table.azots-has-checkboxes tr.trOdd > td:first-child,
+table.azots-results-table.azots-has-checkboxes tr.trEven > td:first-child {
   width: 32px !important;
   min-width: 32px !important;
   max-width: 32px !important;
@@ -720,13 +720,13 @@ body.azots-modern-body {
   text-align: center !important;
 }
 
-.azots-modern-body table.azots-results-table tr.azots-results-data-row > td:last-child,
-.azots-modern-body table.azots-results-table tr.trOdd > td:last-child,
-.azots-modern-body table.azots-results-table tr.trEven > td:last-child {
+table.azots-results-table tr.azots-results-data-row > td:last-child,
+table.azots-results-table tr.trOdd > td:last-child,
+table.azots-results-table tr.trEven > td:last-child {
   border-right: 0 !important;
 }
 
-.azots-modern-body table.azots-results-table td.lblTableFieldCenter {
+table.azots-results-table td.lblTableFieldCenter {
   color: #334155 !important;
   background: inherit !important;
   font-size: 12px !important;
@@ -737,7 +737,7 @@ body.azots-modern-body {
   word-break: keep-all !important;
 }
 
-.azots-modern-body table.azots-results-table td.lblTableField {
+table.azots-results-table td.lblTableField {
   color: #334155 !important;
   background: inherit !important;
   font-size: 12px !important;
@@ -748,29 +748,29 @@ body.azots-modern-body {
   word-break: keep-all !important;
 }
 
-.azots-modern-body table.azots-results-table tr.azots-results-data-row-even > td,
-.azots-modern-body table.azots-results-table tr.trEven > td {
+table.azots-results-table tr.azots-results-data-row-even > td,
+table.azots-results-table tr.trEven > td {
   background: var(--az-surface-soft) !important;
 }
 
-.azots-modern-body table.azots-results-table tr.azots-results-data-row:hover > td,
-.azots-modern-body table.azots-results-table tr.trOdd:hover > td,
-.azots-modern-body table.azots-results-table tr.trEven:hover > td {
+table.azots-results-table tr.azots-results-data-row:hover > td,
+table.azots-results-table tr.trOdd:hover > td,
+table.azots-results-table tr.trEven:hover > td {
   background: var(--az-primary-soft) !important;
 }
 
-.azots-modern-body table.azots-results-table a {
+table.azots-results-table a {
   color: var(--az-primary) !important;
   font-weight: 600 !important;
   text-decoration: none !important;
 }
 
-.azots-modern-body table.azots-results-table a:hover {
+table.azots-results-table a:hover {
   color: var(--az-primary-dark) !important;
   text-decoration: underline !important;
 }
 
-.azots-modern-body table.azots-results-table input[type="checkbox"] {
+table.azots-results-table input[type="checkbox"] {
   display: inline-block !important;
   width: 15px !important;
   height: 15px !important;
@@ -780,21 +780,21 @@ body.azots-modern-body {
   vertical-align: middle !important;
 }
 
-.azots-modern-body table.azots-results-table input[type="checkbox"]:disabled {
+table.azots-results-table input[type="checkbox"]:disabled {
   opacity: 0.65 !important;
 }
 
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(2) { width: 20% !important; }
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(3) { width: 10% !important; }
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(4) { width: 15% !important; }
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(5) { width: 10% !important; }
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(6),
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(7) { width: 10% !important; }
-.azots-modern-body table.azots-results-table.azots-has-checkboxes {
+table.azots-results-table.azots-has-checkboxes tr > td:nth-child(2) { width: 20% !important; }
+table.azots-results-table.azots-has-checkboxes tr > td:nth-child(3) { width: 10% !important; }
+table.azots-results-table.azots-has-checkboxes tr > td:nth-child(4) { width: 15% !important; }
+table.azots-results-table.azots-has-checkboxes tr > td:nth-child(5) { width: 10% !important; }
+table.azots-results-table.azots-has-checkboxes tr > td:nth-child(6),
+table.azots-results-table.azots-has-checkboxes tr > td:nth-child(7) { width: 10% !important; }
+table.azots-results-table.azots-has-checkboxes {
   table-layout: fixed !important;
 }
 
-.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(8) {
+table.azots-results-table.azots-has-checkboxes tr > td:nth-child(8) {
   width: 25% !important;
   min-width: 150px !important;
   white-space: normal !important;
@@ -948,8 +948,8 @@ body.azots-modern-body {
 
 /* ── Calendar component ── */
 
-.azots-modern-body a.dateLink,
-.azots-modern-body a.dateToday {
+a.dateLink,
+a.dateToday {
   display: none !important;
 }
 
@@ -1058,78 +1058,78 @@ body.azots-modern-body {
 /* ── Responsive ── */
 
 @media screen and (max-width: 1000px) {
-  .azots-modern-body .azots-entry-form select.comboBox,
-  .azots-modern-body .azots-entry-form input.txtFieldLarge {
+  .azots-entry-form select.comboBox,
+  .azots-entry-form input.txtFieldLarge {
     width: clamp(180px, 30vw, 260px) !important;
   }
 
-  .azots-modern-body .azots-entry-form input[name="LOC_DESC"],
-  .azots-modern-body .azots-entry-form input[name="LOC_DESC_FR"],
-  .azots-modern-body .azots-entry-form input[name="LOC_DESC_TO"],
-  .azots-modern-body .azots-entry-form input[name="PROJ_DESC"],
-  .azots-modern-body .azots-entry-form input[name="JOB_DESC"],
-  .azots-modern-body .azots-entry-form input[name="TRAVEL_DESC"],
-  .azots-modern-body .azots-entry-form input[name="CLAIM_DESC"] {
+  .azots-entry-form input[name="LOC_DESC"],
+  .azots-entry-form input[name="LOC_DESC_FR"],
+  .azots-entry-form input[name="LOC_DESC_TO"],
+  .azots-entry-form input[name="PROJ_DESC"],
+  .azots-entry-form input[name="JOB_DESC"],
+  .azots-entry-form input[name="TRAVEL_DESC"],
+  .azots-entry-form input[name="CLAIM_DESC"] {
     width: clamp(200px, 36vw, 420px) !important;
     max-width: none !important;
   }
 }
 
 @media screen and (max-width: 720px) {
-  body.azots-modern-body { padding: 7px !important; }
+  body { padding: 7px !important; }
 
-  .azots-modern-body table.azots-navigation,
-  .azots-modern-body .azots-navigation tbody {
+  table.azots-navigation,
+  .azots-navigation tbody {
     display: block !important;
     width: 100% !important;
   }
 
-  .azots-modern-body .azots-navigation tr {
+  .azots-navigation tr {
     display: grid !important;
     width: 100% !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
-  .azots-modern-body .azots-navigation td {
+  .azots-navigation td {
     display: block !important;
     width: 100% !important;
     border-bottom: 1px solid #e4e9f1 !important;
   }
 
-  .azots-modern-body table.azots-entry-form { display: table !important; }
-  .azots-modern-body .azots-entry-form tbody { display: table-row-group !important; }
-  .azots-modern-body .azots-entry-form tr { display: table-row !important; }
-  .azots-modern-body .azots-entry-form td { display: table-cell !important; }
+  table.azots-entry-form { display: table !important; }
+  .azots-entry-form tbody { display: table-row-group !important; }
+  .azots-entry-form tr { display: table-row !important; }
+  .azots-entry-form td { display: table-cell !important; }
 
-  .azots-modern-body .azots-entry-form td.lblNormal {
+  .azots-entry-form td.lblNormal {
     width: 125px !important;
     min-width: 125px !important;
     white-space: normal !important;
   }
 
-  .azots-modern-body .azots-entry-form select.comboBox,
-  .azots-modern-body .azots-entry-form input.txtFieldLarge {
+  .azots-entry-form select.comboBox,
+  .azots-entry-form input.txtFieldLarge {
     width: min(100%, 320px) !important;
   }
 
-  .azots-modern-body .azots-entry-form input.newDateField[type="date"] {
+  .azots-entry-form input.newDateField[type="date"] {
     width: min(100%, 320px) !important;
   }
 
-  .azots-modern-body .azots-entry-form input[name="LOC_DESC"],
-  .azots-modern-body .azots-entry-form input[name="LOC_DESC_FR"],
-  .azots-modern-body .azots-entry-form input[name="LOC_DESC_TO"],
-  .azots-modern-body .azots-entry-form input[name="PROJ_DESC"],
-  .azots-modern-body .azots-entry-form input[name="JOB_DESC"],
-  .azots-modern-body .azots-entry-form input[name="TRAVEL_DESC"],
-  .azots-modern-body .azots-entry-form input[name="CLAIM_DESC"] {
+  .azots-entry-form input[name="LOC_DESC"],
+  .azots-entry-form input[name="LOC_DESC_FR"],
+  .azots-entry-form input[name="LOC_DESC_TO"],
+  .azots-entry-form input[name="PROJ_DESC"],
+  .azots-entry-form input[name="JOB_DESC"],
+  .azots-entry-form input[name="TRAVEL_DESC"],
+  .azots-entry-form input[name="CLAIM_DESC"] {
     display: block !important;
     width: min(100%, 520px) !important;
     max-width: 100% !important;
     margin-top: 4px !important;
   }
 
-  .azots-modern-body .azots-results-scroll > table.azots-results-table {
+  .azots-results-scroll > table.azots-results-table {
     width: 760px !important;
     min-width: 760px !important;
   }
@@ -1150,35 +1150,35 @@ body.azots-modern-body {
 }
 
 @media screen and (max-width: 520px) {
-  body.azots-modern-body { padding: 5px !important; }
+  body { padding: 5px !important; }
 
-  .azots-modern-body table.azots-entry-form,
-  .azots-modern-body .azots-entry-form tbody,
-  .azots-modern-body .azots-entry-form tr,
-  .azots-modern-body .azots-entry-form td {
+  table.azots-entry-form,
+  .azots-entry-form tbody,
+  .azots-entry-form tr,
+  .azots-entry-form td {
     display: block !important;
     width: 100% !important;
   }
 
-  .azots-modern-body .azots-entry-form tr { margin-bottom: 6px !important; }
+  .azots-entry-form tr { margin-bottom: 6px !important; }
 
-  .azots-modern-body .azots-entry-form td.lblNormal {
+  .azots-entry-form td.lblNormal {
     width: 100% !important;
     min-width: 0 !important;
     padding: 0 3px 2px !important;
     white-space: normal !important;
   }
 
-  .azots-modern-body .azots-entry-form select.comboBox,
-  .azots-modern-body .azots-entry-form input.txtFieldLarge,
-  .azots-modern-body .azots-entry-form textarea.textArea {
+  .azots-entry-form select.comboBox,
+  .azots-entry-form input.txtFieldLarge,
+  .azots-entry-form textarea.textArea {
     display: block !important;
     width: 100% !important;
     max-width: none !important;
     margin-right: 0 !important;
   }
 
-  .azots-modern-body .azots-entry-form .azots-picker-popup {
+  .azots-entry-form .azots-picker-popup {
     position: fixed !important;
     top: 50% !important;
     right: 10px !important;
@@ -1189,12 +1189,12 @@ body.azots-modern-body {
     transform: translateY(-50%) !important;
   }
 
-  .azots-modern-body .azots-entry-form .azots-picker-row {
+  .azots-entry-form .azots-picker-row {
     flex-direction: column !important;
   }
 
-  .azots-modern-body .azots-entry-form .azots-date-part,
-  .azots-modern-body .azots-entry-form .azots-time-part {
+  .azots-entry-form .azots-date-part,
+  .azots-entry-form .azots-time-part {
     width: 100% !important;
   }
   .azots-cal-day {
@@ -1204,9 +1204,9 @@ body.azots-modern-body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .azots-modern-body *,
-  .azots-modern-body *::before,
-  .azots-modern-body *::after {
+  *,
+  *::before,
+  *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }

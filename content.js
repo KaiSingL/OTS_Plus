@@ -1022,9 +1022,9 @@ function initViewUserPage() {
     var year, month, selectedDay;
 
     if (dateParam) {
-        year = parseInt(dateParam.substring(0, 4), 10);
-        month = parseInt(dateParam.substring(4, 6), 10) - 1;
-        selectedDay = parseInt(dateParam.substring(6, 8), 10);
+        month = parseInt(dateParam.substring(0, 2), 10) - 1;
+        selectedDay = parseInt(dateParam.substring(2, 4), 10);
+        year = parseInt(dateParam.substring(4, 8), 10);
     } else {
         year = now.getFullYear();
         month = now.getMonth();
@@ -1133,7 +1133,7 @@ function buildCalendar(container, year, month, selectedDay) {
             cell.className = 'azots-cal-day';
             cell.innerText = day;
 
-            var dateStr = pad(yr) + pad(mo + 1) + pad(day);
+            var dateStr = pad(mo + 1) + pad(day) + pad(yr);
 
             if (day === selDay) {
                 cell.className += ' azots-cal-selected';
