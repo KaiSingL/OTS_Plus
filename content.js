@@ -416,7 +416,7 @@ function setJobId(jobType) {
         select.dispatchEvent(new Event('change', { bubbles: true }));
         console.log(`[AzOTS Plus Debug] Set JOB_ID to: ${jobType}`);
     } else {
-        console.error(`[AzOTS Plus Debug] Option with text "${jobType}" not found in JOB_ID select`);
+        console.warn(`[AzOTS Plus Debug] Option with text "${jobType}" not found in JOB_ID select; leaving unchanged`);
     }
 }
 
@@ -898,7 +898,23 @@ function addIntegratedPicker(selector, targetName) {
             if (validTime) {
                 timeSelect.value = validTime;
             } else {
-                console.warn(`[AzOTS Plus Debug] Invalid time '${parts[1]}' in ${targetName}; using default`);
+                const timeParts = parts[1].split(':');
+                if (timeParts.length === 2) {
+                    const totalMin = parseInt(timeParts[0], 10) * 60 + parseInt(timeParts[1], 10);
+                    const roundedMin = Math.round(totalMin / 30) * 30;
+                    const hh = String(Math.floor(roundedMin / 60)).padStart(2, '0');
+                    const mm = String(roundedMin % 60).padStart(2, '0');
+                    const rounded = `${hh}:${mm}`;
+                    const nearest = timeOptions.find(t => t === rounded);
+                    if (nearest) {
+                        timeSelect.value = nearest;
+                        console.warn(`[AzOTS Plus Debug] Time '${parts[1]}' in ${targetName} rounded to nearest 30-min interval: ${nearest}`);
+                    } else {
+                        console.warn(`[AzOTS Plus Debug] Invalid time '${parts[1]}' in ${targetName}; using default`);
+                    }
+                } else {
+                    console.warn(`[AzOTS Plus Debug] Invalid time '${parts[1]}' in ${targetName}; using default`);
+                }
             }
         }
         console.log(`[AzOTS Plus Debug] Parsed initial value for ${targetName}: ${field.value}`);
