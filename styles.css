@@ -922,7 +922,10 @@ body.azots-modern-body {
 }
 
 .azots-login-page .lblAzeusIndex img {
-  mix-blend-mode: multiply !important;
+  /* Removes white background via SVG feColorMatrix filter (injected by JS).
+     White → transparent, everything else stays opaque.
+     Anti-aliased edge pixels become softly semi-transparent. */
+  filter: url('#azots-remove-white') !important;
 }
 
 .azots-login-page .lblMainMenu {

@@ -232,6 +232,19 @@ function preparePage() {
   // Login page detection
   if (document.querySelector('input[name="SCREEN_NAME"]')) {
     addClass(document.body, "azots-login-page");
+    if (!document.getElementById('azots-remove-white')) {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('id', 'azots-svg-filter');
+      svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+      var filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+      filter.setAttribute('id', 'azots-remove-white');
+      var matrix = document.createElementNS('http://www.w3.org/2000/svg', 'feColorMatrix');
+      matrix.setAttribute('type', 'matrix');
+      matrix.setAttribute('values', '1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 3 0');
+      filter.appendChild(matrix);
+      svg.appendChild(filter);
+      document.body.appendChild(svg);
+    }
   }
 
   prepareResultsTables();
