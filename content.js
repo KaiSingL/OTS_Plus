@@ -112,6 +112,10 @@ function styleResultTable(table) {
 
   addClass(table, "azots-results-table");
 
+  if (table.querySelector('input[name="ENTRY_CODE"]')) {
+    addClass(table, "azots-has-checkboxes");
+  }
+
   var headers = table.querySelectorAll("td.trHeader");
   if (headers.length) addClass(closestRow(headers[0]), "azots-results-header-row");
 

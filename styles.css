@@ -736,9 +736,9 @@ body.azots-modern-body {
   box-shadow: none !important;
 }
 
-.azots-modern-body table.azots-results-table tr.azots-results-data-row > td:first-child,
-.azots-modern-body table.azots-results-table tr.trOdd > td:first-child,
-.azots-modern-body table.azots-results-table tr.trEven > td:first-child {
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr.azots-results-data-row > td:first-child,
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr.trOdd > td:first-child,
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr.trEven > td:first-child {
   width: 32px !important;
   min-width: 32px !important;
   max-width: 32px !important;
@@ -759,6 +759,8 @@ body.azots-modern-body {
   font-weight: 400 !important;
   line-height: 18px !important;
   text-align: center !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
 }
 
 .azots-modern-body table.azots-results-table td.lblTableField {
@@ -768,6 +770,8 @@ body.azots-modern-body {
   font-weight: 400 !important;
   line-height: 18px !important;
   text-align: left !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
 }
 
 .azots-modern-body table.azots-results-table tr.azots-results-data-row-even > td,
@@ -806,13 +810,13 @@ body.azots-modern-body {
   opacity: 0.65 !important;
 }
 
-.azots-modern-body table.azots-results-table tr > td:nth-child(2) { width: 20% !important; }
-.azots-modern-body table.azots-results-table tr > td:nth-child(3) { width: 10% !important; }
-.azots-modern-body table.azots-results-table tr > td:nth-child(4) { width: 15% !important; }
-.azots-modern-body table.azots-results-table tr > td:nth-child(5) { width: 10% !important; }
-.azots-modern-body table.azots-results-table tr > td:nth-child(6),
-.azots-modern-body table.azots-results-table tr > td:nth-child(7) { width: 10% !important; }
-.azots-modern-body table.azots-results-table tr > td:nth-child(8) {
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(2) { width: 20% !important; }
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(3) { width: 10% !important; }
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(4) { width: 15% !important; }
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(5) { width: 10% !important; }
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(6),
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(7) { width: 10% !important; }
+.azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(8) {
   width: 25% !important;
   min-width: 150px !important;
   white-space: normal !important;
