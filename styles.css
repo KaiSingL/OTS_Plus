@@ -662,7 +662,6 @@ body.azots-modern-body {
   min-width: 720px !important;
   margin: 0 !important;
   padding: 0 !important;
-  table-layout: fixed !important;
   border: 0 !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
@@ -760,7 +759,7 @@ body.azots-modern-body {
   line-height: 18px !important;
   text-align: center !important;
   overflow-wrap: break-word !important;
-  word-break: break-word !important;
+  word-break: keep-all !important;
 }
 
 .azots-modern-body table.azots-results-table td.lblTableField {
@@ -771,7 +770,7 @@ body.azots-modern-body {
   line-height: 18px !important;
   text-align: left !important;
   overflow-wrap: break-word !important;
-  word-break: break-word !important;
+  word-break: keep-all !important;
 }
 
 .azots-modern-body table.azots-results-table tr.azots-results-data-row-even > td,
@@ -816,6 +815,10 @@ body.azots-modern-body {
 .azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(5) { width: 10% !important; }
 .azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(6),
 .azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(7) { width: 10% !important; }
+.azots-modern-body table.azots-results-table.azots-has-checkboxes {
+  table-layout: fixed !important;
+}
+
 .azots-modern-body table.azots-results-table.azots-has-checkboxes tr > td:nth-child(8) {
   width: 25% !important;
   min-width: 150px !important;
