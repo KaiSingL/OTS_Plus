@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build release archive
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          zip -r "azots-plus-v$VERSION.zip" \
+            manifest.json \
+            content.js \
+            background.js \
+            options.html \
+            options.js \
+            styles.css \
+            prepare_classes.js \
+            icons/
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          PREV_TAG=$(git tag --sort=-version:refname | head -2 | tail -1)
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="${PREV_TAG}..HEAD"
+          else
+            RANGE=""
+          fi
+          {
+            echo "## Changes since $PREV_TAG"
+            echo ""
+            git log --oneline --no-decorate $RANGE
+          } > /tmp/release-notes.md
+          cat /tmp/release-notes.md
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          cat /tmp/release-notes.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: ${{ steps.release_notes.outputs.notes }}
+          files: azots-plus-*.zip
