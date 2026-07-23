@@ -804,6 +804,8 @@ function initLogUserPage(config) {
     // Highlight START_TIME if date is not today
     highlightNonTodayStartTime();
 
+    enableDisabledClaimControls();
+
     console.log('[AzOTS Plus Debug] Log user page initialization complete');
 }
 

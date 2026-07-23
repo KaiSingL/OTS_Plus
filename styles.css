@@ -482,6 +482,7 @@ table.azots-entry-form {
 }
 
 .azots-entry-form .azots-picker-popup {
+  display: none !important;
   position: absolute !important;
   z-index: 9999 !important;
   top: calc(100% + 6px) !important;
@@ -494,6 +495,10 @@ table.azots-entry-form {
   border-radius: 8px !important;
   background: #fff !important;
   box-shadow: 0 14px 30px rgba(30, 41, 59, 0.17) !important;
+}
+
+.azots-entry-form .azots-picker-popup.show {
+  display: block !important;
 }
 
 .azots-entry-form .azots-picker-row {
@@ -636,6 +641,8 @@ table.azots-entry-form {
   padding: 0 !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
+  border: 1px solid #e3e8ef !important;
+  border-radius: 8px !important;
   -webkit-overflow-scrolling: touch !important;
 }
 
