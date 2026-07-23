@@ -822,19 +822,15 @@ body.azots-modern-body {
 /* ── Login page ── */
 
 .azots-login-page .azots-page-wrapper {
-  margin-top: 40px !important;
+  margin-top: 32px !important;
   max-width: 620px !important;
 }
 
 .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child {
   width: 220px !important;
   min-width: 200px !important;
-  padding: 20px 16px !important;
-  border: 1px solid var(--az-border) !important;
-  border-radius: var(--az-card-radius) 0 0 var(--az-card-radius) !important;
-  background: var(--az-surface) !important;
-  box-shadow: var(--az-shadow) !important;
-  vertical-align: middle !important;
+  padding: 8px 12px !important;
+  vertical-align: top !important;
 }
 
 .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child table {
@@ -893,16 +889,15 @@ body.azots-modern-body {
   background: var(--az-primary-dark) !important;
 }
 
+.azots-login-page input[name="btnCancel"] {
+  display: none !important;
+}
+
 .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child {
   width: auto !important;
   min-width: 200px !important;
-  padding: 24px 20px !important;
-  border: 1px solid var(--az-border) !important;
-  border-left: 0 !important;
-  border-radius: 0 var(--az-card-radius) var(--az-card-radius) 0 !important;
-  background: var(--az-surface) !important;
-  box-shadow: var(--az-shadow) !important;
-  vertical-align: middle !important;
+  padding: 16px 12px !important;
+  vertical-align: top !important;
   text-align: center !important;
 }
 
@@ -935,7 +930,9 @@ body.azots-modern-body {
 }
 
 .azots-login-page .lblLinkMenu a {
-  display: inline-block !important;
+  display: block !important;
+  width: 200px !important;
+  margin: 0 auto !important;
   padding: 6px 16px !important;
   border: 1px solid var(--az-border) !important;
   border-radius: 6px !important;
@@ -945,7 +942,6 @@ body.azots-modern-body {
   font-weight: 600 !important;
   text-decoration: none !important;
   transition: background 0.15s, border-color 0.15s !important;
-  min-width: 140px !important;
 }
 
 .azots-login-page .lblLinkMenu a:hover {
@@ -1051,15 +1047,12 @@ body.azots-modern-body {
   }
 
   .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child {
-    border-radius: var(--az-card-radius) var(--az-card-radius) 0 0 !important;
-    border-bottom: 0 !important;
-    border-left: 1px solid var(--az-border) !important;
+    padding: 8px 12px !important;
     min-width: 0 !important;
   }
 
   .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child {
-    border-radius: 0 0 var(--az-card-radius) var(--az-card-radius) !important;
-    border-left: 1px solid var(--az-border) !important;
+    padding: 12px !important;
     min-width: 0 !important;
   }
 
