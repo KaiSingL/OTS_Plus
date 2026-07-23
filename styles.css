@@ -2,7 +2,7 @@
   --az-primary: #304899;
   --az-primary-dark: #203574;
   --az-primary-soft: #edf2ff;
-  --az-page: #ffffff;
+  --az-page: #f3f6fb;
   --az-surface: #ffffff;
   --az-surface-soft: #f8faff;
   --az-disabled: #eef2f7;
@@ -177,7 +177,7 @@ body.azots-modern-body {
 
 .azots-modern-body td.lblSelected a.lblLink {
   color: var(--az-primary-dark) !important;
-  background: var(--az-primary-soft) !important;
+  background: var(--az-surface) !important;
 }
 
 /* ── Date and clock ── */
