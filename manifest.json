@@ -15,6 +15,11 @@
   "content_scripts": [
     {
       "matches": ["http://192.168.1.148:8081/hkots/*"],
+      "js": ["prepare_classes.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["http://192.168.1.148:8081/hkots/*"],
       "css": ["styles.css"],
       "js": ["content.js"]
     }

@@ -59,7 +59,9 @@ a {
 
 /* ── Page wrapper (centering fix) ── */
 
-.azots-page-wrapper {
+.azots-page-wrapper,
+table[width="760"],
+table[width="780"] {
   width: 100% !important;
   max-width: var(--az-content-width) !important;
   margin-right: auto !important;
@@ -68,7 +70,9 @@ a {
   float: none !important;
 }
 
-.azots-page-wrapper > tbody > tr > td {
+.azots-page-wrapper > tbody > tr > td,
+table[width="760"] > tbody > tr > td,
+table[width="780"] > tbody > tr > td {
   vertical-align: top !important;
 }
 
