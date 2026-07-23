@@ -822,19 +822,29 @@ body.azots-modern-body {
 /* ── Login page ── */
 
 .azots-login-page .azots-page-wrapper {
-  margin-top: 32px !important;
-  max-width: 620px !important;
+  margin-top: 24px !important;
+  max-width: 440px !important;
+}
+
+.azots-login-page .azots-page-wrapper > tbody > tr > td:first-child,
+.azots-login-page .azots-page-wrapper > tbody > tr > td:last-child {
+  display: block !important;
+  width: 100% !important;
+  padding: 10px 16px !important;
+  text-align: center !important;
 }
 
 .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child {
-  width: 220px !important;
-  min-width: 200px !important;
-  padding: 8px 12px !important;
-  vertical-align: top !important;
+  padding-bottom: 2px !important;
+}
+
+.azots-login-page .azots-page-wrapper > tbody > tr > td:last-child {
+  padding-top: 2px !important;
 }
 
 .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child table {
-  width: 100% !important;
+  margin: 0 auto !important;
+  width: auto !important;
 }
 
 .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child form {
@@ -850,7 +860,8 @@ body.azots-modern-body {
 }
 
 .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child input.txtFieldSmall {
-  width: 100% !important;
+  width: 220px !important;
+  max-width: 100% !important;
   height: var(--az-control-height) !important;
   padding: 5px 9px !important;
   border: 1px solid var(--az-border-strong) !important;
@@ -871,9 +882,9 @@ body.azots-modern-body {
 
 .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child input.btnMedium {
   appearance: none !important;
-  min-width: 70px !important;
+  min-width: 90px !important;
   height: var(--az-control-height) !important;
-  padding: 0 12px !important;
+  padding: 0 16px !important;
   border: 1px solid var(--az-primary) !important;
   border-radius: 6px !important;
   color: #fff !important;
@@ -891,14 +902,6 @@ body.azots-modern-body {
 
 .azots-login-page input[name="btnCancel"] {
   display: none !important;
-}
-
-.azots-login-page .azots-page-wrapper > tbody > tr > td:last-child {
-  width: auto !important;
-  min-width: 200px !important;
-  padding: 16px 12px !important;
-  vertical-align: top !important;
-  text-align: center !important;
 }
 
 .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child table,
@@ -922,18 +925,17 @@ body.azots-modern-body {
   font-size: 18px !important;
   font-weight: 700 !important;
   line-height: 1.4 !important;
-  margin: 12px 0 8px !important;
+  margin: 10px 0 8px !important;
 }
 
 .azots-login-page .lblLinkMenu {
-  margin: 6px 0 !important;
+  margin: 5px 0 !important;
 }
 
 .azots-login-page .lblLinkMenu a {
-  display: block !important;
-  width: 200px !important;
-  margin: 0 auto !important;
-  padding: 6px 16px !important;
+  display: inline-block !important;
+  min-width: 180px !important;
+  padding: 7px 20px !important;
   border: 1px solid var(--az-border) !important;
   border-radius: 6px !important;
   color: var(--az-primary) !important;
@@ -1036,32 +1038,15 @@ body.azots-modern-body {
   /* Login page responsive */
   .azots-login-page .azots-page-wrapper {
     max-width: 100% !important;
-    margin-top: 10px !important;
-  }
-
-  .azots-login-page .azots-page-wrapper > tbody > tr,
-  .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child,
-  .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child {
-    display: block !important;
-    width: 100% !important;
+    margin-top: 8px !important;
   }
 
   .azots-login-page .azots-page-wrapper > tbody > tr > td:first-child {
-    padding: 8px 12px !important;
-    min-width: 0 !important;
+    padding: 6px 10px !important;
   }
 
   .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child {
-    padding: 12px !important;
-    min-width: 0 !important;
-  }
-
-  .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child table,
-  .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child table tbody,
-  .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child table tbody tr,
-  .azots-login-page .azots-page-wrapper > tbody > tr > td:last-child table tbody tr td {
-    display: block !important;
-    width: 100% !important;
+    padding: 6px 10px 12px !important;
   }
 }
 
