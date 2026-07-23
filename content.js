@@ -35,6 +35,222 @@ const FIELD_SELECTORS = {
 
 const STORAGE_KEY_LAST_CLAIM_DATE = 'azotsLastClaimDate';
 
+// DOM Helpers (migrated from stylesheet IIFE)
+
+function addClass(element, className) {
+  if (!element) return;
+  if (element.classList) {
+    element.classList.add(className);
+  } else if ((" " + element.className + " ").indexOf(" " + className + " ") === -1) {
+    element.className = (element.className ? element.className + " " : "") + className;
+  }
+}
+
+function hasClass(element, className) {
+  if (!element) return false;
+  return (" " + element.className + " ").indexOf(" " + className + " ") !== -1;
+}
+
+function closestTable(element) {
+  while (element && element.nodeType === 1) {
+    if (element.tagName.toLowerCase() === "table") return element;
+    element = element.parentNode;
+  }
+  return null;
+}
+
+function closestRow(element) {
+  while (element && element.nodeType === 1) {
+    if (element.tagName.toLowerCase() === "tr") return element;
+    element = element.parentNode;
+  }
+  return null;
+}
+
+function removeNode(element) {
+  if (element && element.parentNode) element.parentNode.removeChild(element);
+}
+
+function markNearbyBreaks(table) {
+  if (!table) return;
+  var node = table.previousSibling;
+  while (node) {
+    if (node.nodeType === 3 && !node.nodeValue.replace(/\s/g, "")) {
+      node = node.previousSibling;
+      continue;
+    }
+    if (node.nodeType === 1 && node.tagName.toLowerCase() === "br") {
+      addClass(node, "azots-legacy-break");
+      node = node.previousSibling;
+      continue;
+    }
+    break;
+  }
+}
+
+function wrapResultsTable(table) {
+  if (!table || !table.parentNode) return;
+  if (hasClass(table.parentNode, "azots-results-scroll")) return;
+
+  var wrapper = document.createElement("div");
+  wrapper.className = "azots-results-scroll";
+  table.parentNode.insertBefore(wrapper, table);
+  wrapper.appendChild(table);
+}
+
+function rowHasMeaningfulContent(row) {
+  if (!row) return false;
+  if (row.querySelector(".trHeader, input")) return true;
+  if (hasClass(row, "trOdd") || hasClass(row, "trEven")) return true;
+  var text = row.textContent || row.innerText || "";
+  return text.replace(/\u00a0/g, "").replace(/\s/g, "") !== "";
+}
+
+function styleResultTable(table) {
+  if (!table) return;
+
+  addClass(table, "azots-results-table");
+
+  var headers = table.querySelectorAll("td.trHeader");
+  if (headers.length) addClass(closestRow(headers[0]), "azots-results-header-row");
+
+  var rows = table.querySelectorAll("tr.trOdd, tr.trEven");
+  for (var r = 0; r < rows.length; r++) {
+    addClass(rows[r], "azots-results-data-row");
+    if (r % 2 === 1) addClass(rows[r], "azots-results-data-row-even");
+  }
+
+  var allRows = table.getElementsByTagName("tr");
+  for (var x = allRows.length - 1; x >= 0; x--) {
+    if (!rowHasMeaningfulContent(allRows[x])) removeNode(allRows[x]);
+  }
+
+  markNearbyBreaks(table);
+  wrapResultsTable(table);
+}
+
+function prepareResultsTables() {
+  var checks = document.querySelectorAll('input[name="ENTRY_CODE"]');
+  var seen = [];
+
+  for (var i = 0; i < checks.length; i++) {
+    var table = closestTable(checks[i]);
+    if (!table || seen.indexOf(table) !== -1) continue;
+    seen.push(table);
+    styleResultTable(table);
+  }
+
+  // Fallback for pages without ENTRY_CODE (e.g. view_user):
+  // find tables whose first row has 3+ direct td.trHeader cells
+  // AND the table has trOdd/trEven data rows.
+  // Only checks the first row's DIRECT cells (not descendants) to avoid
+  // matching layout wrapper tables.
+  if (!seen.length) {
+    var allTables = document.querySelectorAll("table");
+    for (var t = 0; t < allTables.length; t++) {
+      if (seen.indexOf(allTables[t]) !== -1) continue;
+      if (allTables[t].querySelectorAll("tr.trOdd, tr.trEven").length === 0) continue;
+      var firstRow = allTables[t].rows[0];
+      if (!firstRow) continue;
+      var headerCount = 0;
+      for (var c = 0; c < firstRow.cells.length; c++) {
+        if (hasClass(firstRow.cells[c], "trHeader")) headerCount++;
+      }
+      if (headerCount >= 3) {
+        seen.push(allTables[t]);
+        styleResultTable(allTables[t]);
+      }
+    }
+  }
+}
+
+function preparePage() {
+  addClass(document.documentElement, "azots-modern-page");
+  addClass(document.body, "azots-modern-body");
+
+  // Outer wrapper — centering fix
+  var wrapper = document.querySelector('table[width="760"], table[width="780"]');
+  addClass(wrapper, "azots-page-wrapper");
+
+  // User header
+  var title = document.querySelector("td.lblTitle");
+  addClass(closestTable(title), "azots-user-header");
+
+  // Navigation
+  var menu = document.querySelector('a[href*="index.jsp"]');
+  addClass(closestTable(menu), "azots-navigation");
+
+  // Date card
+  var clock = document.querySelector('input[name="TIMENOW"]');
+  addClass(closestTable(clock), "azots-date-card");
+
+  // Date long-text cleanup
+  var dateCell = document.querySelector("td.lblLongDate");
+  if (dateCell) {
+    var dateBreaks = dateCell.getElementsByTagName("br");
+    while (dateBreaks.length) removeNode(dateBreaks[0]);
+  }
+
+  // Clock decoration
+  var clockImage = document.querySelector('img[src*="clockRight"]');
+  if (clockImage) {
+    var clockCell = clockImage.parentNode;
+    removeNode(clockImage);
+    addClass(clockCell, "azots-clock-decoration");
+  }
+
+  // Editor card — handles both preset container IDs
+  var presets = document.getElementById("preset-container") || document.getElementById("azots-plus-container");
+  if (presets) addClass(presets, "azots-plus-container");
+  addClass(closestTable(presets), "azots-editor-card");
+
+  // Form table — match any known form selector
+  var formField = document.querySelector(
+    'select[name="LOC_ID"], select[name="LOC_FR"], ' +
+    'input[name="CLAIM_DATE"], input[name="DATE_FROM"]'
+  );
+  var formTable = closestTable(formField);
+  addClass(formTable, "azots-entry-form");
+
+  // Description inputs — remove trailing <br> siblings
+  var descNames = ["LOC_DESC", "LOC_DESC_FR", "LOC_DESC_TO", "PROJ_DESC", "JOB_DESC", "TRAVEL_DESC", "CLAIM_DESC"];
+  for (var d = 0; d < descNames.length; d++) {
+    var input = document.querySelector('input[name="' + descNames[d] + '"]');
+    if (!input || !input.parentNode) continue;
+    var children = input.parentNode.childNodes;
+    for (var c = children.length - 1; c >= 0; c--) {
+      if (children[c].nodeType === 1 && children[c].tagName.toLowerCase() === "br") {
+        removeNode(children[c]);
+      }
+    }
+  }
+
+  // Action rows
+  var submit = document.querySelector('input[name="SUBMIT"]');
+  addClass(closestRow(submit), "azots-action-row");
+
+  // Login page detection
+  if (document.querySelector('input[name="SCREEN_NAME"]')) {
+    addClass(document.body, "azots-login-page");
+  }
+
+  prepareResultsTables();
+}
+
+function schedulePrepare() {
+  if (window._azotsScheduled) return;
+  window._azotsScheduled = true;
+  var fn = function () {
+    window._azotsScheduled = false;
+    preparePage();
+  };
+  if (window.requestAnimationFrame) {
+    window.requestAnimationFrame(fn);
+  } else {
+    setTimeout(fn, 0);
+  }
+}
+
 // Helper Functions for Setting Form Fields
 function setClaimDate(inputDate) {
     console.log(`[AzOTS Plus Debug] Attempting to set CLAIM_DATE with input: ${inputDate}`);
@@ -488,9 +704,6 @@ async function initCreateClaimPage(config) {
     container.appendChild(mealFeeInput.input);
     container.appendChild(mealContainer);
 
-    // Inject styles (consolidated for create claim)
-    injectCreateClaimStyles();
-
     // Position container near form (e.g., before first table or at top)
     const formArea = document.querySelector('form') || document.body;
     formArea.insertBefore(container, formArea.lastChild);
@@ -501,77 +714,6 @@ async function initCreateClaimPage(config) {
     updateMealPresetButtons(config.claimMealPresets || [], 'meal-preset-container');
 
     enableDisabledClaimControls();
-}
-
-function injectCreateClaimStyles() {
-    if (document.querySelector('#azots-create-claim-styles')) {
-        console.log('[AzOTS Plus Debug] Create claim styles already injected');
-        return;
-    }
-    const style = document.createElement('style');
-    style.id = 'azots-create-claim-styles';
-    style.textContent = `
-        .azots-plus-container {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-            background: #fff;
-            padding: 12px;
-            margin: 6px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            max-width: 450px;
-            box-sizing: border-box;
-        }
-        .azots-plus-label {
-            font-size: 0.85em;
-            line-height: 24px;
-            color: #34495e;
-            margin-bottom: 4px;
-            font-weight: 500;
-            display: inline-block;
-            margin-right: 8px;
-        }
-        .azots-plus-container input[type="date"],
-        .azots-plus-container input[type="number"] {
-            width: 100%;
-            max-width: 140px;
-            padding: 6px;
-            margin-bottom: 8px;
-            border: 1px solid #ecf0f1;
-            border-radius: 4px;
-            font-size: 0.85em;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        .azots-plus-container input[type="date"]:focus,
-        .azots-plus-container input[type="number"]:focus {
-            border-color: #425ad5ff;
-            outline: none;
-            box-shadow: 0 0 3px rgba(52, 152, 219, 0.5);
-        }
-        .azots-plus-button {
-            cursor: pointer;
-            background-color: #425ad5ff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.85em;
-            height: 24px;
-            line-height: 24px;
-            margin-right: 4px;
-            margin-bottom: 4px;
-            display: inline-block;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .azots-plus-button:hover {
-            background-color: #2980b9;
-            transform: scale(1.03);
-        }
-        .azots-plus-button-container {
-            display: inline-block;
-        }
-    `;
-    document.head.appendChild(style);
-    console.log('[AzOTS Plus Debug] Create claim styles injected');
 }
 
 function highlightNonTodayStartTime() {
@@ -641,120 +783,13 @@ function initLogUserPage(config) {
         console.log('[AzOTS Plus Debug] Set form table width to 100%');
     }
 
-    // Inject styles (consolidated for log user, including integrated picker)
-    injectLogUserStyles();
-
     // Highlight START_TIME if date is not today
     highlightNonTodayStartTime();
 
     console.log('[AzOTS Plus Debug] Log user page initialization complete');
 }
 
-function injectLogUserStyles() {
-    if (document.querySelector('#azots-log-user-styles')) {
-        console.log('[AzOTS Plus Debug] Log user styles already injected');
-        return;
-    }
-    const style = document.createElement('style');
-    style.id = 'azots-log-user-styles';
-    style.textContent = `
-        .azots-plus-container {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-            background: #fff;
-            padding: 12px;
-            margin: 6px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            max-width: 750px;
-            box-sizing: border-box;
-        }
-        .azots-plus-button {
-            cursor: pointer;
-            background-color: #425ad5ff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.85em;
-            height: 24px;
-            line-height: 24px;
-            margin-right: 4px;
-            margin-bottom: 4px;
-            display: inline-block;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .azots-plus-button:hover {
-            background-color: #2980b9;
-            transform: scale(1.03);
-        }
-        /* Integrated Picker Styles */
-        .azots-integrated-picker {
-            position: relative;
-            display: inline-block;
-            margin-left: 8px;
-        }
-        .azots-picker-button {
-            background: #eeeeee;
-            color: #333;
-            border: 1px solid #dddddd;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px; /* Smaller for tiny emoji */
-            filter: grayscale(100%); /* Desaturate emoji to grey */
-            transition: background 0.3s, box-shadow 0.3s;
-            width: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            vertical-align: middle; /* Align with input */
-        }
-        .azots-picker-button:hover {
-            background: #e0e0e0;
-        }
-        .azots-picker-button:focus {
-            outline: none;
-            box-shadow: 0 0 2px rgba(0,0,0,0.1);
-        }
-        .azots-picker-popup {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: #fff;
-            border: 1px solid #ecf0f1;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 16px;
-            z-index: 1000;
-            min-width: 280px;
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .azots-picker-popup.show {
-            display: flex;
-        }
-        .azots-picker-row {
-            display: flex;
-            gap: 10px;
-            align-items: end;
-        }
-        .azots-picker-row input, .azots-picker-row select {
-            padding: 8px;
-            border: 1px solid #ecf0f1;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-            flex: 1;
-            transition: border-color 0.3s ease;
-        }
-        .azots-picker-row input:focus, .azots-picker-row select:focus {
-            border-color: #425ad5;
-            outline: none;
-            box-shadow: 0 0 3px rgba(52, 152, 219, 0.5);
-        }
-    `;
-    document.head.appendChild(style);
-    console.log('[AzOTS Plus Debug] Log user styles injected (including integrated picker with #eeeeee theme, tiny grey button, and grayscale filter)');
-}
+// (injectLogUserStyles removed — styles now come from styles.css)
 
 // Integrated Picker Functions (for START_TIME and END_TIME)
 function addIntegratedPicker(selector, targetName) {
@@ -1093,6 +1128,9 @@ function formatDate(date) {
 console.log('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.location.href);
 
 (async function() {
+    // Apply base styling immediately
+    preparePage();
+
     let config = { ...DEFAULT_SETTINGS };
 
     try {
@@ -1113,5 +1151,31 @@ console.log('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.lo
         initPrintClaimPage();
     } else {
         console.log('[AzOTS Plus Debug] No matching page for enhancements');
+        // For view_user and index pages — preparePage() already ran
+    }
+
+    // Re-apply on events for dynamically rendered content
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", preparePage);
+    }
+    window.addEventListener("load", preparePage);
+    setTimeout(preparePage, 100);
+    setTimeout(preparePage, 500);
+    setTimeout(preparePage, 1500);
+
+    // MutationObserver for dynamic DOM changes
+    if (window.MutationObserver) {
+        var observer = new MutationObserver(function (mutations) {
+            for (var i = 0; i < mutations.length; i++) {
+                if (mutations[i].addedNodes && mutations[i].addedNodes.length) {
+                    schedulePrepare();
+                    break;
+                }
+            }
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     }
 })();
