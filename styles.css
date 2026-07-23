@@ -99,7 +99,6 @@ body.azots-modern-body {
   overflow: hidden !important;
   color: #fff !important;
   background: linear-gradient(135deg, var(--az-primary-dark), var(--az-primary)) !important;
-  box-shadow: var(--az-shadow) !important;
 }
 
 .azots-modern-body .azots-user-header td {
@@ -134,10 +133,6 @@ body.azots-modern-body {
   border: 0 !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border-radius: 0 0 var(--az-card-radius) var(--az-card-radius) !important;
-  overflow: hidden !important;
-  background: var(--az-surface) !important;
-  box-shadow: var(--az-shadow) !important;
 }
 
 .azots-modern-body .azots-navigation td {
@@ -146,7 +141,6 @@ body.azots-modern-body {
   padding: 0 !important;
   border: 0 !important;
   border-right: 1px solid #e4e9f1 !important;
-  background: var(--az-surface) !important;
   text-align: center !important;
 }
 
@@ -177,20 +171,15 @@ body.azots-modern-body {
 
 .azots-modern-body td.lblSelected a.lblLink {
   color: var(--az-primary-dark) !important;
-  background: var(--az-surface) !important;
+  background: var(--az-primary-soft) !important;
 }
 
 /* ── Date and clock ── */
 
 .azots-modern-body table.azots-date-card {
   margin: 0 auto 10px !important;
-  border: 1px solid var(--az-border) !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border-radius: 10px !important;
-  overflow: hidden !important;
-  background: var(--az-surface) !important;
-  box-shadow: 0 3px 12px rgba(30, 41, 59, 0.045) !important;
 }
 
 .azots-modern-body .azots-date-card tr {
@@ -202,7 +191,6 @@ body.azots-modern-body {
   padding: 5px 10px !important;
   border: 0 !important;
   color: var(--az-text) !important;
-  background: var(--az-surface) !important;
   background-image: none !important;
   vertical-align: middle !important;
 }
@@ -246,12 +234,8 @@ body.azots-modern-body {
 .azots-modern-body table.azots-editor-card {
   margin: 0 auto 12px !important;
   padding: 0 !important;
-  border: 1px solid var(--az-border) !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border-radius: var(--az-card-radius) !important;
-  background: var(--az-surface) !important;
-  box-shadow: var(--az-shadow) !important;
 }
 
 .azots-modern-body .azots-editor-card > tbody > tr > td {
@@ -263,7 +247,6 @@ body.azots-modern-body {
   height: auto !important;
   padding: 10px 16px !important;
   border: 0 !important;
-  border-radius: 11px 11px 0 0 !important;
   color: #fff !important;
   background: linear-gradient(135deg, var(--az-primary-dark), var(--az-primary)) !important;
   font-size: 16px !important;
@@ -647,12 +630,8 @@ body.azots-modern-body {
   display: block !important;
   margin: 0 auto 12px !important;
   padding: 0 !important;
-  border: 1px solid var(--az-border) !important;
-  border-radius: 10px !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
-  background: #fff !important;
-  box-shadow: var(--az-shadow) !important;
   -webkit-overflow-scrolling: touch !important;
 }
 
@@ -665,15 +644,11 @@ body.azots-modern-body {
   border: 0 !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border-radius: 9px !important;
-  overflow: hidden !important;
-  background: #fff !important;
   box-shadow: none !important;
 }
 
 .azots-modern-body table.azots-results-table tbody {
   border: 0 !important;
-  background: #fff !important;
 }
 
 .azots-modern-body table.azots-results-table tr.azots-results-header-row,
