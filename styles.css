@@ -921,6 +921,10 @@ body.azots-modern-body {
   margin: 0 0 4px !important;
 }
 
+.azots-login-page .lblAzeusIndex img {
+  mix-blend-mode: multiply !important;
+}
+
 .azots-login-page .lblMainMenu {
   color: var(--az-text-secondary) !important;
   font-size: 18px !important;
