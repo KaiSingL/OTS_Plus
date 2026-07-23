@@ -687,7 +687,7 @@ async function initCreateClaimPage(config) {
 
     // Claim Travel label and container
     const travelLabel = document.createElement('label');
-    travelLabel.innerText = 'Claim Travel: ';
+    travelLabel.innerText = 'Travel Preset: ';
     travelLabel.className = 'azots-plus-label';
     const travelContainer = document.createElement('div');
     travelContainer.id = 'travel-preset-container';
@@ -704,27 +704,42 @@ async function initCreateClaimPage(config) {
 
     // Claim Meal container
     const mealLabel = document.createElement('label');
-    mealLabel.innerText = 'Claim Meal: ';
+    mealLabel.innerText = 'Meal Preset: ';
     mealLabel.className = 'azots-plus-label';
     const mealContainer = document.createElement('div');
     mealContainer.id = 'meal-preset-container';
     mealContainer.className = 'azots-plus-button-container';
 
-    // Append elements with better structure
-    container.appendChild(dateInput.label);
-    container.appendChild(dateInput.input);
-    container.appendChild(document.createElement('br'));
-    container.appendChild(travelLabel);
-    container.appendChild(travelContainer);
-    container.appendChild(document.createElement('br'));
-    container.appendChild(mealLabel);
-    container.appendChild(mealFeeInput.label);
-    container.appendChild(mealFeeInput.input);
-    container.appendChild(mealContainer);
+    // Date row
+    const dateRow = document.createElement('div');
+    dateRow.style.cssText = 'width:100%; display:flex; align-items:center; gap:5px;';
+    dateRow.appendChild(dateInput.label);
+    dateRow.appendChild(dateInput.input);
+    container.appendChild(dateRow);
 
-    // Position container near form (e.g., before first table or at top)
-    const formArea = document.querySelector('form') || document.body;
-    formArea.insertBefore(container, formArea.lastChild);
+    // Travel row
+    const travelRow = document.createElement('div');
+    travelRow.style.cssText = 'width:100%; display:flex; align-items:center; gap:5px;';
+    travelRow.appendChild(travelLabel);
+    travelRow.appendChild(travelContainer);
+    container.appendChild(travelRow);
+
+    // Meal preset row
+    const mealRow = document.createElement('div');
+    mealRow.style.cssText = 'width:100%; display:flex; align-items:center; gap:5px;';
+    mealRow.appendChild(mealLabel);
+    mealRow.appendChild(mealContainer);
+    container.appendChild(mealRow);
+
+    // Meal fee row
+    const mealFeeRow = document.createElement('div');
+    mealFeeRow.style.cssText = 'width:100%; display:flex; align-items:center; gap:5px;';
+    mealFeeRow.appendChild(mealFeeInput.label);
+    mealFeeRow.appendChild(mealFeeInput.input);
+    container.appendChild(mealFeeRow);
+
+    // Position container before form table (like log user page)
+    insertContainerBeforeFormTable(container);
     console.log('[AzOTS Plus Debug] Custom UI container added to create_claim_record.jsp');
 
     // Update preset buttons after DOM insertion
