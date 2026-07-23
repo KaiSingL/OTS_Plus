@@ -964,6 +964,115 @@ body.azots-modern-body {
   box-shadow: var(--az-focus) !important;
 }
 
+/* ── Calendar component ── */
+
+.azots-modern-body a.dateLink,
+.azots-modern-body a.dateToday {
+  display: none !important;
+}
+
+.azots-calendar {
+  width: 100% !important;
+  max-width: var(--az-content-width) !important;
+  margin: 0 auto 12px !important;
+  border: 1px solid var(--az-border) !important;
+  border-radius: var(--az-card-radius) !important;
+  overflow: hidden !important;
+  background: var(--az-surface) !important;
+  box-shadow: var(--az-shadow) !important;
+}
+
+.azots-calendar-header {
+  display: flex !important;
+  align-items: center !important;
+  padding: 8px 14px !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--az-primary-dark), var(--az-primary)) !important;
+}
+
+.azots-calendar-nav {
+  appearance: none !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  padding: 2px 10px !important;
+  border-radius: 4px !important;
+  line-height: 1 !important;
+  user-select: none !important;
+}
+
+.azots-calendar-nav:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.azots-calendar-title {
+  flex: 1 !important;
+  text-align: center !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.azots-calendar-weekdays {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  padding: 6px 8px 0 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--az-muted) !important;
+  text-align: center !important;
+}
+
+.azots-calendar-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 1px !important;
+  padding: 4px 8px 8px !important;
+}
+
+.azots-cal-day {
+  appearance: none !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--az-text) !important;
+  font-size: 13px !important;
+  text-align: center !important;
+  padding: 5px 0 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  font-weight: 400 !important;
+  font-family: inherit !important;
+}
+
+.azots-cal-day:hover {
+  background: var(--az-primary-soft) !important;
+}
+
+.azots-cal-selected {
+  color: #fff !important;
+  background: var(--az-primary) !important;
+  font-weight: 700 !important;
+}
+
+.azots-cal-selected:hover {
+  background: var(--az-primary-dark) !important;
+}
+
+.azots-cal-today {
+  outline: 2px solid var(--az-primary) !important;
+  outline-offset: -2px !important;
+}
+
+.azots-cal-today.azots-cal-selected {
+  outline-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.azots-cal-other-month {
+  color: var(--az-disabled-text) !important;
+}
+
 /* ── Responsive ── */
 
 @media screen and (max-width: 1000px) {
@@ -1105,6 +1214,10 @@ body.azots-modern-body {
   .azots-modern-body .azots-entry-form .azots-date-part,
   .azots-modern-body .azots-entry-form .azots-time-part {
     width: 100% !important;
+  }
+  .azots-cal-day {
+    font-size: 12px !important;
+    padding: 4px 0 !important;
   }
 }
 

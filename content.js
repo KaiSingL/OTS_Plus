@@ -13,7 +13,8 @@ const DEFAULT_SETTINGS = {
 const PAGE_PATHS = {
     CREATE_CLAIM: '/hkots/create_claim_record.jsp',
     LOG_USER: '/hkots/ots002_log_user.jsp',
-    PRINT_CLAIM: '/hkots/print_claim_record.jsp'
+    PRINT_CLAIM: '/hkots/print_claim_record.jsp',
+    VIEW_USER: '/hkots/ots002b_view_user.jsp'
 };
 
 const FIELD_SELECTORS = {
@@ -1007,6 +1008,171 @@ function initPrintClaimPage() {
     attachPickerListeners('newDateField', formatDate);
 }
 
+function initViewUserPage() {
+    console.log('[AzOTS Plus Debug] Detected ots002b_view_user.jsp, initializing calendar');
+
+    // Determine selected date from URL param or use today
+    var params = new URLSearchParams(window.location.search);
+    var dateParam = params.get('DATE');
+    var now = new Date();
+    var year, month, selectedDay;
+
+    if (dateParam) {
+        year = parseInt(dateParam.substring(0, 4), 10);
+        month = parseInt(dateParam.substring(4, 6), 10) - 1;
+        selectedDay = parseInt(dateParam.substring(6, 8), 10);
+    } else {
+        year = now.getFullYear();
+        month = now.getMonth();
+        selectedDay = now.getDate();
+    }
+
+    var container = document.createElement('div');
+    container.className = 'azots-calendar';
+    buildCalendar(container, year, month, selectedDay);
+
+    // Insert above the results table
+    var results = document.querySelector('.azots-results-scroll');
+    if (results) {
+        results.parentNode.insertBefore(container, results);
+    } else {
+        // Before the results table is styled, insert before the data table
+        var dataTable = document.querySelector('table.azots-results-table, table[width="760"][cellspacing="1"]');
+        if (dataTable && dataTable.parentNode) {
+            dataTable.parentNode.insertBefore(container, dataTable);
+        } else {
+            document.body.appendChild(container);
+        }
+    }
+
+    console.log('[AzOTS Plus Debug] Calendar inserted for view_user page');
+}
+
+function buildCalendar(container, year, month, selectedDay) {
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+    var dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function normalizeMonth(yr, mo) {
+        if (mo < 0) { yr -= Math.ceil(Math.abs(mo) / 12); mo = ((mo % 12) + 12) % 12; }
+        if (mo > 11) { yr += Math.floor(mo / 12); mo = mo % 12; }
+        return { yr: yr, mo: mo };
+    }
+
+    function render(yr, mo, selDay) {
+        var norm = normalizeMonth(yr, mo);
+        yr = norm.yr; mo = norm.mo;
+
+        container.innerHTML = '';
+
+        // Header: nav + title
+        var header = document.createElement('div');
+        header.className = 'azots-calendar-header';
+
+        var prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.className = 'azots-calendar-nav';
+        prevBtn.innerText = '\u25C0';
+        prevBtn.addEventListener('click', function (e) { e.stopPropagation(); render(yr, mo - 1, selDay); });
+
+        var title = document.createElement('div');
+        title.className = 'azots-calendar-title';
+        title.innerText = monthNames[mo] + ' ' + yr;
+
+        var nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.className = 'azots-calendar-nav';
+        nextBtn.innerText = '\u25B6';
+        nextBtn.addEventListener('click', function (e) { e.stopPropagation(); render(yr, mo + 1, selDay); });
+
+        header.appendChild(prevBtn);
+        header.appendChild(title);
+        header.appendChild(nextBtn);
+        container.appendChild(header);
+
+        // Weekday headers
+        var weekdays = document.createElement('div');
+        weekdays.className = 'azots-calendar-weekdays';
+        for (var d = 0; d < 7; d++) {
+            var wd = document.createElement('div');
+            wd.innerText = dayNames[d];
+            weekdays.appendChild(wd);
+        }
+        container.appendChild(weekdays);
+
+        // Day grid
+        var grid = document.createElement('div');
+        grid.className = 'azots-calendar-grid';
+
+        var firstDay = new Date(yr, mo, 1).getDay();
+        var daysInMonth = new Date(yr, mo + 1, 0).getDate();
+        var daysInPrev = new Date(yr, mo, 0).getDate();
+        var today = new Date();
+        var isTodayDate = today.getFullYear() === yr && today.getMonth() === mo && today.getDate() === selDay;
+
+        // Empty cells before 1st
+        for (var e = firstDay - 1; e >= 0; e--) {
+            var emptyCell = document.createElement('button');
+            emptyCell.type = 'button';
+            emptyCell.className = 'azots-cal-day azots-cal-other-month';
+            emptyCell.disabled = true;
+            emptyCell.innerText = daysInPrev - e;
+            grid.appendChild(emptyCell);
+        }
+
+        // Day cells
+        for (var day = 1; day <= daysInMonth; day++) {
+            var cell = document.createElement('button');
+            cell.type = 'button';
+            cell.className = 'azots-cal-day';
+            cell.innerText = day;
+
+            var dateStr = pad(yr) + pad(mo + 1) + pad(day);
+
+            if (day === selDay) {
+                cell.className += ' azots-cal-selected';
+            }
+
+            if (yr === today.getFullYear() && mo === today.getMonth() && day === today.getDate()) {
+                cell.className += ' azots-cal-today';
+            }
+
+            (function (ds, d, y, m) {
+                cell.addEventListener('click', function () {
+                    var href = 'ots002b_view_user.jsp';
+                    var isToday = y === today.getFullYear() && m === today.getMonth() && d === today.getDate();
+                    if (!isToday) {
+                        href += '?DATE=' + ds;
+                    }
+                    window.location.href = href;
+                });
+            })(dateStr, day, yr, mo);
+
+            grid.appendChild(cell);
+        }
+
+        // Fill remaining cells from next month
+        var totalCells = firstDay + daysInMonth;
+        var remaining = totalCells % 7;
+        if (remaining > 0) {
+            for (var f = 1; f <= 7 - remaining; f++) {
+                var nextCell = document.createElement('button');
+                nextCell.type = 'button';
+                nextCell.className = 'azots-cal-day azots-cal-other-month';
+                nextCell.disabled = true;
+                nextCell.innerText = f;
+                grid.appendChild(nextCell);
+            }
+        }
+
+        container.appendChild(grid);
+    }
+
+    render(year, month, selectedDay);
+}
+
 function addDatePicker(selector, targetName) {
     console.log(`[AzOTS Plus Debug] Adding date picker for ${targetName}`);
     const field = document.querySelector(selector);
@@ -1176,11 +1342,13 @@ console.log('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.lo
         await initCreateClaimPage(config);
     } else if (path.includes(PAGE_PATHS.LOG_USER)) {
         initLogUserPage(config);
+    } else if (path.includes(PAGE_PATHS.VIEW_USER)) {
+        initViewUserPage();
     } else if (path.includes(PAGE_PATHS.PRINT_CLAIM)) {
         initPrintClaimPage();
     } else {
         console.log('[AzOTS Plus Debug] No matching page for enhancements');
-        // For view_user and index pages — preparePage() already ran
+        // For index page — preparePage() already ran
     }
 
     // Re-apply on events for dynamically rendered content
