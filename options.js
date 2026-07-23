@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const presetLocationInput = document.getElementById('preset-location');
   const presetProjectInput = document.getElementById('preset-project');
   const presetPurposeInput = document.getElementById('preset-purpose');
-  const presetStartTimeInput = document.getElementById('preset-start-time');
+  const presetStartTime = document.getElementById('preset-start-time');
   const presetSaveButton = document.getElementById('preset-save');
   const presetCancelButton = document.getElementById('preset-cancel');
 
@@ -36,6 +36,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const mealCancelButton = document.getElementById('meal-cancel');
 
   const backdrop = document.getElementById('backdrop');
+
+  function initCustomDropdown(container) {
+    const trigger = container.querySelector('.custom-dropdown-trigger');
+    const menu = container.querySelector('.custom-dropdown-menu');
+    const options = container.querySelectorAll('.custom-dropdown-option');
+    const hiddenInput = container.querySelector('input[type="hidden"]');
+    const valueDisplay = container.querySelector('.custom-dropdown-value');
+
+    function updateDisplay(val) {
+      const opt = Array.from(options).find(o => o.dataset.value === val);
+      valueDisplay.textContent = opt ? opt.textContent : '—';
+      options.forEach(o => o.classList.toggle('selected', o.dataset.value === val));
+    }
+
+    hiddenInput.addEventListener('change', () => updateDisplay(hiddenInput.value));
+
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      container.classList.toggle('open');
+      if (container.classList.contains('open')) {
+        const sel = container.querySelector('.custom-dropdown-option.selected');
+        if (sel) sel.scrollIntoView({ block: 'nearest' });
+      }
+    });
+
+    options.forEach(opt => {
+      opt.addEventListener('click', () => {
+        hiddenInput.value = opt.dataset.value;
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        container.classList.remove('open');
+      });
+    });
+
+    document.addEventListener('click', e => {
+      if (!container.contains(e.target)) container.classList.remove('open');
+    });
+
+    updateDisplay(hiddenInput.value);
+  }
+
+  const dd = document.getElementById('preset-start-time-dd');
+  if (dd) initCustomDropdown(dd);
 
   let editingRowPreset = null;
   let editingRowTravel = null;
@@ -196,7 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
       presetLocationInput.value = locationCell.textContent;
       presetProjectInput.value = projectCell.textContent;
       presetPurposeInput.value = purposeCell.textContent;
-      presetStartTimeInput.value = startTimeCell.textContent;
+      presetStartTime.value = startTimeCell.textContent;
+      presetStartTime.dispatchEvent(new Event('change'));
       presetPopup.classList.add('show');
       backdrop.classList.add('show');
       checkPresetInputs();
@@ -344,7 +387,8 @@ document.addEventListener('DOMContentLoaded', () => {
     presetLocationInput.value = '';
     presetProjectInput.value = '';
     presetPurposeInput.value = '';
-    presetStartTimeInput.value = '';
+    presetStartTime.value = '';
+    presetStartTime.dispatchEvent(new Event('change'));
     presetSaveButton.disabled = true;
     presetPopup.classList.add('show');
     backdrop.classList.add('show');
@@ -374,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const location = presetLocationInput.value.trim();
       const project = presetProjectInput.value.trim();
       const purpose = presetPurposeInput.value.trim();
-      const startTime = presetStartTimeInput.value;
+      const startTime = presetStartTime.value;
       if (editingRowPreset) {
         const cells = editingRowPreset.querySelectorAll('td');
         cells[0].textContent = location;

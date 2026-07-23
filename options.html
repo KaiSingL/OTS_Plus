@@ -5,94 +5,121 @@
   <meta charset="UTF-8">
   <title>AzOTS Plus Settings</title>
   <style>
+    :root {
+      --az-primary: #304899;
+      --az-primary-dark: #203574;
+      --az-primary-soft: #edf2ff;
+      --az-page: #f3f6fb;
+      --az-surface: #ffffff;
+      --az-surface-soft: #f8faff;
+      --az-disabled: #eef2f7;
+      --az-text: #1f2937;
+      --az-text-secondary: #475569;
+      --az-muted: #64748b;
+      --az-disabled-text: #8b97a8;
+      --az-border: #d8e0ec;
+      --az-border-strong: #bac5d6;
+      --az-danger: #b42318;
+      --az-control-height: 34px;
+      --az-radius: 7px;
+      --az-card-radius: 12px;
+      --az-focus: 0 0 0 3px rgba(48, 72, 153, 0.15);
+      --az-shadow: 0 8px 24px rgba(30, 41, 59, 0.07), 0 2px 5px rgba(30, 41, 59, 0.04);
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
     body {
-      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+      background: var(--az-page);
       margin: 0;
-      padding: 40px;
+      padding: clamp(8px, 1.3vw, 18px);
       min-height: 100vh;
-      color: #333;
-    }
-    .section {
-      background: #fff;
-      padding: 25px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .section:hover {
-      transform: translateY(-5px);
+      color: var(--az-text);
     }
     h1, h3 {
-      color: #2c3e50;
-      font-weight: 600;
+      color: var(--az-primary-dark);
+      font-weight: 700;
     }
     h1 {
-      font-size: 2em;
-      margin-bottom: 30px;
+      font-size: 22px;
+      margin-bottom: 28px;
       text-align: center;
     }
     h3 {
-      font-size: 1.5em;
+      font-size: 16px;
       margin-bottom: 0;
     }
     label {
-      font-size: 1em;
-      color: #2018;
-      margin-bottom: 8px;
-      font-weight: 500;
+      display: block;
+      font-size: 13px;
+      color: var(--az-primary-dark);
+      margin-bottom: 6px;
+      font-weight: 700;
     }
-    input[type="text"], input[type="number"] {
+    input[type="text"], input[type="number"], input[type="time"], select {
       width: 100%;
-      max-width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 2px solid #ecf0f1;
-      border-radius: 8px;
-      font-size: 1em;
-      box-sizing: border-box;
-      transition: border-color 0.3s ease;
+      height: var(--az-control-height);
+      padding: 5px 9px;
+      margin-bottom: 12px;
+      border: 1px solid var(--az-border-strong);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--az-text);
+      background: var(--az-surface);
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.025);
+      outline: 0;
     }
-    input[type="text"]:focus, input[type="number"]:focus {
-      border-color: #3498db;
-      outline: none;
-      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus, select:focus {
+      border-color: var(--az-primary);
+      box-shadow: var(--az-focus);
+    }
+    input[type="time"]::-webkit-calendar-picker-indicator {
+      opacity: 0.5;
+      cursor: pointer;
+    }
+    input[type="time"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 0.85;
     }
     button {
-      padding: 10px 20px;
+      padding: 0 12px;
+      height: var(--az-control-height);
       cursor: pointer;
-      background-color: #3498db;
+      background: var(--az-primary);
       color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1em;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+      border: 1px solid var(--az-primary);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      box-shadow: 0 2px 6px rgba(48, 72, 153, 0.17);
     }
-    button:hover {
-      background-color: #2980b9;
-      transform: scale(1.05);
+    button:hover:not(:disabled) {
+      background: var(--az-primary-dark);
+      border-color: var(--az-primary-dark);
     }
     button:disabled {
-      background-color: #bdc3c7;
+      color: var(--az-disabled-text);
+      border-color: #d5dce6;
+      background: #edf1f5;
       cursor: not-allowed;
+      box-shadow: none;
     }
     #status {
       position: fixed;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: rgba(52, 152, 219, 0.9);
+      background: var(--az-primary);
       color: white;
       padding: 10px 20px;
-      border-radius: 8px;
+      border-radius: 6px;
       display: none;
       z-index: 1000;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 13px;
+      box-shadow: var(--az-shadow);
     }
     #status.saving, #status.saved {
       display: block;
@@ -109,57 +136,94 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      max-width: 800px;
+      margin: 0 auto 6px;
     }
     .preset-list {
-      max-height: 200px;
+      max-height: 420px;
       overflow-y: auto;
-      border: 2px solid #ecf0f1;
-      padding: 15px;
+      border: 1px solid var(--az-border);
       border-radius: 8px;
-      background: #fafafa;
+      background: var(--az-surface);
+      max-width: 800px;
+      margin: 0 auto 24px;
     }
     .preset-list table {
       width: 100%;
       border-collapse: collapse;
     }
-    .preset-list th, .preset-list td {
-      padding: 10px;
+    .preset-list thead th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: 7px 10px;
       text-align: left;
-      border-bottom: 1px solid #ecf0f1;
+      color: #fff;
+      background: var(--az-primary);
+      font-size: 12px;
+      font-weight: 700;
     }
-    .preset-list th {
-      font-weight: bold;
-      border-bottom: 2px solid #ecf0f1;
+    .preset-list thead th:last-child {
+      text-align: right;
     }
-    .preset-list tr:last-child td {
+    .preset-list tbody td {
+      padding: 7px 10px;
+      color: #334155;
+      font-size: 12px;
+      border-bottom: 1px solid #e3e8ef;
+    }
+    .preset-list tbody tr:last-child td {
       border-bottom: none;
+    }
+    .preset-list tbody tr:nth-child(even) td {
+      background: var(--az-surface-soft);
+    }
+    .preset-list tbody tr:hover td {
+      background: var(--az-primary-soft);
     }
     .preset-list .actions {
       display: flex;
-      gap: 5px;
+      gap: 4px;
       justify-content: flex-end;
     }
     .preset-list .actions button {
-      background-color: white;
-      color: black;
-      border: 2px solid #bdc3c7;
-      border-radius: 8px;
-      width: 60px;
-      height: 30px;
-      display: flex;
+      width: 52px;
+      height: 26px;
+      padding: 0;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 1em;
-      transition: border-color 0.3s ease, color 0.3s ease;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--az-primary);
+      border: 1px solid #b8c5e4;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(30, 41, 59, 0.04);
+      border-radius: 14px;
     }
-    .preset-list .actions button.remove:hover {
-      color: #e74c3c;
-      border-color: #e74c3c;
+    .preset-list .actions button:hover:not(:disabled) {
+      color: #fff;
+      border-color: var(--az-primary);
+      background: var(--az-primary);
     }
-    .preset-list .actions button.edit:hover {
-      color: #3498db;
-      border-color: #3498db;
+    .preset-list .actions button.remove:hover:not(:disabled) {
+      color: #fff;
+      border-color: var(--az-danger);
+      background: var(--az-danger);
+    }
+    .preset-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .preset-list::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 0 0 8px 0;
+    }
+    .preset-list::-webkit-scrollbar-thumb {
+      background: var(--az-border-strong);
+      border-radius: 3px;
+    }
+    .preset-list::-webkit-scrollbar-thumb:hover {
+      background: #9eadd4;
     }
     .popup {
       display: none;
@@ -167,16 +231,16 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: #fff;
-      padding: 30px;
-      border: 2px solid #3498db;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+      background: var(--az-surface);
+      padding: 28px;
+      border: 1px solid var(--az-border);
+      box-shadow: 0 14px 30px rgba(30, 41, 59, 0.17);
       z-index: 1001;
       width: 500px;
       max-width: 90%;
       max-height: 80vh;
       overflow-y: auto;
-      border-radius: 12px;
+      border-radius: var(--az-card-radius);
       animation: slideIn 0.3s ease;
     }
     .popup.show {
@@ -189,49 +253,138 @@
     .popup h3 {
       margin-top: 0;
       margin-bottom: 20px;
-      font-size: 1.7em;
+      font-size: 18px;
       text-align: center;
-      color: #2c3e50;
+      color: var(--az-primary-dark);
     }
     .popup label {
       display: block;
-      font-size: 1.1em;
-      color: #34495e;
-      margin-bottom: 10px;
-      font-weight: 500;
+      font-size: 13px;
+      color: var(--az-primary-dark);
+      margin-bottom: 6px;
+      font-weight: 700;
     }
-    .popup input[type="text"], .popup input[type="number"], .popup input[type="time"] {
-      padding: 12px;
-      font-size: 1.1em;
-      margin-bottom: 20px;
-      border: 2px solid #ecf0f1;
-      border-radius: 8px;
-      transition: border-color 0.3s ease;
+    .popup input[type="text"], .popup input[type="number"], .popup input[type="time"], .popup select {
       width: 100%;
-      box-sizing: border-box;
+      height: var(--az-control-height);
+      padding: 5px 9px;
+      margin-bottom: 14px;
+      border: 1px solid var(--az-border-strong);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--az-text);
+      background: var(--az-surface);
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.025);
+      outline: 0;
     }
-    .popup input[type="text"]:focus, .popup input[type="number"]:focus {
-      border-color: #3498db;
-      outline: none;
-      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    .popup input[type="text"]:focus, .popup input[type="number"]:focus, .popup input[type="time"]:focus, .popup select:focus {
+      border-color: var(--az-primary);
+      box-shadow: var(--az-focus);
     }
     .popup-buttons {
       display: flex;
-      gap: 20px;
+      gap: 10px;
       justify-content: flex-end;
-      margin-top: 25px;
-    }
-    .popup-buttons button.cancel {
-      background-color: #ecf0f1;
-      color: #7f8c8d;
-    }
-    .popup-buttons button.cancel:hover {
-      background-color: #dcdde1;
-      color: #7f8c8d;
+      margin-top: 20px;
     }
     .popup-buttons button {
-      padding: 12px 25px;
-      font-size: 1.1em;
+      min-width: 80px;
+    }
+    .popup-buttons button.cancel {
+      color: var(--az-muted);
+      border-color: #d5dce6;
+      background: #fff;
+      box-shadow: none;
+    }
+    .popup-buttons button.cancel:hover:not(:disabled) {
+      color: #fff;
+      border-color: var(--az-muted);
+      background: var(--az-muted);
+    }
+    .custom-dropdown {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .custom-dropdown-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: var(--az-control-height);
+      padding: 5px 9px;
+      border: 1px solid var(--az-border-strong);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--az-text);
+      background: var(--az-surface);
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.025);
+      cursor: pointer;
+      outline: 0;
+    }
+    .custom-dropdown-trigger:focus {
+      border-color: var(--az-primary);
+      box-shadow: var(--az-focus);
+    }
+    .custom-dropdown-trigger:hover:not(:disabled) {
+      background: var(--az-surface);
+      border-color: var(--az-border-strong);
+    }
+    .custom-dropdown-value {
+      flex: 1;
+      text-align: left;
+    }
+    .custom-dropdown-arrow {
+      flex-shrink: 0;
+      margin-left: 6px;
+      font-size: 10px;
+      color: var(--az-muted);
+      transition: transform 0.15s;
+    }
+    .custom-dropdown.open .custom-dropdown-arrow {
+      transform: rotate(180deg);
+    }
+    .custom-dropdown-menu {
+      display: none;
+      position: absolute;
+      z-index: 100;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid var(--az-border);
+      border-radius: 6px;
+      background: var(--az-surface);
+      box-shadow: 0 8px 24px rgba(30, 41, 59, 0.12);
+    }
+    .custom-dropdown.open .custom-dropdown-menu {
+      display: block;
+    }
+    .custom-dropdown-option {
+      padding: 7px 9px;
+      font-size: 13px;
+      color: var(--az-text);
+      cursor: pointer;
+    }
+    .custom-dropdown-option:hover {
+      background: var(--az-primary-soft);
+    }
+    .custom-dropdown-option.selected {
+      color: var(--az-primary-dark);
+      font-weight: 700;
+      background: var(--az-primary-soft);
+    }
+    .custom-dropdown-menu::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-dropdown-menu::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-dropdown-menu::-webkit-scrollbar-thumb {
+      background: var(--az-border-strong);
+      border-radius: 3px;
     }
     .backdrop {
       display: none;
@@ -251,13 +404,11 @@
 <body>
   <h1>AzOTS Plus Settings</h1>
 
-  <div class="section">
-    <div class="preset-header">
-      <h3>Timesheet Preset</h3>
-      <button id="add-preset">Add</button>
-    </div>
-    <div id="preset-list" class="preset-list"></div>
+  <div class="preset-header">
+    <h3>Timesheet Preset</h3>
+    <button id="add-preset">Add</button>
   </div>
+  <div id="preset-list" class="preset-list"></div>
 
   <div id="preset-popup" class="popup">
     <h3>Add Timesheet Preset</h3>
@@ -268,21 +419,49 @@
     <label>Purpose:</label>
     <input id="preset-purpose" type="text">
     <label>Start Time:</label>
-    <input id="preset-start-time" type="time">
-    <small style="display:block;margin:-10px 0 15px;color:#888;font-size:0.85em;">Leave empty to keep OTS start time unchanged.</small>
+    <div class="custom-dropdown" id="preset-start-time-dd">
+      <input type="hidden" id="preset-start-time" value="">
+      <button type="button" class="custom-dropdown-trigger">
+        <span class="custom-dropdown-value">—</span>
+        <span class="custom-dropdown-arrow">▼</span>
+      </button>
+      <div class="custom-dropdown-menu">
+        <div class="custom-dropdown-option selected" data-value="">—</div>
+        <div class="custom-dropdown-option" data-value="09:00">09:00</div>
+        <div class="custom-dropdown-option" data-value="09:30">09:30</div>
+        <div class="custom-dropdown-option" data-value="10:00">10:00</div>
+        <div class="custom-dropdown-option" data-value="10:30">10:30</div>
+        <div class="custom-dropdown-option" data-value="11:00">11:00</div>
+        <div class="custom-dropdown-option" data-value="11:30">11:30</div>
+        <div class="custom-dropdown-option" data-value="12:00">12:00</div>
+        <div class="custom-dropdown-option" data-value="12:30">12:30</div>
+        <div class="custom-dropdown-option" data-value="13:00">13:00</div>
+        <div class="custom-dropdown-option" data-value="13:30">13:30</div>
+        <div class="custom-dropdown-option" data-value="14:00">14:00</div>
+        <div class="custom-dropdown-option" data-value="14:30">14:30</div>
+        <div class="custom-dropdown-option" data-value="15:00">15:00</div>
+        <div class="custom-dropdown-option" data-value="15:30">15:30</div>
+        <div class="custom-dropdown-option" data-value="16:00">16:00</div>
+        <div class="custom-dropdown-option" data-value="16:30">16:30</div>
+        <div class="custom-dropdown-option" data-value="17:00">17:00</div>
+        <div class="custom-dropdown-option" data-value="17:30">17:30</div>
+        <div class="custom-dropdown-option" data-value="18:00">18:00</div>
+        <div class="custom-dropdown-option" data-value="18:30">18:30</div>
+        <div class="custom-dropdown-option" data-value="19:00">19:00</div>
+      </div>
+    </div>
+    <small style="display:block;margin:3px 0 10px;color:var(--az-muted);font-size:0.85em;">Leave empty to keep OTS start time unchanged.</small>
     <div class="popup-buttons">
       <button id="preset-cancel" class="cancel">Cancel</button>
       <button id="preset-save" disabled>Save</button>
     </div>
   </div>
 
-  <div class="section">
-    <div class="preset-header">
-      <h3>Claim Travel Preset</h3>
-      <button id="add-travel-preset">Add</button>
-    </div>
-    <div id="travel-preset-list" class="preset-list"></div>
+  <div class="preset-header">
+    <h3>Claim Travel Preset</h3>
+    <button id="add-travel-preset">Add</button>
   </div>
+  <div id="travel-preset-list" class="preset-list"></div>
 
   <div id="travel-preset-popup" class="popup">
     <h3>Add Claim Travel Preset</h3>
@@ -306,13 +485,11 @@
     </div>
   </div>
 
-  <div class="section">
-    <div class="preset-header">
-      <h3>Claim Meal Preset</h3>
-      <button id="add-meal-preset">Add</button>
-    </div>
-    <div id="meal-preset-list" class="preset-list"></div>
+  <div class="preset-header">
+    <h3>Claim Meal Preset</h3>
+    <button id="add-meal-preset">Add</button>
   </div>
+  <div id="meal-preset-list" class="preset-list"></div>
 
   <div id="meal-preset-popup" class="popup">
     <h3>Add Claim Meal Preset</h3>
