@@ -12,7 +12,8 @@ const _debugError = (...args) => { if (AZOTS_DEBUG) console.error(...args); };
 const DEFAULT_SETTINGS = {
     presets: [],
     claimTravelPresets: [],
-    claimMealPresets: []
+    claimMealPresets: [],
+    userId: ''
 };
 
 const PAGE_PATHS = {
@@ -524,6 +525,7 @@ async function retrieveSettingsFromChromeStorage() {
         settings.presets = Array.isArray(settings.presets) ? settings.presets : [];
         settings.claimTravelPresets = Array.isArray(settings.claimTravelPresets) ? settings.claimTravelPresets : [];
         settings.claimMealPresets = Array.isArray(settings.claimMealPresets) ? settings.claimMealPresets : [];
+        settings.userId = settings.userId || '';
         _debugLog('[AzOTS Plus Debug] Validated settings:', settings);
         return settings;
     } catch (error) {
@@ -1247,6 +1249,67 @@ function formatDate(date) {
            `${date.getFullYear()}`;
 }
 
+function injectLogUserNavButton(userId) {
+    if (!userId) return;
+    if (window.location.pathname.includes(PAGE_PATHS.LOG_USER)) return;
+
+    var menuLink = document.querySelector('a[href*="index.jsp"]');
+    var navTable = closestTable(menuLink);
+    if (!navTable) return;
+    if (navTable.querySelector('a[href*="ots002_log_user.jsp"]')) return;
+
+    var row = navTable.querySelector('tr');
+    if (!row) return;
+
+    var logoutLink = row.querySelector('a[href*="doLogout"]');
+    var refTd = logoutLink ? logoutLink.parentNode : null;
+
+    var now = new Date();
+    var mm = String(now.getMonth() + 1).padStart(2, '0');
+    var dd = String(now.getDate()).padStart(2, '0');
+    var yyyy = now.getFullYear();
+
+    var newTd = document.createElement('td');
+    newTd.className = 'lblNotSelected';
+    var newLink = document.createElement('a');
+    newLink.href = 'ots002_log_user.jsp?USER_ID=' + userId + '&DATE=' + mm + dd + yyyy;
+    newLink.className = 'lblLink';
+    newLink.textContent = 'Log User';
+    newTd.appendChild(newLink);
+
+    if (refTd) {
+        row.insertBefore(newTd, refTd);
+    } else {
+        row.appendChild(newTd);
+    }
+    _debugLog('[AzOTS Plus Debug] Log User nav button injected with userId:', userId);
+}
+
+function injectIndexPageLogUserButton(userId) {
+    if (!userId) return;
+    var claimLink = document.querySelector('p.lblLinkMenu a[href*="openClaimForm"]');
+    if (!claimLink) return;
+    var claimP = claimLink.parentNode;
+    if (claimP.parentNode.querySelector('a[href*="ots002_log_user.jsp"]')) return;
+
+    var now = new Date();
+    var mm = String(now.getMonth() + 1).padStart(2, '0');
+    var dd = String(now.getDate()).padStart(2, '0');
+    var yyyy = now.getFullYear();
+
+    var newP = document.createElement('p');
+    newP.align = 'center';
+    newP.className = 'lblLinkMenu';
+    var newLink = document.createElement('a');
+    newLink.href = 'ots002_log_user.jsp?USER_ID=' + userId + '&DATE=' + mm + dd + yyyy;
+    newLink.className = 'lblLink';
+    newLink.textContent = 'Log User';
+    newP.appendChild(newLink);
+
+    claimP.parentNode.insertBefore(newP, claimP.nextSibling);
+    _debugLog('[AzOTS Plus Debug] Log User index button injected with userId:', userId);
+}
+
 // Main Initialization
 _debugLog('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.location.href);
 
@@ -1276,8 +1339,11 @@ _debugLog('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.loca
         initPrintClaimPage();
     } else {
         _debugLog('[AzOTS Plus Debug] No matching page for enhancements');
-        // For index page — preparePage() already ran
+        injectIndexPageLogUserButton(config.userId);
     }
+
+    // Inject Log User nav button (if userId is configured)
+    injectLogUserNavButton(config.userId);
 
     // Re-apply on events for dynamically rendered content
     if (document.readyState === "loading") {

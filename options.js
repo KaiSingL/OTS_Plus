@@ -153,7 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const newSettings = {
       presets,
       claimTravelPresets,
-      claimMealPresets
+      claimMealPresets,
+      userId: document.getElementById('user-id').value
     };
     _debugLog(`Settings to save: ${JSON.stringify(newSettings)}`);
     chrome.storage.sync.set({ azotsSettings: newSettings })
@@ -173,7 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const defaultSettings = {
     presets: [],
     claimTravelPresets: [],
-    claimMealPresets: []
+    claimMealPresets: [],
+    userId: ''
   };
 
   chrome.storage.sync.get('azotsSettings')
@@ -192,6 +194,9 @@ document.addEventListener('DOMContentLoaded', () => {
       addTableToList(mealPresetList);
       addHeaderToTable(mealPresetList.querySelector('table'), ['Preset Name', 'Project Name', 'Purpose', '']);
       settings.claimMealPresets.forEach(preset => addMealPresetRow(preset.name, preset.projectName, preset.purpose));
+
+      document.getElementById('user-id').value = settings.userId || '';
+      document.getElementById('user-id').addEventListener('change', debouncedSave);
     })
     .catch(error => {
       _debugError('Error loading settings from chrome.storage.sync:', error);
