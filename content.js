@@ -831,6 +831,8 @@ function initLogUserPage(config) {
 
     enableDisabledClaimControls();
 
+    injectClaimNavButton(config.userId);
+
     _debugLog('[AzOTS Plus Debug] Log user page initialization complete');
 }
 
@@ -1283,6 +1285,35 @@ function injectLogUserNavButton(userId) {
         row.appendChild(newTd);
     }
     _debugLog('[AzOTS Plus Debug] Log User nav button injected with userId:', userId);
+}
+
+function injectClaimNavButton(userId) {
+    if (!userId) return;
+    var menuLink = document.querySelector('a[href*="index.jsp"]');
+    var navTable = closestTable(menuLink);
+    if (!navTable) return;
+    if (navTable.querySelector('a[href*="create_claim_record.jsp"]')) return;
+
+    var row = navTable.querySelector('tr');
+    if (!row) return;
+
+    var logoutLink = row.querySelector('a[href*="doLogout"]');
+    var refTd = logoutLink ? logoutLink.parentNode : null;
+
+    var newTd = document.createElement('td');
+    newTd.className = 'lblNotSelected';
+    var newLink = document.createElement('a');
+    newLink.href = 'create_claim_record.jsp?USER_ID=' + userId;
+    newLink.className = 'lblLink';
+    newLink.textContent = 'Claim Record';
+    newTd.appendChild(newLink);
+
+    if (refTd) {
+        row.insertBefore(newTd, refTd);
+    } else {
+        row.appendChild(newTd);
+    }
+    _debugLog('[AzOTS Plus Debug] Claim Record nav button injected with userId:', userId);
 }
 
 function injectIndexPageLogUserButton(userId) {
