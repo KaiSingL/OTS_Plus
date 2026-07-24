@@ -1,6 +1,10 @@
 // options.js
+const AZOTS_DEBUG = false;
+const _debugLog = (...args) => { if (AZOTS_DEBUG) console.log(...args); };
+const _debugError = (...args) => { if (AZOTS_DEBUG) console.error(...args); };
+
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM content loaded, initializing settings page');
+  _debugLog('DOM content loaded, initializing settings page');
 
   const presetList = document.getElementById('preset-list');
   const addPresetButton = document.getElementById('add-preset');
@@ -94,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Show status message
   function showStatus(message, className) {
-    console.log(`Status updated: ${message}, class: ${className}`);
+    _debugLog(`Status updated: ${message}, class: ${className}`);
     status.textContent = message;
     status.className = className;
     if (className === 'saved') {
@@ -106,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Save settings to chrome.storage.sync
   function saveSettings() {
-    console.log('Saving settings...');
+    _debugLog('Saving settings...');
       const presets = Array.from(presetList.querySelectorAll('tbody tr')).map(row => {
       const cells = row.querySelectorAll('td');
       const preset = {
@@ -115,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         purpose: cells[2].textContent,
         startTime: cells[3].textContent
       };
-      console.log(`Preset saved: ${JSON.stringify(preset)}`);
+      _debugLog(`Preset saved: ${JSON.stringify(preset)}`);
       return preset;
     });
 
@@ -130,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         vehicle: cells[5].textContent,
         fee: cells[6].textContent
       };
-      console.log(`Claim Travel Preset saved: ${JSON.stringify(preset)}`);
+      _debugLog(`Claim Travel Preset saved: ${JSON.stringify(preset)}`);
       return preset;
     });
 
@@ -141,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         projectName: cells[1].textContent,
         purpose: cells[2].textContent
       };
-      console.log(`Claim Meal Preset saved: ${JSON.stringify(preset)}`);
+      _debugLog(`Claim Meal Preset saved: ${JSON.stringify(preset)}`);
       return preset;
     });
 
@@ -151,14 +155,14 @@ document.addEventListener('DOMContentLoaded', () => {
       claimTravelPresets,
       claimMealPresets
     };
-    console.log(`Settings to save: ${JSON.stringify(newSettings)}`);
+    _debugLog(`Settings to save: ${JSON.stringify(newSettings)}`);
     chrome.storage.sync.set({ azotsSettings: newSettings })
       .then(() => {
-        console.log('Settings saved to chrome.storage.sync:', newSettings);
+        _debugLog('Settings saved to chrome.storage.sync:', newSettings);
         showStatus('Saved', 'saved');
       })
       .catch(error => {
-        console.error('Error saving settings to chrome.storage.sync:', error);
+        _debugError('Error saving settings to chrome.storage.sync:', error);
         showStatus('Error saving settings.', 'error');
       });
   }
@@ -175,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get('azotsSettings')
     .then(data => {
       const settings = data.azotsSettings || defaultSettings;
-      console.log(`Loaded settings: ${JSON.stringify(settings)}`);
+      _debugLog(`Loaded settings: ${JSON.stringify(settings)}`);
 
       addTableToList(presetList);
       addHeaderToTable(presetList.querySelector('table'), ['Location', 'Project Name', 'Purpose', 'Start Time', '']);
@@ -190,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
       settings.claimMealPresets.forEach(preset => addMealPresetRow(preset.name, preset.projectName, preset.purpose));
     })
     .catch(error => {
-      console.error('Error loading settings from chrome.storage.sync:', error);
+      _debugError('Error loading settings from chrome.storage.sync:', error);
     });
 
   function addTableToList(list) {
@@ -214,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add a new preset row for timesheet
   function addPresetRow(location, project, purpose, startTime) {
-    console.log(`Adding preset row: location=${location}, project=${project}, purpose=${purpose}, startTime=${startTime}`);
+    _debugLog(`Adding preset row: location=${location}, project=${project}, purpose=${purpose}, startTime=${startTime}`);
     const row = document.createElement('tr');
 
     const locationCell = document.createElement('td');
@@ -249,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeButton.innerHTML = '✕';
     removeButton.className = 'remove';
     removeButton.onclick = () => {
-      console.log(`Removing preset: ${location}, ${project}, ${purpose}`);
+      _debugLog(`Removing preset: ${location}, ${project}, ${purpose}`);
       row.remove();
       debouncedSave();
     };
@@ -268,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add a new travel preset row
   function addTravelPresetRow(name, fromLocation, toLocation, job, projectName, vehicle, fee) {
-    console.log(`Adding travel preset row: name=${name}, from=${fromLocation}, to=${toLocation}, job=${job}, project=${projectName}, vehicle=${vehicle}, fee=${fee}`);
+    _debugLog(`Adding travel preset row: name=${name}, from=${fromLocation}, to=${toLocation}, job=${job}, project=${projectName}, vehicle=${vehicle}, fee=${fee}`);
     const row = document.createElement('tr');
 
     const nameCell = document.createElement('td');
@@ -311,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeButton.innerHTML = '✕';
     removeButton.className = 'remove';
     removeButton.onclick = () => {
-      console.log(`Removing travel preset: ${name}`);
+      _debugLog(`Removing travel preset: ${name}`);
       row.remove();
       debouncedSave();
     };
@@ -333,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add a new meal preset row
   function addMealPresetRow(name, projectName, purpose) {
-    console.log(`Adding meal preset row: name=${name}, project=${projectName}, purpose=${purpose}`);
+    _debugLog(`Adding meal preset row: name=${name}, project=${projectName}, purpose=${purpose}`);
     const row = document.createElement('tr');
 
     const nameCell = document.createElement('td');
@@ -364,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeButton.innerHTML = '✕';
     removeButton.className = 'remove';
     removeButton.onclick = () => {
-      console.log(`Removing meal preset: ${name}`);
+      _debugLog(`Removing meal preset: ${name}`);
       row.remove();
       debouncedSave();
     };
@@ -382,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle timesheet preset popup
   addPresetButton.onclick = () => {
-    console.log('Add preset button clicked, showing popup');
+    _debugLog('Add preset button clicked, showing popup');
     editingRowPreset = null;
     presetLocationInput.value = '';
     presetProjectInput.value = '';
@@ -395,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   presetCancelButton.onclick = () => {
-    console.log('Cancel button clicked, hiding popup');
+    _debugLog('Cancel button clicked, hiding popup');
     presetPopup.classList.remove('show');
     backdrop.classList.remove('show');
   };
@@ -404,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isValid = presetLocationInput.value.trim() !== '' &&
                     presetProjectInput.value.trim() !== '' &&
                     presetPurposeInput.value.trim() !== '';
-    console.log(`Checking preset inputs, valid: ${isValid}`);
+    _debugLog(`Checking preset inputs, valid: ${isValid}`);
     presetSaveButton.disabled = !isValid;
   }
 
@@ -413,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
   presetPurposeInput.addEventListener('input', checkPresetInputs);
 
   presetSaveButton.onclick = () => {
-    console.log('Save button clicked');
+    _debugLog('Save button clicked');
     if (!presetSaveButton.disabled) {
       const location = presetLocationInput.value.trim();
       const project = presetProjectInput.value.trim();
@@ -429,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         addPresetRow(location, project, purpose, startTime);
       }
-      console.log('Preset saved, hiding popup');
+      _debugLog('Preset saved, hiding popup');
       presetPopup.classList.remove('show');
       backdrop.classList.remove('show');
       debouncedSave();
@@ -438,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle claim travel preset popup
   addTravelPresetButton.onclick = () => {
-    console.log('Add travel preset button clicked, showing popup');
+    _debugLog('Add travel preset button clicked, showing popup');
     editingRowTravel = null;
     travelNameInput.value = '';
     travelFromInput.value = '';
@@ -453,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   travelCancelButton.onclick = () => {
-    console.log('Travel cancel button clicked, hiding popup');
+    _debugLog('Travel cancel button clicked, hiding popup');
     travelPresetPopup.classList.remove('show');
     backdrop.classList.remove('show');
   };
@@ -466,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     travelProjectInput.value.trim() !== '' &&
                     travelVehicleInput.value.trim() !== '' &&
                     travelFeeInput.value.trim() !== '';
-    console.log(`Checking travel preset inputs, valid: ${isValid}`);
+    _debugLog(`Checking travel preset inputs, valid: ${isValid}`);
     travelSaveButton.disabled = !isValid;
   }
 
@@ -479,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
   travelFeeInput.addEventListener('input', checkTravelPresetInputs);
 
   travelSaveButton.onclick = () => {
-    console.log('Travel save button clicked');
+    _debugLog('Travel save button clicked');
     if (!travelSaveButton.disabled) {
       const name = travelNameInput.value.trim();
       const fromLocation = travelFromInput.value.trim();
@@ -501,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         addTravelPresetRow(name, fromLocation, toLocation, job, projectName, vehicle, fee);
       }
-      console.log('Travel preset saved, hiding popup');
+      _debugLog('Travel preset saved, hiding popup');
       travelPresetPopup.classList.remove('show');
       backdrop.classList.remove('show');
       debouncedSave();
@@ -510,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle claim meal preset popup
   addMealPresetButton.onclick = () => {
-    console.log('Add meal preset button clicked, showing popup');
+    _debugLog('Add meal preset button clicked, showing popup');
     editingRowMeal = null;
     mealNameInput.value = '';
     mealProjectInput.value = '';
@@ -521,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   mealCancelButton.onclick = () => {
-    console.log('Meal cancel button clicked, hiding popup');
+    _debugLog('Meal cancel button clicked, hiding popup');
     mealPresetPopup.classList.remove('show');
     backdrop.classList.remove('show');
   };
@@ -530,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isValid = mealNameInput.value.trim() !== '' &&
                     mealProjectInput.value.trim() !== '' &&
                     mealPurposeInput.value.trim() !== '';
-    console.log(`Checking meal preset inputs, valid: ${isValid}`);
+    _debugLog(`Checking meal preset inputs, valid: ${isValid}`);
     mealSaveButton.disabled = !isValid;
   }
 
@@ -539,7 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
   mealPurposeInput.addEventListener('input', checkMealPresetInputs);
 
   mealSaveButton.onclick = () => {
-    console.log('Meal save button clicked');
+    _debugLog('Meal save button clicked');
     if (!mealSaveButton.disabled) {
       const name = mealNameInput.value.trim();
       const projectName = mealProjectInput.value.trim();
@@ -553,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         addMealPresetRow(name, projectName, purpose);
       }
-      console.log('Meal preset saved, hiding popup');
+      _debugLog('Meal preset saved, hiding popup');
       mealPresetPopup.classList.remove('show');
       backdrop.classList.remove('show');
       debouncedSave();

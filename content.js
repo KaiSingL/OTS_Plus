@@ -3,6 +3,11 @@
 // Injects custom UI elements, auto-fill logic, and shortcuts via vanilla JS/CSS
 // Includes debug logs for troubleshooting; test in chrome://extensions/ dev mode
 
+const AZOTS_DEBUG = false;
+const _debugLog = (...args) => { if (AZOTS_DEBUG) console.log(...args); };
+const _debugWarn = (...args) => { if (AZOTS_DEBUG) console.warn(...args); };
+const _debugError = (...args) => { if (AZOTS_DEBUG) console.error(...args); };
+
 // Constants
 const DEFAULT_SETTINGS = {
     presets: [],
@@ -274,10 +279,10 @@ function schedulePrepare() {
 
 // Helper Functions for Setting Form Fields
 function setClaimDate(inputDate) {
-    console.log(`[AzOTS Plus Debug] Attempting to set CLAIM_DATE with input: ${inputDate}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set CLAIM_DATE with input: ${inputDate}`);
     const dateObj = new Date(inputDate.replace(/-/g, '/'));
     if (isNaN(dateObj.getTime())) {
-        console.error('[AzOTS Plus Debug] Invalid date provided for CLAIM_DATE');
+        _debugError('[AzOTS Plus Debug] Invalid date provided for CLAIM_DATE');
         return;
     }
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -291,34 +296,34 @@ function setClaimDate(inputDate) {
     if (inputField) {
         inputField.value = formattedDate;
         inputField.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Set CLAIM_DATE to: ${formattedDate}`);
+        _debugLog(`[AzOTS Plus Debug] Set CLAIM_DATE to: ${formattedDate}`);
     } else {
-        console.error('[AzOTS Plus Debug] Input field with name "CLAIM_DATE" not found');
+        _debugError('[AzOTS Plus Debug] Input field with name "CLAIM_DATE" not found');
     }
 }
 
 function setClaimType(claimType) {
-    console.log(`[AzOTS Plus Debug] Attempting to set CLAIM_TYPE to: ${claimType}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set CLAIM_TYPE to: ${claimType}`);
     const select = document.querySelector(FIELD_SELECTORS.CLAIM_TYPE);
     if (select) {
         const option = select.querySelector(`option[value="${claimType}"]`);
         if (option) {
             select.value = claimType;
             select.dispatchEvent(new Event('change', { bubbles: true }));
-            console.log(`[AzOTS Plus Debug] Set CLAIM_TYPE to: ${claimType}`);
+            _debugLog(`[AzOTS Plus Debug] Set CLAIM_TYPE to: ${claimType}`);
         } else {
-            console.error(`[AzOTS Plus Debug] Option with value "${claimType}" not found`);
+            _debugError(`[AzOTS Plus Debug] Option with value "${claimType}" not found`);
         }
     } else {
-        console.error('[AzOTS Plus Debug] Select element with name "CLAIM_TYPE" not found');
+        _debugError('[AzOTS Plus Debug] Select element with name "CLAIM_TYPE" not found');
     }
 }
 
 function setVehicleType(travelTypeText) {
-    console.log(`[AzOTS Plus Debug] Attempting to set TRAVEL_TYPE to text: ${travelTypeText}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set TRAVEL_TYPE to text: ${travelTypeText}`);
     const select = document.querySelector(FIELD_SELECTORS.TRAVEL_TYPE);
     if (!select) {
-        console.error('[AzOTS Plus Debug] Select element with name "TRAVEL_TYPE" not found');
+        _debugError('[AzOTS Plus Debug] Select element with name "TRAVEL_TYPE" not found');
         return;
     }
 
@@ -326,17 +331,17 @@ function setVehicleType(travelTypeText) {
     if (option) {
         select.value = option.value;
         select.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Set TRAVEL_TYPE to: ${travelTypeText}`);
+        _debugLog(`[AzOTS Plus Debug] Set TRAVEL_TYPE to: ${travelTypeText}`);
     } else {
-        console.error(`[AzOTS Plus Debug] Option with text "${travelTypeText}" not found in TRAVEL_TYPE dropdown`);
+        _debugError(`[AzOTS Plus Debug] Option with text "${travelTypeText}" not found in TRAVEL_TYPE dropdown`);
     }
 }
 
 function setLocationFrom(locationCode) {
-    console.log(`[AzOTS Plus Debug] Attempting to set location from: ${locationCode}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set location from: ${locationCode}`);
     const select = document.querySelector(FIELD_SELECTORS.LOC_FR);
     if (!select) {
-        console.error('[AzOTS Plus Debug] Select element with name "LOC_FR" or "LOC_ID" not found');
+        _debugError('[AzOTS Plus Debug] Select element with name "LOC_FR" or "LOC_ID" not found');
         return;
     }
 
@@ -344,33 +349,33 @@ function setLocationFrom(locationCode) {
     if (option) {
         select.value = option.value;
         select.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Set location from to: ${locationCode}`);
+        _debugLog(`[AzOTS Plus Debug] Set location from to: ${locationCode}`);
     } else {
         option = Array.from(select.options).find(opt => opt.text.trim() === 'OTH');
         if (option) {
             select.value = option.value;
             select.dispatchEvent(new Event('change', { bubbles: true }));
-            console.log('[AzOTS Plus Debug] Set location from to OTH');
+            _debugLog('[AzOTS Plus Debug] Set location from to OTH');
         } else {
-            console.error('[AzOTS Plus Debug] Option "OTH" not found in location dropdown');
+            _debugError('[AzOTS Plus Debug] Option "OTH" not found in location dropdown');
         }
 
         const input = document.querySelector(FIELD_SELECTORS.LOC_DESC_FR);
         if (input) {
             input.value = locationCode;
             input.dispatchEvent(new Event('change', { bubbles: true }));
-            console.log(`[AzOTS Plus Debug] Set LOC_DESC_FR/LOC_DESC to: ${locationCode}`);
+            _debugLog(`[AzOTS Plus Debug] Set LOC_DESC_FR/LOC_DESC to: ${locationCode}`);
         } else {
-            console.error('[AzOTS Plus Debug] Input field with name "LOC_DESC_FR" or "LOC_DESC" not found');
+            _debugError('[AzOTS Plus Debug] Input field with name "LOC_DESC_FR" or "LOC_DESC" not found');
         }
     }
 }
 
 function setLocationTo(locationText) {
-    console.log(`[AzOTS Plus Debug] Attempting to set location to: ${locationText}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set location to: ${locationText}`);
     const select = document.querySelector(FIELD_SELECTORS.LOC_TO);
     if (!select) {
-        console.error('[AzOTS Plus Debug] Select element with name "LOC_TO" not found');
+        _debugError('[AzOTS Plus Debug] Select element with name "LOC_TO" not found');
         return;
     }
 
@@ -378,24 +383,24 @@ function setLocationTo(locationText) {
     if (option) {
         select.value = option.value;
         select.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Set location to: ${locationText}`);
+        _debugLog(`[AzOTS Plus Debug] Set location to: ${locationText}`);
     } else {
         option = Array.from(select.options).find(opt => opt.text.trim() === 'OTH');
         if (option) {
             select.value = option.value;
             select.dispatchEvent(new Event('change', { bubbles: true }));
-            console.log('[AzOTS Plus Debug] Set location to OTH');
+            _debugLog('[AzOTS Plus Debug] Set location to OTH');
         } else {
-            console.error('[AzOTS Plus Debug] Option "OTH" not found in LOC_TO dropdown');
+            _debugError('[AzOTS Plus Debug] Option "OTH" not found in LOC_TO dropdown');
         }
 
         const input = document.querySelector(FIELD_SELECTORS.LOC_DESC_TO);
         if (input) {
             input.value = locationText;
             input.dispatchEvent(new Event('change', { bubbles: true }));
-            console.log(`[AzOTS Plus Debug] Set LOC_DESC_TO to: ${locationText}`);
+            _debugLog(`[AzOTS Plus Debug] Set LOC_DESC_TO to: ${locationText}`);
         } else {
-            console.error('[AzOTS Plus Debug] Input field with name "LOC_DESC_TO" not found');
+            _debugError('[AzOTS Plus Debug] Input field with name "LOC_DESC_TO" not found');
         }
     }
 }
@@ -406,10 +411,10 @@ function setLocation(locFrom, locTo) {
 }
 
 function setProjId(projectName) {
-    console.log(`[AzOTS Plus Debug] Attempting to set PROJ_ID to: ${projectName}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set PROJ_ID to: ${projectName}`);
     const select = document.querySelector(FIELD_SELECTORS.PROJ_ID);
     if (!select) {
-        console.error('[AzOTS Plus Debug] Select element with name "PROJ_ID" not found');
+        _debugError('[AzOTS Plus Debug] Select element with name "PROJ_ID" not found');
         return;
     }
 
@@ -417,17 +422,17 @@ function setProjId(projectName) {
     if (option) {
         select.value = option.value;
         select.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Set PROJ_ID to: ${projectName}`);
+        _debugLog(`[AzOTS Plus Debug] Set PROJ_ID to: ${projectName}`);
     } else {
-        console.error(`[AzOTS Plus Debug] Option with text "${projectName}" not found in PROJ_ID select`);
+        _debugError(`[AzOTS Plus Debug] Option with text "${projectName}" not found in PROJ_ID select`);
     }
 }
 
 function setJobId(jobType) {
-    console.log(`[AzOTS Plus Debug] Attempting to set JOB_ID to: ${jobType}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set JOB_ID to: ${jobType}`);
     const select = document.querySelector(FIELD_SELECTORS.JOB_ID);
     if (!select) {
-        console.error('[AzOTS Plus Debug] Select element with name "JOB_ID" not found');
+        _debugError('[AzOTS Plus Debug] Select element with name "JOB_ID" not found');
         return;
     }
 
@@ -435,17 +440,17 @@ function setJobId(jobType) {
     if (option) {
         select.value = option.value;
         select.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Set JOB_ID to: ${jobType}`);
+        _debugLog(`[AzOTS Plus Debug] Set JOB_ID to: ${jobType}`);
     } else {
-        console.warn(`[AzOTS Plus Debug] Option with text "${jobType}" not found in JOB_ID select; leaving unchanged`);
+        _debugWarn(`[AzOTS Plus Debug] Option with text "${jobType}" not found in JOB_ID select; leaving unchanged`);
     }
 }
 
 function setStartTime(timeStr) {
-    console.log(`[AzOTS Plus Debug] Attempting to set START_TIME to: ${timeStr}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set START_TIME to: ${timeStr}`);
     const input = document.querySelector(FIELD_SELECTORS.START_TIME);
     if (!input) {
-        console.error('[AzOTS Plus Debug] Input field with name "START_TIME" not found');
+        _debugError('[AzOTS Plus Debug] Input field with name "START_TIME" not found');
         return;
     }
     let datePart;
@@ -457,24 +462,24 @@ function setStartTime(timeStr) {
     }
     input.value = `${datePart} ${timeStr}`;
     input.dispatchEvent(new Event('change', { bubbles: true }));
-    console.log(`[AzOTS Plus Debug] Set START_TIME to: ${input.value}`);
+    _debugLog(`[AzOTS Plus Debug] Set START_TIME to: ${input.value}`);
 }
 
 function setAmt(money) {
-    console.log(`[AzOTS Plus Debug] Attempting to set AMT to: ${money}`);
+    _debugLog(`[AzOTS Plus Debug] Attempting to set AMT to: ${money}`);
     const input = document.querySelector(FIELD_SELECTORS.AMT);
     if (input) {
         input.value = money;
         input.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Set AMT to: ${money}`);
+        _debugLog(`[AzOTS Plus Debug] Set AMT to: ${money}`);
     } else {
-        console.error('[AzOTS Plus Debug] Input field with name "AMT" not found');
+        _debugError('[AzOTS Plus Debug] Input field with name "AMT" not found');
     }
 }
 
 // Update functions for claims
 function updateTravelClaim(dateStr, preset) {
-    console.log(`[AzOTS Plus Debug] Updating travel claim for date: ${dateStr}, preset:`, preset);
+    _debugLog(`[AzOTS Plus Debug] Updating travel claim for date: ${dateStr}, preset:`, preset);
     setClaimDate(dateStr + ' 09:00');
     setClaimType('TRAV');
     setVehicleType(preset.vehicle || 'Taxi'); // Fallback to common default; adjust based on presets
@@ -485,7 +490,7 @@ function updateTravelClaim(dateStr, preset) {
 }
 
 function updateMealClaim(dateStr, fee, preset) {
-    console.log(`[AzOTS Plus Debug] Updating meal claim for date: ${dateStr}, fee: ${fee}, preset:`, preset);
+    _debugLog(`[AzOTS Plus Debug] Updating meal claim for date: ${dateStr}, fee: ${fee}, preset:`, preset);
     setClaimDate(dateStr + ' 13:00');
     setClaimType('MEAL');
     setVehicleType('N/A'); // Placeholder; adjust to actual non-vehicle option text if needed
@@ -497,21 +502,21 @@ function updateMealClaim(dateStr, fee, preset) {
 
 // Settings Retrieval
 async function retrieveSettingsFromChromeStorage() {
-    console.log('[AzOTS Plus Debug] Retrieving settings from chrome.storage.sync');
+    _debugLog('[AzOTS Plus Debug] Retrieving settings from chrome.storage.sync');
     try {
         const data = await chrome.storage.sync.get('azotsSettings');
-        console.log('[AzOTS Plus Debug] Raw data from chrome.storage.sync:', data);
+        _debugLog('[AzOTS Plus Debug] Raw data from chrome.storage.sync:', data);
 
         if (!data || !data.azotsSettings) {
-            console.log('[AzOTS Plus Debug] No settings found in chrome.storage.sync, using default values');
+            _debugLog('[AzOTS Plus Debug] No settings found in chrome.storage.sync, using default values');
             return { ...DEFAULT_SETTINGS };
         }
 
         const settings = data.azotsSettings;
-        console.log('[AzOTS Plus Debug] Parsed settings object:', settings);
+        _debugLog('[AzOTS Plus Debug] Parsed settings object:', settings);
 
         if (typeof settings !== 'object' || settings === null) {
-            console.warn('[AzOTS Plus Debug] Invalid settings object, returning default values');
+            _debugWarn('[AzOTS Plus Debug] Invalid settings object, returning default values');
             return { ...DEFAULT_SETTINGS };
         }
 
@@ -519,41 +524,41 @@ async function retrieveSettingsFromChromeStorage() {
         settings.presets = Array.isArray(settings.presets) ? settings.presets : [];
         settings.claimTravelPresets = Array.isArray(settings.claimTravelPresets) ? settings.claimTravelPresets : [];
         settings.claimMealPresets = Array.isArray(settings.claimMealPresets) ? settings.claimMealPresets : [];
-        console.log('[AzOTS Plus Debug] Validated settings:', settings);
+        _debugLog('[AzOTS Plus Debug] Validated settings:', settings);
         return settings;
     } catch (error) {
-        console.error('[AzOTS Plus Debug] Error retrieving settings from chrome.storage.sync:', error);
+        _debugError('[AzOTS Plus Debug] Error retrieving settings from chrome.storage.sync:', error);
         return { ...DEFAULT_SETTINGS };
     }
 }
 
 // UI Update Functions
 function updatePresetButtons(presets, containerId = 'preset-container') {
-    console.log(`[AzOTS Plus Debug] Updating preset buttons for container: ${containerId}, presets:`, presets);
+    _debugLog(`[AzOTS Plus Debug] Updating preset buttons for container: ${containerId}, presets:`, presets);
     const container = document.querySelector(`#${containerId}`);
     if (!container) {
-        console.warn(`[AzOTS Plus Debug] Preset container #${containerId} not found for update`);
+        _debugWarn(`[AzOTS Plus Debug] Preset container #${containerId} not found for update`);
         return;
     }
     container.innerHTML = '';
 
     // Add default "OFC" button
     const defaultPreset = { location: 'OFC', project: 'NA', purpose: 'NA' };
-    console.log('[AzOTS Plus Debug] Creating default OFC button:', defaultPreset);
+    _debugLog('[AzOTS Plus Debug] Creating default OFC button:', defaultPreset);
     const defaultButton = createPresetButton(defaultPreset, 'OFC');
     container.appendChild(defaultButton);
 
     // Add user-defined presets
     if (Array.isArray(presets) && presets.length > 0) {
         presets.forEach((preset, index) => {
-            console.log(`[AzOTS Plus Debug] Creating button for preset ${index + 1}:`, preset);
+            _debugLog(`[AzOTS Plus Debug] Creating button for preset ${index + 1}:`, preset);
             const buttonText = `${preset.project || 'NA'} ${preset.location || 'N/A'} ${preset.purpose || 'N/A'}`;
             const button = createPresetButton(preset, buttonText);
             container.appendChild(button);
         });
-        console.log(`[AzOTS Plus Debug] Preset buttons updated successfully with ${presets.length} items`);
+        _debugLog(`[AzOTS Plus Debug] Preset buttons updated successfully with ${presets.length} items`);
     } else {
-        console.log('[AzOTS Plus Debug] No user-defined presets to display');
+        _debugLog('[AzOTS Plus Debug] No user-defined presets to display');
     }
 }
 
@@ -570,25 +575,25 @@ function createPresetButton(preset, buttonText) {
         setProjId(preset.project || 'NA');
         setJobId(preset.purpose || 'NA');
         if (preset.startTime) setStartTime(preset.startTime);
-        console.log('[AzOTS Plus Debug] Preset applied via button click:', preset);
+        _debugLog('[AzOTS Plus Debug] Preset applied via button click:', preset);
     });
     return button;
 }
 
 function updateTravelPresetButtons(presets, containerId) {
-    console.log(`[AzOTS Plus Debug] Updating travel preset buttons for container: ${containerId}, presets:`, presets);
+    _debugLog(`[AzOTS Plus Debug] Updating travel preset buttons for container: ${containerId}, presets:`, presets);
     const container = document.querySelector(`#${containerId}`);
     if (!container) {
-        console.warn(`[AzOTS Plus Debug] Travel preset container #${containerId} not found`);
+        _debugWarn(`[AzOTS Plus Debug] Travel preset container #${containerId} not found`);
         return;
     }
     container.innerHTML = '';
     if (!Array.isArray(presets) || presets.length === 0) {
-        console.log('[AzOTS Plus Debug] No travel presets available');
+        _debugLog('[AzOTS Plus Debug] No travel presets available');
         return;
     }
     presets.forEach((preset, index) => {
-        console.log(`[AzOTS Plus Debug] Creating travel button for preset ${index + 1}:`, preset);
+        _debugLog(`[AzOTS Plus Debug] Creating travel button for preset ${index + 1}:`, preset);
         const button = document.createElement('button');
         button.type = 'button';
         button.innerText = preset.name || `Travel ${index + 1}`;
@@ -600,31 +605,31 @@ function updateTravelPresetButtons(presets, containerId) {
             const dateInput = document.getElementById('claim-date');
             if (!dateInput || !dateInput.value) {
                 alert('Please select a date first.');
-                console.warn('[AzOTS Plus Debug] Date not selected for travel preset');
+                _debugWarn('[AzOTS Plus Debug] Date not selected for travel preset');
                 return;
             }
             updateTravelClaim(dateInput.value, preset);
-            console.log('[AzOTS Plus Debug] Travel preset applied:', preset);
+            _debugLog('[AzOTS Plus Debug] Travel preset applied:', preset);
         });
         container.appendChild(button);
     });
-    console.log(`[AzOTS Plus Debug] Travel preset buttons updated with ${presets.length} items`);
+    _debugLog(`[AzOTS Plus Debug] Travel preset buttons updated with ${presets.length} items`);
 }
 
 function updateMealPresetButtons(presets, containerId) {
-    console.log(`[AzOTS Plus Debug] Updating meal preset buttons for container: ${containerId}, presets:`, presets);
+    _debugLog(`[AzOTS Plus Debug] Updating meal preset buttons for container: ${containerId}, presets:`, presets);
     const container = document.querySelector(`#${containerId}`);
     if (!container) {
-        console.warn(`[AzOTS Plus Debug] Meal preset container #${containerId} not found`);
+        _debugWarn(`[AzOTS Plus Debug] Meal preset container #${containerId} not found`);
         return;
     }
     container.innerHTML = '';
     if (!Array.isArray(presets) || presets.length === 0) {
-        console.log('[AzOTS Plus Debug] No meal presets available');
+        _debugLog('[AzOTS Plus Debug] No meal presets available');
         return;
     }
     presets.forEach((preset, index) => {
-        console.log(`[AzOTS Plus Debug] Creating meal button for preset ${index + 1}:`, preset);
+        _debugLog(`[AzOTS Plus Debug] Creating meal button for preset ${index + 1}:`, preset);
         const button = document.createElement('button');
         button.type = 'button';
         button.innerText = preset.name || `Meal ${index + 1}`;
@@ -637,33 +642,33 @@ function updateMealPresetButtons(presets, containerId) {
             const feeInput = document.getElementById('meal-fee');
             if (!dateInput?.value || !feeInput?.value) {
                 alert('Please select a date and enter a meal fee.');
-                console.warn('[AzOTS Plus Debug] Date or fee missing for meal preset');
+                _debugWarn('[AzOTS Plus Debug] Date or fee missing for meal preset');
                 return;
             }
             updateMealClaim(dateInput.value, feeInput.value, preset);
-            console.log('[AzOTS Plus Debug] Meal preset applied:', preset);
+            _debugLog('[AzOTS Plus Debug] Meal preset applied:', preset);
         });
         container.appendChild(button);
     });
-    console.log(`[AzOTS Plus Debug] Meal preset buttons updated with ${presets.length} items`);
+    _debugLog(`[AzOTS Plus Debug] Meal preset buttons updated with ${presets.length} items`);
 }
 
 function enableDisabledClaimControls() {
     const deleteBtn = document.querySelector('input[name="DELETE"]');
     if (deleteBtn) {
         deleteBtn.removeAttribute('disabled');
-        console.log('[AzOTS Plus Debug] Enabled DELETE button');
+        _debugLog('[AzOTS Plus Debug] Enabled DELETE button');
     }
 
     document.querySelectorAll('input[name="ENTRY_CODE"]').forEach((cb, i) => {
         cb.removeAttribute('disabled');
-        console.log(`[AzOTS Plus Debug] Enabled ENTRY_CODE checkbox #${i + 1}`);
+        _debugLog(`[AzOTS Plus Debug] Enabled ENTRY_CODE checkbox #${i + 1}`);
     });
 }
 
 // Page-Specific Initialization
 async function initCreateClaimPage(config) {
-    console.log('[AzOTS Plus Debug] Detected create_claim_record.jsp, initializing UI');
+    _debugLog('[AzOTS Plus Debug] Detected create_claim_record.jsp, initializing UI');
     const container = createCustomContainer();
 
     // Date picker
@@ -674,18 +679,18 @@ async function initCreateClaimPage(config) {
         const data = await chrome.storage.sync.get(STORAGE_KEY_LAST_CLAIM_DATE);
         if (data[STORAGE_KEY_LAST_CLAIM_DATE] && !dateInput.input.value) {
             dateInput.input.value = data[STORAGE_KEY_LAST_CLAIM_DATE];
-            console.log(`[AzOTS Plus Debug] Restored last claim date: ${dateInput.input.value}`);
+            _debugLog(`[AzOTS Plus Debug] Restored last claim date: ${dateInput.input.value}`);
         }
     } catch (error) {
-        console.error('[AzOTS Plus Debug] Error restoring last claim date:', error);
+        _debugError('[AzOTS Plus Debug] Error restoring last claim date:', error);
     }
 
     // Persist date on change
     dateInput.input.addEventListener('change', () => {
         const val = dateInput.input.value;
         chrome.storage.sync.set({ [STORAGE_KEY_LAST_CLAIM_DATE]: val })
-            .then(() => console.log(`[AzOTS Plus Debug] Saved last claim date: ${val}`))
-            .catch(err => console.error('[AzOTS Plus Debug] Error saving last claim date:', err));
+            .then(() => _debugLog(`[AzOTS Plus Debug] Saved last claim date: ${val}`))
+            .catch(err => _debugError('[AzOTS Plus Debug] Error saving last claim date:', err));
     });
 
     // Claim Travel label and container
@@ -743,7 +748,7 @@ async function initCreateClaimPage(config) {
 
     // Position container before form table (like log user page)
     insertContainerBeforeFormTable(container);
-    console.log('[AzOTS Plus Debug] Custom UI container added to create_claim_record.jsp');
+    _debugLog('[AzOTS Plus Debug] Custom UI container added to create_claim_record.jsp');
 
     // Update preset buttons after DOM insertion
     updateTravelPresetButtons(config.claimTravelPresets || [], 'travel-preset-container');
@@ -755,7 +760,7 @@ async function initCreateClaimPage(config) {
 function highlightNonTodayStartTime() {
     const startTimeField = document.querySelector(FIELD_SELECTORS.START_TIME);
     if (!startTimeField) {
-        console.warn('[AzOTS Plus Debug] START_TIME field not found for date highlight');
+        _debugWarn('[AzOTS Plus Debug] START_TIME field not found for date highlight');
         return;
     }
 
@@ -794,12 +799,12 @@ function highlightNonTodayStartTime() {
     const observer = new MutationObserver(() => applyHighlight());
     observer.observe(startTimeField, { attributes: true, attributeFilter: ['value'] });
 
-    console.log('[AzOTS Plus Debug] START_TIME date highlight initialized');
+    _debugLog('[AzOTS Plus Debug] START_TIME date highlight initialized');
 }
 
 function initLogUserPage(config) {
-    console.log('[AzOTS Plus Debug] Detected ots002_log_user.jsp, initializing UI');
-    console.log('[AzOTS Plus Debug] Config.presets on initial load:', config.presets);
+    _debugLog('[AzOTS Plus Debug] Detected ots002_log_user.jsp, initializing UI');
+    _debugLog('[AzOTS Plus Debug] Config.presets on initial load:', config.presets);
 
     // Add integrated datetime pickers for START_TIME and END_TIME (keeps original visible, adds 📅 button)
     addIntegratedPicker(FIELD_SELECTORS.START_TIME, 'START_TIME');
@@ -816,7 +821,7 @@ function initLogUserPage(config) {
     if (formTable) {
         formTable.setAttribute('width', '100%');
         formTable.style.width = '100%';
-        console.log('[AzOTS Plus Debug] Set form table width to 100%');
+        _debugLog('[AzOTS Plus Debug] Set form table width to 100%');
     }
 
     // Highlight START_TIME if date is not today
@@ -824,7 +829,7 @@ function initLogUserPage(config) {
 
     enableDisabledClaimControls();
 
-    console.log('[AzOTS Plus Debug] Log user page initialization complete');
+    _debugLog('[AzOTS Plus Debug] Log user page initialization complete');
 }
 
 // (injectLogUserStyles removed — styles now come from styles.css)
@@ -886,15 +891,15 @@ function addDateCardPicker() {
         }
     });
 
-    console.log('[AzOTS Plus Debug] Date card picker button added to lblLongDate');
+    _debugLog('[AzOTS Plus Debug] Date card picker button added to lblLongDate');
 }
 
 // Integrated Picker Functions (for START_TIME and END_TIME)
 function addIntegratedPicker(selector, targetName) {
-    console.log(`[AzOTS Plus Debug] Adding auto-sync integrated picker (static grey 📅) for ${targetName}`);
+    _debugLog(`[AzOTS Plus Debug] Adding auto-sync integrated picker (static grey 📅) for ${targetName}`);
     const field = document.querySelector(selector);
     if (!field) {
-        console.warn(`[AzOTS Plus Debug] ${targetName} input field not found`);
+        _debugWarn(`[AzOTS Plus Debug] ${targetName} input field not found`);
         return;
     }
 
@@ -1006,19 +1011,19 @@ function addIntegratedPicker(selector, targetName) {
                     const nearest = timeOptions.find(t => t === rounded);
                     if (nearest) {
                         timeSelect.value = nearest;
-                        console.warn(`[AzOTS Plus Debug] Time '${parts[1]}' in ${targetName} rounded to nearest 30-min interval: ${nearest}`);
+                        _debugWarn(`[AzOTS Plus Debug] Time '${parts[1]}' in ${targetName} rounded to nearest 30-min interval: ${nearest}`);
                     } else {
-                        console.warn(`[AzOTS Plus Debug] Invalid time '${parts[1]}' in ${targetName}; using default`);
+                        _debugWarn(`[AzOTS Plus Debug] Invalid time '${parts[1]}' in ${targetName}; using default`);
                     }
                 } else {
-                    console.warn(`[AzOTS Plus Debug] Invalid time '${parts[1]}' in ${targetName}; using default`);
+                    _debugWarn(`[AzOTS Plus Debug] Invalid time '${parts[1]}' in ${targetName}; using default`);
                 }
             }
         }
-        console.log(`[AzOTS Plus Debug] Parsed initial value for ${targetName}: ${field.value}`);
+        _debugLog(`[AzOTS Plus Debug] Parsed initial value for ${targetName}: ${field.value}`);
     }
 
-    console.log(`[AzOTS Plus Debug] Static grey 📅 integrated picker added for ${targetName} (original field preserved)`);
+    _debugLog(`[AzOTS Plus Debug] Static grey 📅 integrated picker added for ${targetName} (original field preserved)`);
 }
 
 function togglePopup(popup) {
@@ -1054,18 +1059,18 @@ function togglePopup(popup) {
         
         timeSelect.value = defaultTime;
     }
-    console.log(`[AzOTS Plus Debug] Popup toggled: ${!isVisible ? 'opened' : 'closed'}`);
+    _debugLog(`[AzOTS Plus Debug] Popup toggled: ${!isVisible ? 'opened' : 'closed'}`);
 }
 
 function syncToOriginal(dateInput, timeSelect, originalField, targetName) {
     const dateVal = dateInput.value;
     const timeVal = timeSelect.value;
-    console.log(`[AzOTS Plus Debug] Auto-sync attempt for ${targetName} - Date: ${dateVal}, Time: ${timeVal}`);
+    _debugLog(`[AzOTS Plus Debug] Auto-sync attempt for ${targetName} - Date: ${dateVal}, Time: ${timeVal}`);
 
     if (dateVal && timeVal) {
         const dateObj = new Date(dateVal);
         if (isNaN(dateObj.getTime())) {
-            console.warn(`[AzOTS Plus Debug] Invalid date object from input for ${targetName}`);
+            _debugWarn(`[AzOTS Plus Debug] Invalid date object from input for ${targetName}`);
             return;
         }
         const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -1075,16 +1080,16 @@ function syncToOriginal(dateInput, timeSelect, originalField, targetName) {
         
         originalField.value = formatted;
         originalField.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Auto-synced to ${targetName}: ${formatted}`);
+        _debugLog(`[AzOTS Plus Debug] Auto-synced to ${targetName}: ${formatted}`);
     } else {
         originalField.value = '';
         originalField.dispatchEvent(new Event('change', { bubbles: true }));
-        console.log(`[AzOTS Plus Debug] Auto-cleared ${targetName} (partial selection)`);
+        _debugLog(`[AzOTS Plus Debug] Auto-cleared ${targetName} (partial selection)`);
     }
 }
 
 function initPrintClaimPage() {
-    console.log('[AzOTS Plus Debug] Detected print_claim_record.jsp, initializing date fields');
+    _debugLog('[AzOTS Plus Debug] Detected print_claim_record.jsp, initializing date fields');
     addDatePicker(FIELD_SELECTORS.DATE_FROM, 'DATE_FROM');
     addDatePicker(FIELD_SELECTORS.DATE_TO, 'DATE_TO');
 
@@ -1093,11 +1098,11 @@ function initPrintClaimPage() {
 }
 
 function initViewUserPage() {
-    console.log('[AzOTS Plus Debug] Detected ots002b_view_user.jsp');
+    _debugLog('[AzOTS Plus Debug] Detected ots002b_view_user.jsp');
 }
 
 function addDatePicker(selector, targetName) {
-    console.log(`[AzOTS Plus Debug] Adding date picker for ${targetName}`);
+    _debugLog(`[AzOTS Plus Debug] Adding date picker for ${targetName}`);
     const field = document.querySelector(selector);
     if (field) {
         // Hide original
@@ -1122,12 +1127,12 @@ function addDatePicker(selector, targetName) {
                 const dateObj = new Date(dateInput.value);
                 field.value = formatDate(dateObj);
                 field.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log(`[AzOTS Plus Debug] Updated ${targetName} to: ${field.value}`);
+                _debugLog(`[AzOTS Plus Debug] Updated ${targetName} to: ${field.value}`);
             }
         });
-        console.log(`[AzOTS Plus Debug] Date picker added for ${targetName}`);
+        _debugLog(`[AzOTS Plus Debug] Date picker added for ${targetName}`);
     } else {
-        console.warn(`[AzOTS Plus Debug] ${targetName} input field not found`);
+        _debugWarn(`[AzOTS Plus Debug] ${targetName} input field not found`);
     }
 }
 
@@ -1135,17 +1140,17 @@ function insertContainerBeforeFormTable(container) {
     const formTable = document.querySelector('table[width="550"]');
     if (formTable) {
         formTable.parentElement.insertBefore(container, formTable);
-        console.log('[AzOTS Plus Debug] Container inserted before form table');
+        _debugLog('[AzOTS Plus Debug] Container inserted before form table');
     } else {
         document.body.insertBefore(container, document.body.firstChild);
-        console.log('[AzOTS Plus Debug] Container appended to body top');
+        _debugLog('[AzOTS Plus Debug] Container appended to body top');
         // Retry after delay for dynamic content
         setTimeout(() => {
             const retryTable = document.querySelector('table[width="550"]');
             if (retryTable && container.parentElement === document.body) {
                 container.remove();
                 retryTable.parentElement.insertBefore(container, retryTable);
-                console.log('[AzOTS Plus Debug] Container moved before form table after retry');
+                _debugLog('[AzOTS Plus Debug] Container moved before form table after retry');
             }
         }, 1000);
     }
@@ -1153,7 +1158,7 @@ function insertContainerBeforeFormTable(container) {
 
 // Event Listeners for Pickers (updated for split in log user)
 function attachPickerListeners(className, formatFn) {
-    console.log(`[AzOTS Plus Debug] Attaching listeners for class: ${className}`);
+    _debugLog(`[AzOTS Plus Debug] Attaching listeners for class: ${className}`);
     document.querySelectorAll(`.${className}`).forEach((picker, index) => {
         if (picker.classList.contains('azots-date-part') || picker.classList.contains('azots-time-part')) {
             // Handled in addSplitDateTimePicker
@@ -1161,11 +1166,11 @@ function attachPickerListeners(className, formatFn) {
         }
         picker.addEventListener('change', (e) => {
             let value = e.target.value;
-            console.log(`[AzOTS Plus Debug] Picker change for ${className} #${index + 1}: ${value}`);
+            _debugLog(`[AzOTS Plus Debug] Picker change for ${className} #${index + 1}: ${value}`);
             if (value) {
                 let date = new Date(value);
                 if (isNaN(date.getTime())) {
-                    console.warn('[AzOTS Plus Debug] Invalid date from picker');
+                    _debugWarn('[AzOTS Plus Debug] Invalid date from picker');
                     return;
                 }
                 
@@ -1174,9 +1179,9 @@ function attachPickerListeners(className, formatFn) {
                 if (targetField) {
                     targetField.value = formatFn(date);
                     targetField.dispatchEvent(new Event('change', { bubbles: true }));
-                    console.log(`[AzOTS Plus Debug] Updated ${targetFieldName} to: ${targetField.value}`);
+                    _debugLog(`[AzOTS Plus Debug] Updated ${targetFieldName} to: ${targetField.value}`);
                 } else {
-                    console.error(`[AzOTS Plus Debug] Target field ${targetFieldName} not found`);
+                    _debugError(`[AzOTS Plus Debug] Target field ${targetFieldName} not found`);
                 }
             } else {
                 const targetFieldName = e.target.dataset.target;
@@ -1184,12 +1189,12 @@ function attachPickerListeners(className, formatFn) {
                 if (targetField) {
                     targetField.value = '';
                     targetField.dispatchEvent(new Event('change', { bubbles: true }));
-                    console.log(`[AzOTS Plus Debug] Cleared ${targetFieldName}`);
+                    _debugLog(`[AzOTS Plus Debug] Cleared ${targetFieldName}`);
                 }
             }
         });
     });
-    console.log(`[AzOTS Plus Debug] Listeners attached for ${document.querySelectorAll(`.${className}`).length} pickers`);
+    _debugLog(`[AzOTS Plus Debug] Listeners attached for ${document.querySelectorAll(`.${className}`).length} pickers`);
 }
 
 // Updated snap function for compatibility (not used directly now with split)
@@ -1243,7 +1248,7 @@ function formatDate(date) {
 }
 
 // Main Initialization
-console.log('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.location.href);
+_debugLog('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.location.href);
 
 (async function() {
     // Apply base styling immediately
@@ -1253,13 +1258,13 @@ console.log('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.lo
 
     try {
         config = await retrieveSettingsFromChromeStorage();
-        console.log('[AzOTS Plus Debug] Settings loaded successfully:', config);
+        _debugLog('[AzOTS Plus Debug] Settings loaded successfully:', config);
     } catch (error) {
-        console.error('[AzOTS Plus Debug] Failed to load settings:', error);
+        _debugError('[AzOTS Plus Debug] Failed to load settings:', error);
     }
 
     const path = window.location.pathname;
-    console.log(`[AzOTS Plus Debug] Current path: ${path}`);
+    _debugLog(`[AzOTS Plus Debug] Current path: ${path}`);
 
     if (path.includes(PAGE_PATHS.CREATE_CLAIM)) {
         await initCreateClaimPage(config);
@@ -1270,7 +1275,7 @@ console.log('[AzOTS Plus Debug] Content script loaded on HKOTS page:', window.lo
     } else if (path.includes(PAGE_PATHS.PRINT_CLAIM)) {
         initPrintClaimPage();
     } else {
-        console.log('[AzOTS Plus Debug] No matching page for enhancements');
+        _debugLog('[AzOTS Plus Debug] No matching page for enhancements');
         // For index page — preparePage() already ran
     }
 
