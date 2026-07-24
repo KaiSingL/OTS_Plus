@@ -204,6 +204,9 @@ function preparePage() {
     addClass(clockCell, "azots-clock-decoration");
   }
 
+  // Date card picker — native date picker on lblLongDate click
+  addDateCardPicker();
+
   // Editor card — handles both preset container IDs
   var presets = document.getElementById("preset-container") || document.getElementById("azots-plus-container");
   if (presets) addClass(presets, "azots-plus-container");
@@ -826,6 +829,62 @@ function initLogUserPage(config) {
 
 // (injectLogUserStyles removed — styles now come from styles.css)
 
+// Date Card Picker — native date picker button next to lblLongDate
+function addDateCardPicker() {
+    var lblLongDate = document.querySelector('td.lblLongDate');
+    if (!lblLongDate) return;
+    if (lblLongDate.querySelector('.azots-date-card-picker-btn')) return;
+
+    var dateField = document.querySelector('input[name="DATE"]');
+    var year, month, day;
+    if (dateField && dateField.value && dateField.value.length === 8) {
+        month = parseInt(dateField.value.substring(0, 2), 10);
+        day = parseInt(dateField.value.substring(2, 4), 10);
+        year = parseInt(dateField.value.substring(4, 8), 10);
+    } else {
+        var now = new Date();
+        year = now.getFullYear();
+        month = now.getMonth() + 1;
+        day = now.getDate();
+    }
+
+    var hiddenInput = document.createElement('input');
+    hiddenInput.type = 'date';
+    hiddenInput.className = 'azots-date-card-hidden-input';
+    hiddenInput.value = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    lblLongDate.appendChild(hiddenInput);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'azots-date-card-picker-btn';
+    btn.title = 'Pick a date';
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>';
+    lblLongDate.appendChild(btn);
+
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        hiddenInput.showPicker();
+    });
+
+    hiddenInput.addEventListener('change', function () {
+        if (!hiddenInput.value) return;
+        var parts = hiddenInput.value.split('-');
+        var dateParam = parts[1] + parts[2] + parts[0]; // MMDDYYYY
+
+        var path = window.location.pathname;
+        if (path.includes(PAGE_PATHS.LOG_USER)) {
+            var params = new URLSearchParams(window.location.search);
+            params.set('DATE', dateParam);
+            window.location.href = window.location.pathname + '?' + params.toString();
+        } else if (path.includes(PAGE_PATHS.VIEW_USER)) {
+            window.location.href = PAGE_PATHS.VIEW_USER + '?DATE=' + dateParam;
+        }
+    });
+
+    console.log('[AzOTS Plus Debug] Date card picker button added to lblLongDate');
+}
+
 // Integrated Picker Functions (for START_TIME and END_TIME)
 function addIntegratedPicker(selector, targetName) {
     console.log(`[AzOTS Plus Debug] Adding auto-sync integrated picker (static grey 📅) for ${targetName}`);
@@ -1030,168 +1089,7 @@ function initPrintClaimPage() {
 }
 
 function initViewUserPage() {
-    console.log('[AzOTS Plus Debug] Detected ots002b_view_user.jsp, initializing calendar');
-
-    // Determine selected date from URL param or use today
-    var params = new URLSearchParams(window.location.search);
-    var dateParam = params.get('DATE');
-    var now = new Date();
-    var year, month, selectedDay;
-
-    if (dateParam) {
-        month = parseInt(dateParam.substring(0, 2), 10) - 1;
-        selectedDay = parseInt(dateParam.substring(2, 4), 10);
-        year = parseInt(dateParam.substring(4, 8), 10);
-    } else {
-        year = now.getFullYear();
-        month = now.getMonth();
-        selectedDay = now.getDate();
-    }
-
-    var container = document.createElement('div');
-    container.className = 'azots-calendar';
-    buildCalendar(container, year, month, selectedDay);
-
-    // Insert above the results table
-    var results = document.querySelector('.azots-results-scroll');
-    if (results) {
-        results.parentNode.insertBefore(container, results);
-    } else {
-        // Before the results table is styled, insert before the data table
-        var dataTable = document.querySelector('table.azots-results-table, table[width="760"][cellspacing="1"]');
-        if (dataTable && dataTable.parentNode) {
-            dataTable.parentNode.insertBefore(container, dataTable);
-        } else {
-            document.body.appendChild(container);
-        }
-    }
-
-    console.log('[AzOTS Plus Debug] Calendar inserted for view_user page');
-}
-
-function buildCalendar(container, year, month, selectedDay) {
-    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                      'July', 'August', 'September', 'October', 'November', 'December'];
-    var dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-
-    function pad(n) { return n < 10 ? '0' + n : '' + n; }
-
-    function normalizeMonth(yr, mo) {
-        if (mo < 0) { yr -= Math.ceil(Math.abs(mo) / 12); mo = ((mo % 12) + 12) % 12; }
-        if (mo > 11) { yr += Math.floor(mo / 12); mo = mo % 12; }
-        return { yr: yr, mo: mo };
-    }
-
-    function render(yr, mo, selDay) {
-        var norm = normalizeMonth(yr, mo);
-        yr = norm.yr; mo = norm.mo;
-
-        container.innerHTML = '';
-
-        // Header: nav + title
-        var header = document.createElement('div');
-        header.className = 'azots-calendar-header';
-
-        var prevBtn = document.createElement('button');
-        prevBtn.type = 'button';
-        prevBtn.className = 'azots-calendar-nav';
-        prevBtn.innerText = '\u25C0';
-        prevBtn.addEventListener('click', function (e) { e.stopPropagation(); render(yr, mo - 1, selDay); });
-
-        var title = document.createElement('div');
-        title.className = 'azots-calendar-title';
-        title.innerText = monthNames[mo] + ' ' + yr;
-
-        var nextBtn = document.createElement('button');
-        nextBtn.type = 'button';
-        nextBtn.className = 'azots-calendar-nav';
-        nextBtn.innerText = '\u25B6';
-        nextBtn.addEventListener('click', function (e) { e.stopPropagation(); render(yr, mo + 1, selDay); });
-
-        header.appendChild(prevBtn);
-        header.appendChild(title);
-        header.appendChild(nextBtn);
-        container.appendChild(header);
-
-        // Weekday headers
-        var weekdays = document.createElement('div');
-        weekdays.className = 'azots-calendar-weekdays';
-        for (var d = 0; d < 7; d++) {
-            var wd = document.createElement('div');
-            wd.innerText = dayNames[d];
-            weekdays.appendChild(wd);
-        }
-        container.appendChild(weekdays);
-
-        // Day grid
-        var grid = document.createElement('div');
-        grid.className = 'azots-calendar-grid';
-
-        var firstDay = new Date(yr, mo, 1).getDay();
-        var daysInMonth = new Date(yr, mo + 1, 0).getDate();
-        var daysInPrev = new Date(yr, mo, 0).getDate();
-        var today = new Date();
-        var isTodayDate = today.getFullYear() === yr && today.getMonth() === mo && today.getDate() === selDay;
-
-        // Empty cells before 1st
-        for (var e = firstDay - 1; e >= 0; e--) {
-            var emptyCell = document.createElement('button');
-            emptyCell.type = 'button';
-            emptyCell.className = 'azots-cal-day azots-cal-other-month';
-            emptyCell.disabled = true;
-            emptyCell.innerText = daysInPrev - e;
-            grid.appendChild(emptyCell);
-        }
-
-        // Day cells
-        for (var day = 1; day <= daysInMonth; day++) {
-            var cell = document.createElement('button');
-            cell.type = 'button';
-            cell.className = 'azots-cal-day';
-            cell.innerText = day;
-
-            var dateStr = pad(mo + 1) + pad(day) + pad(yr);
-
-            if (day === selDay) {
-                cell.className += ' azots-cal-selected';
-            }
-
-            if (yr === today.getFullYear() && mo === today.getMonth() && day === today.getDate()) {
-                cell.className += ' azots-cal-today';
-            }
-
-            (function (ds, d, y, m) {
-                cell.addEventListener('click', function () {
-                    var href = 'ots002b_view_user.jsp';
-                    var isToday = y === today.getFullYear() && m === today.getMonth() && d === today.getDate();
-                    if (!isToday) {
-                        href += '?DATE=' + ds;
-                    }
-                    window.location.href = href;
-                });
-            })(dateStr, day, yr, mo);
-
-            grid.appendChild(cell);
-        }
-
-        // Fill remaining cells from next month
-        var totalCells = firstDay + daysInMonth;
-        var remaining = totalCells % 7;
-        if (remaining > 0) {
-            for (var f = 1; f <= 7 - remaining; f++) {
-                var nextCell = document.createElement('button');
-                nextCell.type = 'button';
-                nextCell.className = 'azots-cal-day azots-cal-other-month';
-                nextCell.disabled = true;
-                nextCell.innerText = f;
-                grid.appendChild(nextCell);
-            }
-        }
-
-        container.appendChild(grid);
-    }
-
-    render(year, month, selectedDay);
+    console.log('[AzOTS Plus Debug] Detected ots002b_view_user.jsp');
 }
 
 function addDatePicker(selector, targetName) {
