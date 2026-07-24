@@ -848,28 +848,32 @@ function addDateCardPicker() {
         day = now.getDate();
     }
 
-    var hiddenInput = document.createElement('input');
-    hiddenInput.type = 'date';
-    hiddenInput.className = 'azots-date-card-hidden-input';
-    hiddenInput.value = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-    lblLongDate.appendChild(hiddenInput);
+    var dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.className = 'azots-date-card-hidden-date';
+    dateInput.value = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
 
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'azots-date-card-picker-btn';
     btn.title = 'Pick a date';
     btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>';
-    lblLongDate.appendChild(btn);
+
+    var wrap = document.createElement('div');
+    wrap.className = 'azots-date-card-picker-wrap';
+    wrap.appendChild(btn);
+    wrap.appendChild(dateInput);
+    lblLongDate.appendChild(wrap);
 
     btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        hiddenInput.showPicker();
+        dateInput.showPicker();
     });
 
-    hiddenInput.addEventListener('change', function () {
-        if (!hiddenInput.value) return;
-        var parts = hiddenInput.value.split('-');
+    dateInput.addEventListener('change', function () {
+        if (!dateInput.value) return;
+        var parts = dateInput.value.split('-');
         var dateParam = parts[1] + parts[2] + parts[0]; // MMDDYYYY
 
         var path = window.location.pathname;
@@ -901,11 +905,11 @@ function addIntegratedPicker(selector, targetName) {
     const container = document.createElement('div');
     container.className = 'azots-integrated-picker';
 
-    // Main button with static emoji label (tiny square via CSS)
+    // Main button with static SVG calendar icon (tiny square via CSS)
     const pickerButton = document.createElement('button');
     pickerButton.type = 'button';
     pickerButton.className = 'azots-picker-button';
-    pickerButton.innerText = '📅';
+    pickerButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>';
     pickerButton.title = 'Click to open date and time picker';
     container.appendChild(pickerButton);
 
